@@ -1,4 +1,3 @@
-# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/sys-apps/coreutils/coreutils-8.20.ebuild,v 1.8 2012/12/08 19:40:53 vapier Exp $
 
@@ -140,11 +139,6 @@ src_install() {
 		local com="basename chroot cut dir dirname du env expr head mkfifo
 		           mktemp readlink seq sleep sort tail touch tr tty vdir wc yes"
 		mv ${com} ../../bin/ || die "could not move common bins"
-		# create a symlink for uname in /usr/bin/ since autotools require it
-		local x
-		for x in ${com} uname ; do
-			dosym /bin/${x} /usr/bin/${x} || die
-		done
 	else
 		# For now, drop the man pages, collides with the ones of the system.
 		rm -rf "${D}"/usr/share/man
@@ -155,14 +149,6 @@ pkg_postinst() {
 	ewarn "Make sure you run 'hash -r' in your active shells."
 	ewarn "You should also re-source your shell settings for LS_COLORS"
 	ewarn "  changes, such as: source /etc/profile"
-
-	# /bin/dircolors sometimes sticks around #224823
-	if [ -e "${ROOT}/usr/bin/dircolors" ] && [ -e "${ROOT}/bin/dircolors" ] ; then
-		if strings "${ROOT}/bin/dircolors" | grep -qs "GNU coreutils" ; then
-			einfo "Deleting orphaned GNU /bin/dircolors for you"
-			rm -f "${ROOT}/bin/dircolors"
-		fi
-	fi
 
 	# Help out users using experimental filesystems
 	if grep -qs btrfs "${ROOT}"/etc/fstab /proc/mounts ; then
