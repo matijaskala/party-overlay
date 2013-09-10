@@ -413,14 +413,14 @@ class ProfileDepFix(MergeStep):
 
 class GenCache(MergeStep):
 	def run(self,tree):
-		runShell("egencache --update --portdir=%s --jobs=4" % tree.root, abortOnFail=False)
+		runShell("egencache --update --repo=gentoo --portdir=%s --jobs=4" % tree.root, abortOnFail=False)
 
 class GitPrep(MergeStep):
 	def __init__(self,branch):
 		self.branch = branch
 
 	def run(self,tree):
-		runShell("( cd %s; git checkout %s )" % ( tree.root, self.branch ))
+		runShell("( cd %s; git checkout -B %s )" % ( tree.root, self.branch ))
 
 class Minify(MergeStep):
 	def run(self,tree):
