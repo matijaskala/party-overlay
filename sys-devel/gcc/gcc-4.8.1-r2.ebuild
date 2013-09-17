@@ -2,7 +2,7 @@
 
 EAPI=5
 
-inherit multilib eutils
+inherit multilib eutils pax-utils
 
 # Ebuild notes:
 #
@@ -44,9 +44,6 @@ else
 	SLOT="${PV%.*}"
 fi
 
-#Not used:
-#PATCH_VER="1.6"
-
 #Hardened Support:
 #
 # PIE_VER specifies the version of the PIE patches that will be downloaded and applied.
@@ -56,7 +53,7 @@ fi
 # select various permutations of the hardened compiler, as well as a non-hardened
 # compiler, and are typically selected via Gentoo's gcc-config tool.
 
-PIE_VER="0.5.2"
+PIE_VER="0.5.7"
 SPECS_VER="0.2.0"
 SPECS_GCC_VER="4.4.3"
 SPECS_A="gcc-${SPECS_GCC_VER}-specs-${SPECS_VER}.tar.bz2"
@@ -77,8 +74,8 @@ SRC_URI="$SRC_URI hardened? ( mirror://gentoo/${SPECS_A} mirror://gentoo/${PIE_A
 
 DESCRIPTION="The GNU Compiler Collection"
 
-LICENSE="GPL-3 LGPL-3 || ( GPL-3 libgcc libstdc++ gcc-runtime-library-exception-3.1 ) FDL-1.2"
-KEYWORDS="*"
+LICENSE="GPL-3+ LGPL-3+ || ( GPL-3+ libgcc libstdc++ gcc-runtime-library-exception-3.1 ) FDL-1.3+"
+KEYWORDS="experimental"
 
 RDEPEND="sys-libs/zlib nls? ( sys-devel/gettext ) virtual/libiconv"
 DEPEND="${RDEPEND} >=sys-devel/bison-1.875 >=sys-devel/flex-2.5.4 elibc_glibc? ( >=sys-libs/glibc-2.8 ) >=sys-devel/binutils-2.18"
@@ -106,14 +103,12 @@ src_unpack() {
 		unpack $PIE_A || die "pie unpack fail"
 		unpack $SPECS_A || die "specs unpack fail"
 	fi
+
 	cd $S
 	mkdir ${WORKDIR}/objdir
 }
 
 src_prepare() {
-
-	# TODO - APPLY PIE PATCHES
-	# TODO - ALL_CFLAGS vs HARD_CFLAGS (see do_gcc_PIE_patches() in toolchain.eclass)
 
 	# For some reason, when upgrading gcc, the gcc Makefile will install stuff
 	# like crtbegin.o into a subdirectory based on the name of the currently-installed
@@ -124,7 +119,7 @@ src_prepare() {
 	# The following patch allows pie/ssp specs to be changed via environment
 	# variable, which is needed for gcc-config to allow switching of compilers:
 
-	[[ ${CHOST} == ${CTARGET} ]] && cat "${FILESDIR}"/gcc-spec-env.patch | patch -p1 || die "patch fail"
+	[[ ${CHOST} == ${CTARGET} ]] && cat "${FILESDIR}"/gcc-spec-env-r1.patch | patch -p1 || die "patch fail"
 
 	# We use --enable-version-specific-libs with ./configure. This
 	# option is designed to place all our libraries into a sub-directory
@@ -142,9 +137,19 @@ src_prepare() {
 
 	if use hardened; then
 		local gcc_hard_flags="-DEFAULT_RELRO -DEFAULT_BIND_NOW -DEFAULT_PIE_SSP"
-		sed -i -e "/^HARD_CFLAGS = /s|=|= ${gcc_hard_flags} |" "${S}"/gcc/Makefile.in || die
+
 		EPATCH_MULTI_MSG="Applying PIE patches..." \
-		epatch "${WORKDIR}"/piepatch/*.patch
+			epatch "${WORKDIR}"/piepatch/*.patch
+
+		sed -e '/^ALL_CFLAGS/iHARD_CFLAGS = ' \
+			-e 's|^ALL_CFLAGS = |ALL_CFLAGS = $(HARD_CFLAGS) |' \
+			-i "${S}"/gcc/Makefile.in
+
+		sed -e '/^ALL_CXXFLAGS/iHARD_CFLAGS = ' \
+			-e 's|^ALL_CXXFLAGS = |ALL_CXXFLAGS = $(HARD_CFLAGS) |' \
+			-i "${S}"/gcc/Makefile.in
+
+		sed -i -e "/^HARD_CFLAGS = /s|=|= ${gcc_hard_flags} |" "${S}"/gcc/Makefile.in || die
 	fi
 }
 
@@ -188,8 +193,10 @@ src_configure() {
 		--mandir=${DATAPATH}/man \
 		--infodir=${DATAPATH}/info \
 		--with-gxx-include-dir=${STDCXX_INCDIR} \
+		--enable-__cxa_atexit \
+		--enable-clocale=gnu \
 		--host=$CHOST \
-		--target=$CTARGET \
+		--build=$CHOST \
 		--disable-ppl \
 		--disable-cloog \
 		--with-system-zlib \
@@ -218,7 +225,7 @@ src_compile() {
 	# Here is hack #2 to make that happen: expand PATH so that gfortran can find other tools it needs:
 
 	export PATH="$WORKDIR/objdir/gcc:$PATH"
-	emake LIBPATH="${LIBPATH}"  || die "compile fail"
+	emake LIBPATH="${LIBPATH}" bootstrap-lean || die "compile fail"
 }
 
 create_gcc_env_entry() {
@@ -353,6 +360,10 @@ src_install() {
 	# Don't scan .gox files for executable stacks - false positives
 	export QA_EXECSTACK="usr/lib*/go/*/*.gox"
 	export QA_WX_LOAD="usr/lib*/go/*/*.gox"
+
+	# Disable RANDMMAP so PCH works.
+	pax-mark -r "${D}${PREFIX}/libexec/gcc/${CTARGET}/${GCC_CONFIG_VER}/cc1"
+	pax-mark -r "${D}${PREFIX}/libexec/gcc/${CTARGET}/${GCC_CONFIG_VER}/cc1plus"
 }
 
 pkg_postinst() {

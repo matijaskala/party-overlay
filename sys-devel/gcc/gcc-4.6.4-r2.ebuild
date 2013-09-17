@@ -77,7 +77,7 @@ SRC_URI="$SRC_URI hardened? ( mirror://gentoo/${SPECS_A} mirror://gentoo/${PIE_A
 
 DESCRIPTION="The GNU Compiler Collection"
 
-LICENSE="GPL-3 LGPL-3 || ( GPL-3 libgcc libstdc++ gcc-runtime-library-exception-3.1 ) FDL-1.2"
+LICENSE="GPL-3+ LGPL-3+ || ( GPL-3+ libgcc libstdc++ gcc-runtime-library-exception-3.1 ) FDL-1.3+"
 KEYWORDS="*"
 
 RDEPEND="sys-libs/zlib nls? ( sys-devel/gettext ) virtual/libiconv"
@@ -112,9 +112,6 @@ src_unpack() {
 
 src_prepare() {
 
-	# TODO - APPLY PIE PATCHES
-	# TODO - ALL_CFLAGS vs HARD_CFLAGS (see do_gcc_PIE_patches() in toolchain.eclass)
-
 	# For some reason, when upgrading gcc, the gcc Makefile will install stuff
 	# like crtbegin.o into a subdirectory based on the name of the currently-installed
 	# gcc version, rather than *our* gcc version. Manually fix this:
@@ -142,9 +139,19 @@ src_prepare() {
 
 	if use hardened; then
 		local gcc_hard_flags="-DEFAULT_RELRO -DEFAULT_BIND_NOW -DEFAULT_PIE_SSP"
-		sed -i -e "/^HARD_CFLAGS = /s|=|= ${gcc_hard_flags} |" "${S}"/gcc/Makefile.in || die
+
 		EPATCH_MULTI_MSG="Applying PIE patches..." \
-		epatch "${WORKDIR}"/piepatch/*.patch
+			epatch "${WORKDIR}"/piepatch/*.patch
+
+		sed -e '/^ALL_CFLAGS/iHARD_CFLAGS = ' \
+			-e 's|^ALL_CFLAGS = |ALL_CFLAGS = $(HARD_CFLAGS) |' \
+			-i "${S}"/gcc/Makefile.in
+
+		sed -e '/^ALL_CXXFLAGS/iHARD_CFLAGS = ' \
+			-e 's|^ALL_CXXFLAGS = |ALL_CXXFLAGS = $(HARD_CFLAGS) |' \
+			-i "${S}"/gcc/Makefile.in
+
+		sed -i -e "/^HARD_CFLAGS = /s|=|= ${gcc_hard_flags} |" "${S}"/gcc/Makefile.in || die
 	fi
 }
 
@@ -188,8 +195,10 @@ src_configure() {
 		--mandir=${DATAPATH}/man \
 		--infodir=${DATAPATH}/info \
 		--with-gxx-include-dir=${STDCXX_INCDIR} \
+		--enable-__cxa_atexit \
+		--enable-clocale=gnu \
 		--host=$CHOST \
-		--target=$CTARGET \
+		--build=$CHOST \
 		--disable-ppl \
 		--disable-cloog \
 		--with-system-zlib \
@@ -218,7 +227,7 @@ src_compile() {
 	# Here is hack #2 to make that happen: expand PATH so that gfortran can find other tools it needs:
 
 	export PATH="$WORKDIR/objdir/gcc:$PATH"
-	emake LIBPATH="${LIBPATH}"  || die "compile fail"
+	emake LIBPATH="${LIBPATH}" bootstrap-lean || die "compile fail"
 }
 
 create_gcc_env_entry() {
