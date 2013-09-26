@@ -9,8 +9,10 @@ if not os.path.exists("/usr/bin/svn"):
 
 gentoo_src = DeadTree("gentoo","/var/git/portage-gentoo")
 funtoo_overlay = Tree("party-overlay", branch, "git://github.com/matijaskala/party-overlay.git", pull=True)
+funtoo_original_overlay = Tree("funtoo-overlay", branch, "git://github.com/funtoo/funtoo-overlay.git", pull=True)
 foo_overlay = Tree("foo-overlay", "master", "https://github.com/slashbeast/foo-overlay.git", pull=True)
 bar_overlay = Tree("bar-overlay", "master", "git://github.com/adessemond/bar-overlay.git", pull=True)
+squeezebox_overlay = Tree("squeezebox", "master", "git://git.overlays.gentoo.org/user/squeezebox.git", pull=True)
 flora_overlay = Tree("flora", "master", "git://github.com/funtoo/flora.git", pull=True)
 progress_overlay = SvnTree("progress", "https://gentoo-progress.googlecode.com/svn/overlays/progress")
 sabayon_for_gentoo = Tree("sabayon-for-gentoo", "master", "git://github.com/Sabayon/for-gentoo.git", pull=True)
@@ -43,6 +45,8 @@ steps = [
 	InsertEbuilds(bar_overlay, select="all", skip=["app-emulation/qemu"], replace=False),
 	InsertEbuilds(flora_overlay, select="all", skip=["sys-fs/spl", "sys-fs/zfs", "media-sound/oss", "x11-wm/qtile"], replace=False),
 	InsertEbuilds(mate_overlay, select="all", skip=None, replace=False),
+	InsertEbuilds(squeezebox_overlay, select="all", skip=None, replace=False),
+	#InsertEbuilds(funtoo_original_overlay, select="none", skip=None, replace=False),
 	SyncDir(mate_overlay.root, "eclass"),
 	SyncDir(mate_overlay.root, "sets"),
 	SyncFiles(mate_overlay.root, { 
