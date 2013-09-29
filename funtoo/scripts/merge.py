@@ -18,6 +18,16 @@ progress_overlay = SvnTree("progress", "https://gentoo-progress.googlecode.com/s
 sabayon_for_gentoo = Tree("sabayon-for-gentoo", "master", "git://github.com/Sabayon/for-gentoo.git", pull=True)
 mate_overlay = Tree("mate", "master", "git://github.com/Sabayon/mate-overlay.git", pull=True)
 
+funtoo_original_packages = [
+	"sys-auth/keystone",
+	"sys-auth/keystone-client",
+	"sys-boot/boot-update",
+	"sys-boot/grub",
+	"sys-boot/grub-legacy",
+	"sys-cluster/glance",
+	"sys-cluster/nova"
+]
+
 steps = [
 	SyncTree(gentoo_src,exclude=["/metadata/cache/**","ChangeLog", "dev-util/metro"]),
 	ApplyPatchSeries("%s/funtoo/patches" % funtoo_overlay.root ),
@@ -40,16 +50,16 @@ steps = [
 		"profiles/arch/amd64/no-multilib/package.mask":"profiles/funtoo/1.0/linux-gnu/arch/pure64/package.mask/01-gentoo",
 		"profiles/arch/amd64/no-multilib/use.mask":"profiles/funtoo/1.0/linux-gnu/arch/pure64/use.mask/01-gentoo"
 	}),
-	InsertEbuilds(funtoo_overlay, select="all", skip=None, replace=True),
+	InsertEbuilds(funtoo_overlay, select="all", skip=funtoo_original_packages, replace=True),
 	InsertEbuilds(foo_overlay, select="all", skip=["media-sound/deadbeef", "sys-fs/mdev-bb", "sys-fs/mdev-like-a-boss", "media-video/handbrake"], replace=["app-shells/rssh","net-misc/unison"]),
 	InsertEbuilds(bar_overlay, select="all", skip=["app-emulation/qemu"], replace=False),
 	InsertEbuilds(flora_overlay, select="all", skip=["sys-fs/spl", "sys-fs/zfs", "media-sound/oss", "x11-wm/qtile"], replace=False),
 	InsertEbuilds(mate_overlay, select="all", skip=None, replace=False),
 	InsertEbuilds(squeezebox_overlay, select="all", skip=None, replace=False),
-	#InsertEbuilds(funtoo_original_overlay, select="none", skip=None, replace=False),
+	InsertEbuilds(funtoo_original_overlay, select=funtoo_original_packages, skip=None, replace=False),
 	SyncDir(mate_overlay.root, "eclass"),
 	SyncDir(mate_overlay.root, "sets"),
-	SyncFiles(mate_overlay.root, { 
+	SyncFiles(mate_overlay.root, {
 		"profiles/package.mask":"profiles/funtoo/1.0/linux-gnu/mix-ins/mate/package.mask/01-mate",
 		"profiles/package.use.mask":"profiles/funtoo/1.0/linux-gnu/mix-ins/mate/package.use.mask/01-mate"
 	}),
