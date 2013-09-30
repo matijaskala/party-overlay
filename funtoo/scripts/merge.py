@@ -8,7 +8,7 @@ if not os.path.exists("/usr/bin/svn"):
 	sys.exit(1)
 
 gentoo_src = DeadTree("gentoo","/var/git/portage-gentoo")
-funtoo_overlay = Tree("party-overlay", branch, "git://github.com/matijaskala/party-overlay.git", pull=True)
+party_overlay = Tree("party-overlay", branch, "git://github.com/matijaskala/party-overlay.git", pull=True)
 funtoo_original_overlay = Tree("funtoo-overlay", branch, "git://github.com/funtoo/funtoo-overlay.git", pull=True)
 foo_overlay = Tree("foo-overlay", "master", "https://github.com/slashbeast/foo-overlay.git", pull=True)
 bar_overlay = Tree("bar-overlay", "master", "git://github.com/adessemond/bar-overlay.git", pull=True)
@@ -30,14 +30,14 @@ funtoo_original_packages = [
 
 steps = [
 	SyncTree(gentoo_src,exclude=["/metadata/cache/**","ChangeLog", "dev-util/metro"]),
-	ApplyPatchSeries("%s/funtoo/patches" % funtoo_overlay.root ),
+	ApplyPatchSeries("%s/funtoo/patches" % party_overlay.root ),
 	ThirdPartyMirrors(),
-	SyncDir(funtoo_overlay.root, "profiles", "profiles", exclude=["categories", "repo_name", "updates"]),
-	MergeUpdates(funtoo_overlay.root),
+	SyncDir(party_overlay.root, "profiles", "profiles", exclude=["categories", "repo_name", "updates"]),
+	MergeUpdates(party_overlay.root),
 	ProfileDepFix(),
-	SyncDir(funtoo_overlay.root,"licenses"),
-	SyncDir(funtoo_overlay.root,"eclass"),
-	SyncDir(funtoo_overlay.root,"metadata"),
+	SyncDir(party_overlay.root,"licenses"),
+	SyncDir(party_overlay.root,"eclass"),
+	SyncDir(party_overlay.root,"metadata"),
 	SyncFiles(gentoo_src.root, {
 		"profiles/arch/amd64/package.use.mask":"profiles/funtoo/1.0/linux-gnu/arch/x86-64bit/package.use.mask/01-gentoo",
 		"profiles/features/multilib/package.use.mask":"profiles/funtoo/1.0/linux-gnu/arch/x86-64bit/package.use.mask/02-gentoo",
@@ -50,13 +50,13 @@ steps = [
 		"profiles/arch/amd64/no-multilib/package.mask":"profiles/funtoo/1.0/linux-gnu/arch/pure64/package.mask/01-gentoo",
 		"profiles/arch/amd64/no-multilib/use.mask":"profiles/funtoo/1.0/linux-gnu/arch/pure64/use.mask/01-gentoo"
 	}),
-	InsertEbuilds(funtoo_overlay, select="all", skip=funtoo_original_packages, replace=True),
+	InsertEbuilds(party_overlay, select="all", skip=funtoo_original_packages, replace=True),
 	InsertEbuilds(foo_overlay, select="all", skip=["media-sound/deadbeef", "sys-fs/mdev-bb", "sys-fs/mdev-like-a-boss", "media-video/handbrake"], replace=["app-shells/rssh","net-misc/unison"]),
 	InsertEbuilds(bar_overlay, select="all", skip=["app-emulation/qemu"], replace=False),
 	InsertEbuilds(flora_overlay, select="all", skip=["sys-fs/spl", "sys-fs/zfs", "media-sound/oss", "x11-wm/qtile"], replace=False),
 	InsertEbuilds(mate_overlay, select="all", skip=None, replace=False),
 	InsertEbuilds(squeezebox_overlay, select="all", skip=None, replace=False),
-	InsertEbuilds(funtoo_original_overlay, select=funtoo_original_packages, skip=None, replace=False),
+	InsertEbuilds(funtoo_original_overlay, select=funtoo_original_packages, skip=None, replace=True),
 	SyncDir(mate_overlay.root, "eclass"),
 	SyncDir(mate_overlay.root, "sets"),
 	SyncFiles(mate_overlay.root, {
