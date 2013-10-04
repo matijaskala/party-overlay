@@ -26,6 +26,8 @@ funtoo_original_packages = [
 	"app-dicts/dictd-moby-thesaurus",
 	"app-editors/sublime-text",
 	"app-vim/gentoo-syntax",
+	"sys-apps/kmod",
+	"sys-apps/openrc",
 	"sys-auth/keystone",
 	"sys-auth/keystone-client",
 	"sys-boot/boot-update",
@@ -33,6 +35,12 @@ funtoo_original_packages = [
 	"sys-boot/grub-legacy",
 	"sys-cluster/glance",
 	"sys-cluster/nova",
+	"sys-cluster/vzctl",
+	"sys-kernel/linux-headers",
+	"www-client/surf",
+	"www-servers/nginx",
+	"www-servers/thin",
+	"x11-wm/icewm",
 ]
 
 steps = [
