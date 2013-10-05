@@ -13,24 +13,20 @@ SLOT="0"
 KEYWORDS="*"
 IUSE="gtk3 nls"
 
-RDEPEND=">=dev-libs/glib-2.18:2
-    >=x11-libs/gtk+-2.12:2
-    gtk3? (
-    >=x11-libs/gtk+-3.2.1:3
-    >=x11-libs/libwnck-3.2.1 )
-    >=dev-libs/dbus-glib-0.76
-    >=gnome-base/gnome-panel-2
-    >=gnome-base/gconf-2
-    >=dev-libs/libindicator-0.4.1
-    >=dev-libs/libdbusmenu-0.5.0[test]
-"
+RDEPEND=">=x11-libs/gtk+-2.12:2
+        gtk3? (
+        >=x11-libs/gtk+-3.2.1:3
+        >=x11-libs/libwnck-3.2.1 )
+        >=dev-libs/dbus-glib-0.76
+        >=dev-libs/libindicator-0.4.1
+        >=dev-libs/libdbusmenu-0.5.0"
 DEPEND="${RDEPEND}
-    virtual/pkgconfig
-    nls? ( dev-util/intltool )
-    x11-libs/bamf"
+        virtual/pkgconfig
+        nls? ( dev-util/intltool )
+        x11-libs/bamf"
 
 src_configure() {
     econf \
-      $(use_enable nls) \
-      --with-gtk=$(usex gtk3 "3" "2")
+        $(use_enable nls) \
+        --with-gtk=$(usex gtk3 "3" "2")
 }
