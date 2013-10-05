@@ -10,7 +10,7 @@ HOMEPAGE="https://launchpad.net/bamf"
 KEYWORDS="*"
 SLOT="0"
 LICENSE="LGPL-3"
-IUSE="gtk3"
+IUSE="gtk3 webapps"
 
 DEPEND=">=dev-lang/vala-0.11.7
     gtk3? (
@@ -21,5 +21,7 @@ DEPEND=">=dev-lang/vala-0.11.7
 RDEPEND="${DEPEND}"
 
 src_configure(){
-    econf --with-gtk=$(usex gtk3 "3" "2")
+    econf \
+        $(use_enable webapps) \
+        --with-gtk=$(usex gtk3 "3" "2")
 }
