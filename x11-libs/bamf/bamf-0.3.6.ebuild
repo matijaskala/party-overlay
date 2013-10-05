@@ -39,3 +39,7 @@ src_configure() {
         $(use_enable webapps) \
         --with-gtk=$(usex gtk3 "3" "2")
 }
+
+src_install() {
+    emake -j1 DESTDIR="${D}" install
+}
