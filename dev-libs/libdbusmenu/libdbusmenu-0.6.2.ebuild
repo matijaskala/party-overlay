@@ -19,16 +19,17 @@ RDEPEND=">=dev-libs/glib-2.32
 	>=dev-libs/dbus-glib-0.100
 	dev-libs/libxml2
 	gtk? (
-	  gtk3? ( >=x11-libs/gtk+-3.2:3[introspection?] )
-	  !gtk3? ( x11-libs/gtk+:2[introspection?] )
-    )
+		gtk3? ( >=x11-libs/gtk+-3.2:3[introspection?] )
+		!gtk3? ( x11-libs/gtk+:2[introspection?] )
+	)
 	introspection? ( >=dev-libs/gobject-introspection-1 )
-	!<${CATEGORY}/${PN}-0.5.1-r200"
+	"
 DEPEND="${RDEPEND}
 	app-text/gnome-doc-utils
 	dev-util/intltool
 	virtual/pkgconfig
 	introspection? ( $(vala_depend) )"
+REQUIRED_USE="gtk3? ( gtk )"
 
 src_prepare() {
 	if use introspection; then
@@ -40,7 +41,6 @@ src_prepare() {
 src_configure() {
 	append-flags -Wno-error #414323
 
-	# dumper extra tool is only for GTK+-2.x, tests use valgrind which is stupid
 	econf \
 		--docdir=/usr/share/doc/${PF} \
 		--disable-static \
