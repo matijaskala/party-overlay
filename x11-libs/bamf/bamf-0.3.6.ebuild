@@ -21,7 +21,18 @@ DEPEND="
     dev-util/gtk-doc"
 RDEPEND="${DEPEND}"
 
-src_configure(){
+src_prepare() {
+	sed -i -e 's/vapigen/vapigen-0.12/' configure.in
+    sed -i -e 's/-Werror//' configure.in
+
+    if ! use gtk3;then
+        sed -i -e 's/AM_PATH_GTK_3_0/AM_PATH_GTK_2_0/' configure.in
+    fi
+
+    eautoreconf
+}
+
+src_configure() {
     econf \
         $(use_enable introspection)
         $(use_enable webapps) \
