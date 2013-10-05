@@ -22,9 +22,7 @@ src_install() {
 	cp -pPR ${S}/* ${D}/etc/ || die
 	if ! use bindist; then
 		rm ${D}/etc/bin/busybox || die
-		cp /bin/busybox ${D}/etc/bin/busybox || die "/bin/busybox doesn't exist"
+		[[ -x /bin/busybox ]] && cp /bin/busybox ${D}/etc/bin/busybox || die "/bin/busybox is not executable"
 	fi
-	for x in /etc/bin/busybox /etc/init; do
-		[[ -x ${D}${x} ]] || die "${x} won't work, aborting"
-	done
+	[[ -x ${D}/etc/init ]] || chmod +x ${D}/etc/init
 }
