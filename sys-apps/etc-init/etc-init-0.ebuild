@@ -2,20 +2,17 @@
 
 EAPI=5
 
+inherit git-2
+
 DESCRIPTION="Tools for mounting /usr without initramfs"
 HOMEPAGE=""
 GITHUB_USER="matijaskala"
-SRC_URI="https://www.github.com/${GITHUB_USER}/${PN}/tarball/master -> ${PN}.tar.gz"
+EGIT_REPO_URI="https://www.github.com/${GITHUB_USER}/${PN}.git"
 
 SLOT="0"
 KEYWORDS="*"
 IUSE="+bindist"
 DEPEND="!bindist? ( sys-apps/busybox[static] )"
-
-src_unpack() {
-	unpack ${A}
-	mv "${WORKDIR}/${GITHUB_USER}-${PN}"-??????? "${S}"
-}
 
 src_install() {
 	dodir /etc
