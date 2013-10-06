@@ -26,7 +26,6 @@ DEPEND="${RDEPEND}
         x11-libs/bamf"
 
 src_configure() {
-    econf \
-        $(use_enable nls) \
-        --with-gtk=$(usex gtk3 "3" "2")
+        econf \
+                --with-gtk=$(usex gtk3 "3" "2")
 }
