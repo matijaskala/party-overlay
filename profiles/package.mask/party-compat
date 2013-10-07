@@ -1,0 +1,5 @@
+app-portage/portage-utils::party
+sys-apps/baselayout::party
+sys-apps/coreutils::party
+sys-apps/portage::party
+sys-apps/systemd::party
