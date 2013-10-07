@@ -52,7 +52,7 @@ steps = [
 	SyncTree(gentoo_src,exclude=["/metadata/cache/**","ChangeLog", "dev-util/metro"]),
 	ApplyPatchSeries("%s/funtoo/patches" % party_overlay.root ),
 	ThirdPartyMirrors(),
-	SyncDir(party_overlay.root, "profiles", "profiles", exclude=["categories", "repo_name", "updates"]),
+	SyncDir(party_overlay.root, "profiles", exclude=["categories", "repo_name", "updates", "package.mask/party-compat"]),
 	MergeUpdates(party_overlay.root),
 	ProfileDepFix(),
 	SyncDir(party_overlay.root,"licenses"),
