@@ -12,7 +12,7 @@ EGIT_REPO_URI="https://www.github.com/${GITHUB_USER}/${PN}.git"
 SLOT="0"
 KEYWORDS="*"
 IUSE="+bindist"
-DEPEND="!bindist? ( sys-apps/busybox[static] )"
+DEPEND="!bindist? ( sys-apps/busybox:=[static] )"
 
 src_install() {
 	dodir /etc
