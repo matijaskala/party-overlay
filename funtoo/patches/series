@@ -2,3 +2,4 @@
 EXEC 01-pmask-kmod
 07-updates
 12-eclass
+24-firefox
