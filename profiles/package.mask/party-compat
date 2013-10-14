@@ -1,5 +1,4 @@
 app-portage/portage-utils::party-overlay
 sys-apps/baselayout::party-overlay
-sys-apps/coreutils::party-overlay
 sys-apps/portage::party-overlay
 sys-apps/systemd::party-overlay
