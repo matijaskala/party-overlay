@@ -43,12 +43,6 @@ app-benchmarks/phoronix-test-suite
 # security update for xorg-server
 >x11-base/xorg-server-1.13.4
 
-# Oleg Vinichenko (19 Apr 2013)
-# mask back mpc-1.0.1, ebuild itself is fine and usable
-# the mask required for metro stages successfully built until 
-# we implement newer gcc ebuilds, see FL-507
->=dev-libs/mpc-1.0 
-
 # Not currently maintained, last commit near 1 yr ago
 # ZFSOnLinux is a muche more viable and mature replacement 
 sys-fs/zfs-fuse
@@ -64,10 +58,6 @@ sys-fs/zfs-fuse
 # Oleg Vinichenko (17 Dec 2012)
 # mask >dev-perl/Net-DNS-0.680.0 due to FL-275
 >dev-perl/Net-DNS-0.680.0
-
-# Oleg Vinichenko (30 Oct 2012 )
-# mask back nano-2.3.1-r2, stage build  issues
->=app-editors/nano-2.3.1-r2
 
 # Oleg Vinichenko (24 Oct 2012)
 # less-452 breaks man pages
