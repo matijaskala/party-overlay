@@ -3,5 +3,6 @@ EXEC 01-pmask-kmod
 07-updates
 12-eclass
 EXEC 21-coreutils
+EXEC 21-shadow
 EXEC 21-wxGTK
 24-firefox
