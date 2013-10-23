@@ -5,4 +5,4 @@ EXEC 01-pmask-kmod
 EXEC 21-coreutils
 EXEC 21-shadow
 EXEC 21-wxGTK
-24-firefox
+EXEC 21-firefox
