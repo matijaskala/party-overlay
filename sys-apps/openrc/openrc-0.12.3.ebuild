@@ -1,12 +1,11 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4"
+EAPI="5"
 
 inherit eutils flag-o-matic multilib pam toolchain-funcs
 
 DESCRIPTION="OpenRC manages the services, startup and shutdown of a host"
 HOMEPAGE="http://roy.marples.name/openrc"
-PROVIDE="virtual/baselayout"
 RESTRICT="mirror"
 
 LICENSE="BSD-2"
@@ -15,20 +14,17 @@ KEYWORDS="*"
 IUSE="debug elibc_glibc ncurses pam selinux static-libs unicode kernel_linux kernel_FreeBSD"
 
 RDEPEND="kernel_linux? ( >=sys-apps/sysvinit-2.86-r11 )
-	kernel_FreeBSD? ( virtual/init sys-process/fuser-bsd )
-	ncurses? ( sys-libs/ncurses )
+	kernel_FreeBSD? ( sys-process/fuser-bsd )
 	pam? ( virtual/pam )
 	>=sys-apps/baselayout-2.2
-	|| ( >=sys-fs/udev-135 >virtual/udev-0 )
 	sys-apps/iproute2"
 
-DEPEND="ncurses? ( sys-libs/ncurses ) pam? ( virtual/pam ) virtual/os-headers"
+DEPEND="ncurses? ( sys-libs/ncurses ) pam? ( virtual/pam ) virtual/os-headers virtual/pkgconfig"
 
 GITHUB_REPO="${PN}"
 GITHUB_USER="funtoo"
-GITHUB_TAG="funtoo-openrc-0.10.2-r7"
-
-NETV="1.3.4"
+GITHUB_TAG="funtoo-openrc-0.12.3-r0"
+NETV="1.3.7"
 GITHUB_REPO_CN="corenetwork"
 GITHUB_TAG_CN="$NETV"
 
@@ -40,7 +36,7 @@ SRC_URI="
 make_args() {
 	unset LIBDIR #266688
 
-	MAKE_ARGS="${MAKE_ARGS} LIBNAME=$(get_libdir) LIBEXECDIR=/$(get_libdir)/rc"
+	MAKE_ARGS="${MAKE_ARGS} LIBNAME=$(get_libdir) LIBEXECDIR=/$(get_libdir)/rc MKNET=no"
 
 	local brand="Unknown"
 	if use kernel_linux ; then
@@ -76,12 +72,12 @@ src_unpack() {
 
 src_prepare() {
 	sed -i 's:0444:0644:' mk/sys.mk || die
-	sed -i "/^DIR/s:/openrc:/${PF}:" doc/Makefile || die #241342
 
 	if [[ ${PV} == "9999" ]] ; then
 		local ver="git-${EGIT_VERSION:0:6}"
 		sed -i "/^GITVER[[:space:]]*=/s:=.*:=${ver}:" mk/git.mk || die
 	fi
+	##epatch "${FILESDIR}/openrc-nodevfs.patch"
 }
 src_compile() {
 	make_args
@@ -143,14 +139,6 @@ src_install() {
 	# install the gentoo pam.d file
 	newpamd "${FILESDIR}"/start-stop-daemon.pam start-stop-daemon
 
-	# Remove upstream networking parts:
-
-	for pat in ${D}/lib64/rc/net/ ${D}/etc/init.d/{net.lo,network,staticroute} \
-	${D}/usr/share/openrc/runlevels/boot/{net.lo,network,staticroute} \
-	${D}/etc/conf.d/{net,network,staticroute}; do
-		rm -rf "$pat" || die "Couldn't remove upstream $pat from source."
-	done
-
 	# Install funtoo networking parts:
 
 	cd ${WORKDIR}/corenetwork-${NETV} || die
@@ -189,7 +177,7 @@ pkg_postinst() {
 	rm -f "${ROOT}"/etc/init.d/{depscan,runscript}.sh
 	rm -f "${ROOT}"/etc/runlevels/boot/netif.lo
 
-	# CREATE RUNLEVEL DIRECTORIES	
+	# CREATE RUNLEVEL DIRECTORIES
 	# ===========================
 
 	# To ensure proper system operation, this portion of the script ensures that
