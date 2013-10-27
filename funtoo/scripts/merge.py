@@ -32,7 +32,6 @@ funtoo_original_packages = [
 	"dev-lang/perl",
 	"mail-mta/postfix",
 	"net-analyzer/zabbix",
-	"sys-apps/openrc",
 	"sys-auth/keystone",
 	"sys-auth/keystone-client",
 	"sys-boot/boot-update",

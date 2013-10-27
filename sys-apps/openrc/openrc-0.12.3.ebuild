@@ -49,7 +49,7 @@ make_args() {
 	if use selinux; then
 			MAKE_ARGS="${MAKE_ARGS} MKSELINUX=yes"
 	fi
-	export BRANDING="Funtoo ${brand}"
+	export BRANDING="Party ${brand}"
 	if ! use static-libs; then
 			MAKE_ARGS="${MAKE_ARGS} MKSTATICLIBS=no"
 	fi
