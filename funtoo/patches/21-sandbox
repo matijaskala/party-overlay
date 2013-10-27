@@ -1,0 +1,19 @@
+#!/bin/bash
+
+PATCH="sandbox-delete-app.patch"
+for i in sys-apps/sandbox/sandbox-*.ebuild; do
+	cat > ${PATCH} << EOF
+--- a/${i}	2013-09-05 12:01:32.000000000 +0200
++++ b/${i}	2013-10-28 00:38:18.005014632 +0100
+@@ -110,6 +110,7 @@
+ 
+ 	cd "\${S}"
+ 	dodoc AUTHORS ChangeLog* NEWS README
++	rm -f "\${D}"/usr/share/applications/sandbox.desktop
+ }
+ 
+ pkg_preinst() {
+EOF
+	git apply ${PATCH}
+	rm ${PATCH}
+done
