@@ -1,0 +1,27 @@
+#!/bin/bash
+
+PATCH="util-linux-stage1-workaround.patch"
+for i in sys-apps/util-linux/util-linux-*.ebuild; do
+# the patch makes sure that pkg_setup is run only if python is used
+	cat > ${PATCH} << EOF
+--- a/${i}	2013-10-29 23:10:04.404110367 +0100
++++ b/${i}	2013-10-29 23:16:43.734118054 +0100
+@@ -50,8 +50,14 @@
+ REQUIRED_USE="python? ( \${PYTHON_REQUIRED_USE} )"
+ 
+ S=\${WORKDIR}/\${MY_P}
+ 
++python-single-r1_pkg_setup() {
++	debug-print-function \${FUNCNAME} "\${@}"
++
++	use python && python_setup
++}
++
+ src_prepare() {
+ 	if [[ \${PV} == 9999 ]] ; then
+ 		po/update-potfiles
+ 		eautoreconf
+EOF
+	git apply ${PATCH}	# if it fails then it's probably unneeded
+	rm ${PATCH}
+done
