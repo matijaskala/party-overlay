@@ -7,3 +7,4 @@ EXEC 21-shadow
 EXEC 21-wxGTK
 EXEC 21-firefox
 EXEC 21-sandbox
+EXEC 21-util-linux
