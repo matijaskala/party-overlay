@@ -44,3 +44,4 @@ virtual/libc
 virtual/os-headers
 virtual/package-manager
 virtual/pam
+virtual/pkgconfig
