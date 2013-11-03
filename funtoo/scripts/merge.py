@@ -22,7 +22,6 @@ funtoo_original_packages = [
 	"app-admin/salt",
 	"app-arch/tar",
 	"app-backup/rsnapshot",
-	"app-crypt/gcr",
 	"app-crypt/gnupg",
 	"app-dicts/dictd-moby-thesaurus",
 	"app-editors/sublime-text",
