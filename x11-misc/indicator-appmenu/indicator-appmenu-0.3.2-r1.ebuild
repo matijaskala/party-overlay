@@ -28,4 +28,5 @@ DEPEND="${RDEPEND}
 src_configure() {
 	econf \
 		--with-gtk=$(usex gtk3 "3" "2")
+		epatch "${FILESDIR}/${P}-ubuntu3.diff"
 }
