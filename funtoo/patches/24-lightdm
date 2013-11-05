@@ -1,0 +1,3 @@
+#!/bin/sh
+# lightdm doesn't need to depend on gnome-common
+sed -i -e "/gnome-base\\/gnome-common/d" x11-misc/lightdm/lightdm-*.ebuild || exit 1
