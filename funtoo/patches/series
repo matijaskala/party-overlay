@@ -1,6 +1,4 @@
-# This series applies on GIT commit 9d3e078bbdf42f52ea75d355cddaba9290b6ae51
-EXEC 00-linux-profile
-EXEC 01-pmask-kmod
+EXEC 01-linux-profile
 07-updates
 12-eclass
 EXEC 21-coreutils
