@@ -20,7 +20,6 @@ mate_overlay = Tree("mate", "master", "git://github.com/Sabayon/mate-overlay.git
 
 funtoo_original_packages = [
 	"app-admin/salt",
-	"app-arch/tar",
 	"app-backup/rsnapshot",
 	"app-crypt/gnupg",
 	"app-dicts/dictd-moby-thesaurus",
