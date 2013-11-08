@@ -245,6 +245,24 @@ class SvnTree(object):
 		else:
 			runShell("(cd %s; svn co %s %s)" % (base, self.url, self.name))
 
+class CvsTree(object):
+	def __init__(self, name, url=None, trylocal=None):
+		self.name = name
+		self.url = url
+		self.trylocal = trylocal
+		if self.trylocal and os.path.exists(self.trylocal):
+			base = os.path.basename(self.trylocal)
+			self.root = trylocal
+		else:
+			base = "/var/cvs/source-trees"
+			self.root = "%s/%s" % (base, self.name)
+		if not os.path.exists(base):
+			os.makedirs(base)
+		if os.path.exists(self.root):
+			runShell("(cd %s; cvs --no-verify update)" % self.root)
+		else:
+			runShell("(cd %s; cvs --no-verify -d %s co %s)" % (base, self.url, self.name))
+
 class UnifiedTree(Tree):
 	def __init__(self,root,steps):
 		self.steps = steps
@@ -357,12 +375,18 @@ class InsertEbuilds(MergeStep):
 					if not os.path.exists(tcatdir):
 						os.makedirs(tcatdir)
 					if isinstance(self.merge, list) and "%s/%s" % (cat,pkg) in self.merge and os.path.isdir(tpkgdir):
-						pkgdir_manifest_file = open("%s/Manifest" % pkgdir)
-						tpkgdir_manifest_file = open("%s/Manifest" % tpkgdir)
-						pkgdir_manifest = pkgdir_manifest_file.readlines()
-						tpkgdir_manifest = tpkgdir_manifest_file.readlines()
-						pkgdir_manifest_file.close()
-						tpkgdir_manifest_file.close()
+						try:
+							pkgdir_manifest_file = open("%s/Manifest" % pkgdir)
+							pkgdir_manifest = pkgdir_manifest_file.readlines()
+							pkgdir_manifest_file.close()
+						except IOError:
+							pkgdir_manifest = []
+						try:
+							tpkgdir_manifest_file = open("%s/Manifest" % tpkgdir)
+							tpkgdir_manifest = tpkgdir_manifest_file.readlines()
+							tpkgdir_manifest_file.close()
+						except IOError:
+							tpkgdir_manifest = []
 						entries = {
 							"AUX": {},
 							"DIST": {},
