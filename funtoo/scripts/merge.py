@@ -62,7 +62,6 @@ funtoo_original_packages = [
 	"www-client/surf",
 	"www-servers/nginx",
 	"www-servers/thin",
-	"x11-wm/icewm",
 ]
 
 steps = [
