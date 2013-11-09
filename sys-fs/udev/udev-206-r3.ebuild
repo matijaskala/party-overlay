@@ -1,13 +1,8 @@
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Header: /var/cvsroot/gentoo-x86/sys-fs/udev/udev-208.ebuild,v 1.3 2013/10/09 17:30:26 ssuominen Exp $
 
 EAPI=5
-
-# accept4() patch is only in non-live version
-if [[ ${PV} = 9999* ]]; then
-	KV_min=2.6.39
-else
-	KV_min=2.6.32
-fi
 
 inherit autotools eutils linux-info multilib toolchain-funcs versionator multilib-minimal
 
@@ -15,14 +10,14 @@ if [[ ${PV} = 9999* ]]; then
 	EGIT_REPO_URI="git://anongit.freedesktop.org/systemd/systemd"
 	inherit git-2
 else
-	patchset=2
-	SRC_URI="http://www.freedesktop.org/software/systemd/systemd-${PV}.tar.xz"
+	patchset=1
+	SRC_URI="http://www.freedesktop.org/software/systemd/systemd-${PV}.tar.xz -> systemd-${PV}-r1.tar.xz"
 	if [[ -n "${patchset}" ]]; then
 				SRC_URI="${SRC_URI}
 					http://dev.gentoo.org/~ssuominen/${P}-patches-${patchset}.tar.xz
 					http://dev.gentoo.org/~williamh/dist/${P}-patches-${patchset}.tar.xz"
 			fi
-	KEYWORDS="~*"
+	KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
 fi
 
 DESCRIPTION="Linux dynamic and persistent device naming support (aka userspace devfs)"
@@ -38,7 +33,7 @@ COMMON_DEPEND=">=sys-apps/util-linux-2.20
 	acl? ( sys-apps/acl )
 	gudev? ( >=dev-libs/glib-2 )
 	introspection? ( >=dev-libs/gobject-introspection-1.31.1 )
-	kmod? ( >=sys-apps/kmod-14-r1 )
+	kmod? ( >=sys-apps/kmod-14 )
 	selinux? ( >=sys-libs/libselinux-2.1.9 )
 	!<sys-libs/glibc-2.11
 	!sys-apps/systemd
@@ -51,7 +46,7 @@ DEPEND="${COMMON_DEPEND}
 	>=sys-devel/make-3.82-r4
 	virtual/os-headers
 	virtual/pkgconfig
-	!<sys-kernel/linux-headers-${KV_min}
+	!<sys-kernel/linux-headers-2.6.32
 	doc? ( >=dev-util/gtk-doc-1.18 )"
 if [[ ${PV} = 9999* ]]; then
 	DEPEND="${DEPEND}
@@ -80,13 +75,6 @@ S=${WORKDIR}/systemd-${PV}
 # ABI but not for non-native ABI.
 multilib_check_headers() { :; }
 
-udev_check_KV() {
-	if kernel_is lt ${KV_min//./ }; then
-		return 1
-	fi
-	return 0
-}
-
 check_default_rules() {
 	# Make sure there are no sudden changes to upstream rules file
 	# (more for my own needs than anything else ...)
@@ -102,28 +90,26 @@ check_default_rules() {
 
 pkg_setup() {
 	CONFIG_CHECK="~BLK_DEV_BSG ~DEVTMPFS ~!IDE ~INOTIFY_USER ~!SYSFS_DEPRECATED ~!SYSFS_DEPRECATED_V2 ~SIGNALFD ~EPOLL"
-
 	linux-info_pkg_setup
 
-	if ! udev_check_KV; then
-		eerror "Your kernel version (${KV_FULL}) is too old to run ${P}"
-		eerror "It must be at least ${KV_min}!"
+	# Based on README from tarball:
+	local MINKV=3.0
+	# These arch's have the mandatory accept4() function support in Linux 2.6.32.61, see:
+	# $ grep -r define.*accept4 linux-2.6.32.61/*
+	if use amd64 || use ia64 || use mips || use sparc || use x86; then
+		MINKV=2.6.32
 	fi
 
-	KV_FULL_SRC=${KV_FULL}
-	get_running_version
-	if ! udev_check_KV; then
-		eerror
-		eerror "Your running kernel version (${KV_FULL}) is too old"
-		eerror "for this version of udev."
-		eerror "You must upgrade your kernel or downgrade udev."
+	if kernel_is -lt ${MINKV//./ }; then
+		eerror "Your running kernel is too old to run this version of ${P}"
+		eerror "You need to upgrade kernel at least to ${MINKV}"
 	fi
 }
 
 src_prepare() {
 	if ! [[ ${PV} = 9999* ]]; then
 		# secure_getenv() disable for non-glibc systems wrt bug #443030
-		if ! [[ $(grep -r secure_getenv * | wc -l) -eq 19 ]]; then
+		if ! [[ $(grep -r secure_getenv * | wc -l) -eq 20 ]]; then
 			eerror "The line count for secure_getenv() failed, see bug #443030"
 			die
 		fi
@@ -168,9 +154,7 @@ src_prepare() {
 		sed -i 's:static_assert:alsdjflkasjdfa:' src/shared/macro.h
 
 	# change rules back to group uucp instead of dialout for now wrt #454556
-	sed -e 's/GROUP="dialout"/GROUP="uucp"/' \
-		-i rules/*.rules \
-	|| die "failed to change group dialout to uucp"
+	sed -i -e 's/GROUP="dialout"/GROUP="uucp"/' rules/*.rules || die
 
 	if [[ ! -e configure ]]; then
 		if use doc; then
@@ -209,6 +193,7 @@ multilib_src_configure() {
 		--with-html-dir=/usr/share/doc/${PF}/html
 		--with-rootprefix=
 		--without-python
+		--disable-python-devel
 		--disable-audit
 		--disable-coredump
 		--disable-hostnamed
@@ -367,6 +352,12 @@ multilib_src_install() {
 		# /lib/systemd because systemd is installed to /usr wrt #462750
 		mv "${D}"/{lib/systemd/systemd-,sbin/}udevd || die
 		rm -r "${D}"/lib/systemd
+
+		if [[ ${PV} = 9999* ]]; then
+			doman man/{udev.7,udevadm.8,systemd-udevd.service.8}
+		else
+			doman "${S}"/man/{udev.7,udevadm.8,systemd-udevd.service.8}
+		fi
 	else
 		local lib_LTLIBRARIES="libudev.la" \
 			pkgconfiglib_DATA="src/libudev/libudev.pc" \
@@ -394,9 +385,6 @@ multilib_src_install_all() {
 	rm -f \
 		"${D}"/lib/udev/rules.d/99-systemd.rules \
 		"${D}"/usr/share/doc/${PF}/LICENSE.*
-
-	# install-man7, install-man8 targets are unreliable wrt #480924
-	doman man/{udev.7,udevadm.8,systemd-udevd.service.8}
 
 	# see src_prepare() for content of these files
 	insinto /lib/udev/rules.d
@@ -427,9 +415,6 @@ pkg_postinst() {
 		ewarn "Please make sure your remove /dev/loop,"
 		ewarn "else losetup may be confused when looking for unused devices."
 	fi
-
-	# people want reminders, I'll give them reminders.  Odds are they will
-	# just ignore them anyway...
 
 	# 64-device-mapper.rules is related to sys-fs/device-mapper which we block
 	# in favor of sys-fs/lvm2
