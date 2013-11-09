@@ -130,4 +130,4 @@ for d in dest:
 		push = False
 	prod = UnifiedTree(d,steps)
 	prod.run()
-	prod.gitCommit(message="glorious funtoo updates",push=push)
+	prod.gitCommit(message="updates by Skala",push=push)
