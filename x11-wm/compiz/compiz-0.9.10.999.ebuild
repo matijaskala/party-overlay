@@ -21,7 +21,7 @@ fi
 
 LICENSE="GPL-2 LGPL-2.1 MIT"
 SLOT="0"
-IUSE="+cairo debug dbus fuse gnome gtk kde +python +svg"
+IUSE="+cairo debug dbus fuse +gconf gnome gtk kde +python +svg"
 
 COMMONDEPEND="
 	!x11-wm/compiz-fusion
@@ -64,10 +64,10 @@ COMMONDEPEND="
 		x11-libs/pango
 		gnome? (
 			gnome-base/gnome-desktop
-			gnome-base/gconf
 			>=x11-wm/metacity-2.23.2
 		)
 	)
+	gconf? ( gnome-base/gconf )
 	kde? ( >=kde-base/kwin-4.2.0 )
 	svg? (
 		>=gnome-base/librsvg-2.14.0:2
@@ -112,7 +112,7 @@ fi
 
 src_configure() {
 	local mycmakeargs=(
-		"$(cmake-utils_use_use gnome GCONF)"
+		"$(cmake-utils_use_use gconf GCONF)"
 		"$(cmake-utils_use_use gnome GNOME)"
 		"$(cmake-utils_use_use gtk GTK)"
 		"$(cmake-utils_use_use kde KDE4)"
