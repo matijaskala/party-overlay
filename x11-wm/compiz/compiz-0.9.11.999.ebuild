@@ -58,14 +58,14 @@ COMMONDEPEND="
 	virtual/glu
 	cairo? ( x11-libs/cairo[X] )
 	fuse? ( sys-fs/fuse )  
+	gnome? (
+		gnome-base/gnome-desktop
+		>=x11-wm/metacity-2.23.2
+	)
 	gtk? (
 		>=x11-libs/gtk+-2.18.0
 		>=x11-libs/libwnck-2.19.4
 		x11-libs/pango
-		gnome? (
-			gnome-base/gnome-desktop
-			>=x11-wm/metacity-2.23.2
-		)
 	)
 	gconf? ( gnome-base/gconf )
 	kde? (
