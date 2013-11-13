@@ -41,18 +41,18 @@ COMMONDEPEND="
 	dev-libs/libxml2
 	dev-libs/libxslt
 	dev-python/pyrex
-	media-libs/libpng
+	media-libs/libpng:0=
 	>=media-libs/mesa-6.5.1-r1
 	>=x11-base/xorg-server-1.1.1-r1
-	x11-libs/libX11
+	>=x11-libs/libX11-1.4
 	x11-libs/libXcomposite
 	x11-libs/libXdamage
 	x11-libs/libXext
-	x11-libs/libXrandr
-	>=x11-libs/libXrender-0.9.3
 	x11-libs/libXinerama
+	x11-libs/libXrandr
 	x11-libs/libICE
 	x11-libs/libSM
+	>=x11-libs/libXrender-0.9.3
 	>=x11-libs/startup-notification-0.7
 	virtual/opengl
 	virtual/glu
@@ -68,7 +68,11 @@ COMMONDEPEND="
 		)
 	)
 	gconf? ( gnome-base/gconf )
-	kde? ( >=kde-base/kwin-4.2.0 )
+	kde? (
+		|| (
+			>=kde-base/kwin-4.2.0
+		)
+	)
 	svg? (
 		>=gnome-base/librsvg-2.14.0:2
 		>=x11-libs/cairo-1.0
