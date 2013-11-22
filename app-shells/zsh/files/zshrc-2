@@ -30,6 +30,12 @@ key[PageDown]=${terminfo[knp]}
 [[ -n "${key[PageUp]}"   ]]  && bindkey  "${key[PageUp]}"   history-beginning-search-backward
 [[ -n "${key[PageDown]}" ]]  && bindkey  "${key[PageDown]}" history-beginning-search-forward
 
+#enable history saving
+export HISTSIZE=200
+export HISTFILE="$HOME/.history"
+export SAVEHIST=$HISTSIZE
+setopt hist_ignore_all_dups
+
 #some aliases
 alias l='ls -F'
 alias la='ls -A'
