@@ -33,6 +33,6 @@ for i in sys-apps/coreutils/coreutils-*.ebuild; do
  
  	# /bin/dircolors sometimes sticks around #224823
 EOF
-	git apply ${PATCH}
+	git apply ${PATCH} || exit 1
 	rm ${PATCH}
 done

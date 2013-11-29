@@ -72,8 +72,3 @@ sys-apps/man
 # running up to 4 times per hour:
 =sys-process/cronbase-0.3.3*
 
-# Ryan Harris
-# Mask paludis and pkgcore. Not supported on funtoo at this time
-sys-apps/paludis
-sys-apps/pkgcore
-
