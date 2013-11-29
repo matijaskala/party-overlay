@@ -135,9 +135,18 @@ class SyncFiles(MergeStep):
 			else:
 				dest = os.path.join(tree.root, src)
 			src = os.path.join(self.srcroot, src)
+			if os.path.exists(dest):
+				print("%s exists, attempting to unlink..." % dest)
+				try:
+					os.unlink(dest)
+				except:
+					pass
 			dest_dir = os.path.dirname(dest)
+			if os.path.exists(dest_dir) and os.path.isfile(dest_dir):
+				os.unlink(dest_dir)
 			if not os.path.exists(dest_dir):
 				os.makedirs(dest_dir)
+			print("copying %s to final location %s" % (src, dest))
 			shutil.copyfile(src, dest)
 
 class MergeUpdates(MergeStep):
@@ -259,7 +268,7 @@ class CvsTree(object):
 		if not os.path.exists(base):
 			os.makedirs(base)
 		if os.path.exists(self.root):
-			runShell("(cd %s; cvs --no-verify update)" % self.root)
+			runShell("(cd %s; cvs --no-verify update -dP)" % self.root)
 		else:
 			runShell("(cd %s; cvs --no-verify -d %s co %s)" % (base, self.url, self.name))
 
@@ -438,6 +447,10 @@ class ProfileDepFix(MergeStep):
 class GenCache(MergeStep):
 	def run(self,tree):
 		runShell("egencache --update --repo=gentoo --portdir=%s --jobs=4" % tree.root, abortOnFail=False)
+
+class GenUseLocalDesc(MergeStep):
+	def run(self,tree):
+		runShell("egencache --update-use-local-desc --portdir=%s" % tree.root, abortOnFail=False)
 
 class GitPrep(MergeStep):
 	def __init__(self,branch):

@@ -65,7 +65,7 @@ funtoo_original_packages = [
 ]
 
 steps = [
-	SyncTree(gentoo_src,exclude=["/metadata/cache/**","ChangeLog", "dev-util/metro"]),
+	SyncTree(gentoo_src,exclude=["/metadata/cache/**", "CVS", "ChangeLog", "dev-util/metro"]),
 	ApplyPatchSeries("%s/funtoo/patches" % party_overlay.root ),
 	ThirdPartyMirrors(),
 	SyncDir(party_overlay.root, "profiles", exclude=["categories", "default", "repo_name", "updates", "package.mask/party-compat"]),
@@ -104,7 +104,8 @@ steps = [
 	MergeUpdates(progress_overlay.root),
 	AutoGlobMask("dev-lang/python", "python*_pre*", "funtoo-python"),
 	Minify(),
-	GenCache()
+	GenCache(),
+	GenUseLocalDesc()
 ]
 
 # work tree is a non-git tree in tmpfs for enhanced performance - we do all the heavy lifting there:
