@@ -30,6 +30,7 @@ funtoo_original_packages = [
 	"dev-lang/perl",
 	"mail-mta/postfix",
 	"net-analyzer/zabbix",
+	"net-p2p/bittorrent-sync",
 	"sys-auth/keystone",
 	"sys-auth/keystone-client",
 	"sys-boot/boot-update",
