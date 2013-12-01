@@ -5,10 +5,10 @@ for i in sys-apps/shadow/shadow-*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-09-15 21:31:32.000000000 +0200
 +++ b/${i}	2013-10-19 14:23:26.000000000 +0200
-@@ -99,11 +99,8 @@
+@@ -99,9 +99,5 @@
  	insopts -m0600
  	doins "${FILESDIR}"/default/useradd
- 
+-
 -	# move passwd to / to help recover broke systems #64441
 -	mv "${D}"/usr/bin/passwd "${D}"/bin/
 -	dosym /bin/passwd /usr/bin/passwd
