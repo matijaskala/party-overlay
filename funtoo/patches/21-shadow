@@ -7,7 +7,7 @@ for i in sys-apps/shadow/shadow-*.ebuild; do
 +++ b/${i}	2013-10-19 14:23:26.000000000 +0200
 @@ -99,11 +99,7 @@
  	insopts -m0600
- 	doins "${FILESDIR}"/default/useradd
+ 	doins "\${FILESDIR}"/default/useradd
 -
 -	# move passwd to / to help recover broke systems #64441
 -	mv "\${D}"/usr/bin/passwd "\${D}"/bin/
