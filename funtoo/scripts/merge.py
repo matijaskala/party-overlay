@@ -33,8 +33,6 @@ funtoo_original_packages = [
 	"sys-auth/keystone",
 	"sys-auth/keystone-client",
 	"sys-boot/boot-update",
-	"sys-boot/grub",
-	"sys-boot/grub-legacy",
 	"sys-cluster/glance",
 	"sys-cluster/nova",
 	"sys-cluster/vzctl",
