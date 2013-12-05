@@ -48,7 +48,6 @@ funtoo_original_packages = [
 	"sys-kernel/dkms",
 	"sys-kernel/genkernel",
 	"sys-kernel/linode-sources",
-	"sys-kernel/linux-headers",
 	"sys-kernel/openvz-rhel5-stable",
 	"sys-kernel/openvz-rhel6-stable",
 	"sys-kernel/openvz-rhel6-test",
