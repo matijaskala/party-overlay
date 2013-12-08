@@ -37,7 +37,6 @@ funtoo_original_packages = [
 	"sys-cluster/nova",
 	"sys-cluster/vzctl",
 	"sys-devel/binutils",
-	"sys-devel/gcc",
 	"sys-devel/gcc-config",
 	"sys-devel/libtool",
 	"sys-kernel/alt-sources",
