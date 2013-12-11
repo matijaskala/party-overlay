@@ -11,7 +11,7 @@ SRC_URI="http://launchpad.net/${PN}-core/${MY_PV}/${PV}/+download/${P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="experimental"
+KEYWORDS="~exp"
 IUSE="gtk3 xcomposite"
 
 RDEPEND="
