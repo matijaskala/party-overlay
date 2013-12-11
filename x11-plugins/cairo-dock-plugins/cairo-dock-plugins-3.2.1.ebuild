@@ -13,8 +13,8 @@ SRC_URI="http://launchpad.net/${MY_PN}/${MY_PV}/${PV}/+download/${P}.tar.gz"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="experimental"
-IUSE="alsa clock dbusmenu disks doncky exif gmenu gnome gtk3 impulse kde mail mono nwmon scooby terminal tomboy upower vala webkit xfce xgamma xklavier xrandr zeitgeist"
+KEYWORDS="~exp"
+IUSE="alsa clock dbusmenu disks doncky exif gmenu gnome gtk3 impulse kde mail mono nwmon scooby sensors terminal tomboy upower vala webkit xfce xgamma xklavier xrandr zeitgeist"
 
 RDEPEND="
 	dev-libs/dbus-glib
@@ -33,6 +33,7 @@ RDEPEND="
 	mail? ( net-libs/libetpan )
 	mono? ( dev-dotnet/glib-sharp )
 	kde? ( kde-base/kdelibs )
+	sensors? ( sys-apps/lm_sensors )
 	terminal? ( x11-libs/vte )
 	upower? ( sys-power/upower )
 	vala? ( dev-lang/vala:0.12 )
@@ -66,6 +67,7 @@ src_configure() {
 		"-Denable-mono-interface=$(usex mono)"
 		"-Denable-network-monitor=$(usex nwmon)"
 		"-Denable-recent-events=$(usex zeitgeist)"
+		"-Denable-sensors-support=$(usex sensors)"
 		"-Denable-scooby-do=$(usex scooby)"
 		"-Denable-terminal=$(usex terminal)"
 		"-Denable-upower-support=$(usex upower)"
