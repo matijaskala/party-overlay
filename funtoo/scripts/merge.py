@@ -45,7 +45,6 @@ funtoo_original_packages = [
 	"sys-kernel/debian-sources",
 	"sys-kernel/debian-sources-lts",
 	"sys-kernel/dkms",
-	"sys-kernel/genkernel",
 	"sys-kernel/linode-sources",
 	"sys-kernel/openvz-rhel5-stable",
 	"sys-kernel/openvz-rhel6-stable",
