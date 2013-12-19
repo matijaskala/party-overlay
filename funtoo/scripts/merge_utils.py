@@ -43,13 +43,12 @@ class MergeStep(object):
 
 class AutoGlobMask(MergeStep):
 
-	def __init__(self,catpkg,glob,maskdest):
+	def __init__(self,catpkg,glob):
 		self.glob = glob
 		self.catpkg = catpkg
-		self.maskdest = maskdest
 
 	def run(self,tree):
-		f = open(os.path.join(tree.root,"profiles/package.mask", self.maskdest), "w")
+		f = open(os.path.join(tree.root,"profiles/package.mask"), "a")
 		os.chdir(os.path.join(tree.root,self.catpkg))
 		cat = self.catpkg.split("/")[0]
 		for item in glob.glob(self.glob+".ebuild"):

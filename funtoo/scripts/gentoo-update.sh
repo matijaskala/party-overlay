@@ -22,16 +22,3 @@ rsync --recursive --links --safe-links --perms --times --compress --force --whol
 # the rsync command wiped our critical .gitignore file, so recreate it.
 echo "distfiles/*" > $dst/.gitignore || exit 2
 echo "packages/*" >> $dst/.gitignore || exit 3
-# "git add ." will record all the changes to local files the git repo. So there must be no stray files.
-if [ ! -d profiles/package.mask ]
-then
-	mv profiles/package.mask profiles/package.mask.bak || exit 4
-	install -d profiles/package.mask || exit 4
-	mv profiles/package.mask.bak profiles/package.mask/gentoo || exit 4
-fi
-#git add . || exit 1
-# create a commit
-#git commit -a -m "gentoo.org updates `date` update" || exit 1
-# now, push these changes up.
-#git push origin gentoo.org || exit 1
-exit 0

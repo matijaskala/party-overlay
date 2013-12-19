@@ -89,13 +89,12 @@ steps = [
 	SyncDir(progress_overlay.root, "eclass"),
 	SyncDir(progress_overlay.root, "profiles/unpack_dependencies"),
 	SyncFiles(progress_overlay.root, {
-		"profiles/package.mask":"profiles/package.mask/progress",
 		"profiles/use.aliases":"profiles/use.aliases/progress",
 		"profiles/use.mask":"profiles/use.mask/progress"
 	}),
 	InsertEbuilds(progress_overlay, select="all", skip=None, replace=True, merge=["dev-java/guava", "dev-lang/python", "dev-python/psycopg", "dev-python/pysqlite", "dev-python/python-docs", "dev-python/simpletal", "dev-python/wxpython", "dev-util/gdbus-codegen", "x11-libs/vte"]),
 	MergeUpdates(progress_overlay.root),
-	AutoGlobMask("dev-lang/python", "python*_pre*", "funtoo-python"),
+	AutoGlobMask("dev-lang/python", "python*_pre*"),
 	Minify(),
 	GenCache(),
 	GenUseLocalDesc()
