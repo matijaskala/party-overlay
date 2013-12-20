@@ -51,6 +51,8 @@ class AutoGlobMask(MergeStep):
 		f = open(os.path.join(tree.root,"profiles/package.mask"), "a")
 		os.chdir(os.path.join(tree.root,self.catpkg))
 		cat = self.catpkg.split("/")[0]
+		f.write("\n# Matija Skala <mskala@gmx.com>")
+		f.write("\n# Automatic global python masks\n")
 		for item in glob.glob(self.glob+".ebuild"):
 			f.write("=%s/%s\n" % (cat,item[:-7]))
 		f.close()
