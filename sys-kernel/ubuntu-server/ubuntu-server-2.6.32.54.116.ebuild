@@ -23,10 +23,6 @@ MAINPATCH="linux_${CKV}-${EXTRAVERSION}.diff.gz"
 SRC_URI="${KERNEL_URI} http://archive.ubuntu.com/ubuntu/pool/main/l/linux/${MAINPATCH}"
 S="$WORKDIR/linux-${CKV}"
 
-src_unpack() {
-	unpack ${KERNEL_ARCHIVE}
-}
-
 apply() {
 	p=$1; shift
 	case "${p##*.}" in
@@ -139,6 +135,10 @@ src_install() {
 	local moddir="$(ls -d 2*)"
 	ln -s /usr/src/linux-${P} ${D}/lib/modules/${moddir}/source || die
 	ln -s /usr/src/linux-${P} ${D}/lib/modules/${moddir}/build || die
+
+	# Fixes FL-14
+	cp "${WORKDIR}/build/System.map" "${D}/usr/src/linux-${P}/" || die
+	cp "${WORKDIR}/build/Module.symvers" "${D}/usr/src/linux-${P}/" || die
 }
 
 pkg_postinst() {

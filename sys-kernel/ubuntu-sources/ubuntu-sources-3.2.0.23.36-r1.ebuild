@@ -25,11 +25,6 @@ SRC_URI="${KERNEL_URI} http://archive.ubuntu.com/ubuntu/pool/main/l/linux/${MAIN
 	http://kernel.ubuntu.com/~kernel-ppa/configs/precise/i386-config.flavour.generic"
 S="$WORKDIR/linux-$(get_version_component_range 1-2)"
 
-src_unpack() {
-	cd ${WORKDIR}
-	unpack ${KERNEL_ARCHIVE}
-}
-
 apply() {
 	p=$1; shift
 	case "${p##*.}" in
@@ -67,7 +62,6 @@ pkg_setup() {
 }
 
 src_prepare() {
-	cd ${WORKDIR}/linux-3.2
 	apply $DISTDIR/$MAINPATCH -p1
 
 	sed -i -e "s:^\(EXTRAVERSION =\).*:\1 ${EXTRAVERSION}:" Makefile || die
