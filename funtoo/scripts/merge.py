@@ -95,6 +95,7 @@ steps = [
 	#InsertEbuilds(progress_overlay, select="all", skip=None, replace=True, merge=["dev-java/guava", "dev-lang/python", "dev-python/psycopg", "dev-python/pysqlite", "dev-python/python-docs", "dev-python/simpletal", "dev-python/wxpython", "dev-util/gdbus-codegen", "x11-libs/vte"]),
 	#MergeUpdates(progress_overlay.root),
 	#AutoGlobMask("dev-lang/python", "python*_pre*"),
+	ApplyPatchSeries("%s/partylinux/patches" % party_overlay.root ),
 	Minify(),
 	GenCache(),
 	GenUseLocalDesc()
