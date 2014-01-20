@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PATCH="nm-applet-gtk3.patch"
-for i in gnome-extra/nm-applet/nm-applet-*.ebuild; do
+for i in gnome-extra/nm-applet/nm-applet-0.9.8.*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-12-08 23:22:24.211858664 +0100
 +++ b/${i}	2013-12-09 18:24:45.302982749 +0100
