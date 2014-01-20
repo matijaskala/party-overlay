@@ -25,13 +25,12 @@ for i in gnome-extra/nm-applet/nm-applet-*.ebuild; do
  
  src_configure() {
 +	use gtk3 || sed -i s/Gtk-3.0/Gtk-2.0/ src/libnm-gtk/Makefile.in
- 	gnome2_src_configure \
--		--with-gtkver=3 \
-+		--with-gtkver=\$(usex gtk3 "3" "2") \
- 		--disable-more-warnings \
- 		--disable-static \
- 		--localstatedir=/var \
-
+ 	gnome2_src_configure \\
+-		--with-gtkver=3 \\
++		--with-gtkver=\$(usex gtk3 "3" "2") \\
+ 		--disable-more-warnings \\
+ 		--disable-static \\
+ 		--localstatedir=/var \\
 EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
