@@ -2,7 +2,7 @@
 
 PATCH="nm-applet-gtk3.patch"
 for i in gnome-extra/nm-applet/nm-applet-0.9.8.*.ebuild; do
-	sed -i s/IUSE=\"bluetooth gconf +introspection modemmanager\"/IUSE=\"bluetooth gconf +gtk3 +introspection modemmanager\"/ ${i} || exit 1
+	sed -i s/IUSE=\"bluetooth\ gconf\ +introspection\ modemmanager\"/IUSE=\"bluetooth\ gconf\ +gtk3\ +introspection\ modemmanager\"/ ${i} || exit 1
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-12-08 23:22:24.211858664 +0100
 +++ b/${i}	2013-12-09 18:24:45.302982749 +0100
