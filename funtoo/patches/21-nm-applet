@@ -1,0 +1,38 @@
+#!/bin/bash
+
+PATCH="nm-applet-gtk3.patch"
+for i in gnome-extra/nm-applet/nm-applet-*.ebuild; do
+	cat > ${PATCH} << EOF
+--- a/${i}	2013-12-08 23:22:24.211858664 +0100
++++ b/${i}	2013-12-09 18:24:45.302982749 +0100
+@@ -14,4 +14,4 @@
+ 
+ LICENSE="GPL-2+"
+ SLOT="0"
+-IUSE="bluetooth gconf +introspection modemmanager"
++IUSE="bluetooth gconf +gtk3 +introspection modemmanager"
+@@ -23,7 +23,8 @@
+ 	>=dev-libs/dbus-glib-0.88
+ 	>=sys-apps/dbus-1.4.1
+ 	>=sys-auth/polkit-0.96-r1
+-	>=x11-libs/gtk+-3:3[introspection?]
++	gtk3? ( x11-libs/gtk+:3[introspection?] )
++	!gtk3? ( x11-libs/gtk+:2[introspection?] )
+ 	>=x11-libs/libnotify-0.7.0
+ 
+ 	app-text/iso-codes
+@@ -47,7 +46,8 @@
+ 
+ src_configure() {
++	use gtk3 || sed -i s/Gtk-3.0/Gtk-2.0/ src/libnm-gtk/Makefile.in
+ 	gnome2_src_configure \
+-		--with-gtkver=3 \
++		--with-gtkver=\$(usex gtk3 "3" "2") \
+ 		--disable-more-warnings \
+ 		--disable-static \
+ 		--localstatedir=/var \
+
+EOF
+	git apply ${PATCH} || exit 1
+	rm ${PATCH}
+done
