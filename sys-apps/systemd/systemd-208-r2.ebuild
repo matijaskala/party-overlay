@@ -10,11 +10,12 @@ inherit autotools-utils bash-completion-r1 fcaps linux-info multilib \
 
 DESCRIPTION="System and service manager for Linux"
 HOMEPAGE="http://www.freedesktop.org/wiki/Software/systemd"
-SRC_URI="http://www.freedesktop.org/software/systemd/${P}.tar.xz"
+SRC_URI="http://www.freedesktop.org/software/systemd/${P}.tar.xz -> ${P}-r1.tar.xz
+	http://dev.gentoo.org/~mgorny/dist/${PN}-gentoo-patchset-${PV}_p19.tar.bz2"
 
 LICENSE="GPL-2 LGPL-2.1 MIT public-domain"
 SLOT="0"
-KEYWORDS="~amd64 ~arm ~ppc ~ppc64 ~x86"
+KEYWORDS="~alpha amd64 arm ~ia64 ~ppc ~ppc64 x86"
 IUSE="acl audit cryptsetup doc +firmware-loader gcrypt gudev http introspection
 	+kmod lzma openrc pam policykit python qrcode selinux tcpd test
 	vanilla xattr"
@@ -45,7 +46,6 @@ COMMON_DEPEND=">=sys-apps/dbus-1.6.8-r1
 # baselayout-2.2 has /run
 RDEPEND="${COMMON_DEPEND}
 	>=sys-apps/baselayout-2.2
-	openrc? ( >=sys-fs/udev-init-scripts-25 )
 	|| (
 		>=sys-apps/util-linux-2.22
 		<sys-apps/sysvinit-2.88-r4
@@ -55,9 +55,11 @@ RDEPEND="${COMMON_DEPEND}
 	!sys-fs/udev"
 
 PDEPEND=">=sys-apps/hwids-20130717-r1[udev]
+	openrc? ( >=sys-fs/udev-init-scripts-25 )
 	policykit? ( sys-auth/polkit )
 	!vanilla? ( sys-apps/gentoo-systemd-integration )"
 
+# Newer linux-headers needed by ia64, bug #480218
 DEPEND="${COMMON_DEPEND}
 	app-arch/xz-utils
 	app-text/docbook-xml-dtd:4.2
@@ -68,17 +70,20 @@ DEPEND="${COMMON_DEPEND}
 	>=sys-devel/binutils-2.23.1
 	>=sys-devel/gcc-4.6
 	>=sys-kernel/linux-headers-${MINKV}
+	ia64? ( >=sys-kernel/linux-headers-3.9 )
 	virtual/pkgconfig
 	doc? ( >=dev-util/gtk-doc-1.18 )"
 
 pkg_pretend() {
-	local CONFIG_CHECK="~AUTOFS4_FS ~BLK_DEV_BSG ~CGROUPS ~DEVTMPFS
+	local CONFIG_CHECK="~AUTOFS4_FS ~BLK_DEV_BSG ~CGROUPS ~DEVTMPFS ~DMIID
 		~EPOLL ~FANOTIFY ~FHANDLE ~INOTIFY_USER ~IPV6 ~NET ~PROC_FS
 		~SECCOMP ~SIGNALFD ~SYSFS ~TIMERFD
-		~!IDE ~!SYSFS_DEPRECATED ~!SYSFS_DEPRECATED_V2"
+		~!IDE ~!SYSFS_DEPRECATED ~!SYSFS_DEPRECATED_V2
+		~!GRKERNSEC_PROC"
 
 	use acl && CONFIG_CHECK+=" ~TMPFS_POSIX_ACL"
 	use pam && CONFIG_CHECK+=" ~AUDITSYSCALL"
+	use xattr && CONFIG_CHECK+=" ~TMPFS_XATTR"
 	kernel_is -lt 3 7 && CONFIG_CHECK+=" ~HOTPLUG"
 	use firmware-loader || CONFIG_CHECK+=" ~!FW_LOADER_USER_HELPER"
 
@@ -113,11 +118,7 @@ pkg_setup() {
 
 src_prepare() {
 	local PATCHES=(
-		# failure mounting swap partitions, bug #484998
-		"${FILESDIR}"/${PV}-0001-swap-fix-reverse-dependencies.patch
-		"${FILESDIR}"/${PV}-0002-swap-create-.wants-symlink-to-auto-swap-devices.patch
-		# race condition in polkit use, bug #485546
-		"${FILESDIR}"/204-0001-polkit-Avoid-race-condition-in-scraping-proc.patch
+		"${WORKDIR}"/${PN}-gentoo-patchset*/*.patch
 	)
 
 	autotools-utils_src_prepare
@@ -231,6 +232,10 @@ multilib_src_test() {
 
 multilib_src_install() {
 	local mymakeopts=(
+		# automake fails with parallel libtool relinking
+		# https://bugs.gentoo.org/show_bug.cgi?id=491398
+		-j1
+
 		udevlibexecdir="${MY_UDEVDIR}"
 		dist_udevhwdb_DATA=
 		DESTDIR="${D}"
