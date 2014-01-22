@@ -211,9 +211,8 @@ pkg_postinst() {
 	do
 		einfo "Processing $runl..."
 		einfo "Ensuring runlevel $runl has all required scripts..."
-		for initd in $( cd "$runldir/$runl"; echo * )
+		for initd in $( cd "$runldir/$runl"; echo * ); do
 			add_boot_init ${initd} $runl
-		do
 		done
 	done
 
