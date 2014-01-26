@@ -8,8 +8,9 @@ SLOT=$PVR
 CKV=$(get_version_component_range 1-3)
 KV_FULL=${PN}-${PVR}
 EXTRAVERSION=$(get_version_component_range 4-5)
+MIRROR_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux"
 KERNEL_ARCHIVE="linux_${CKV}.orig.tar.gz"
-KERNEL_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux/${KV_MAJOR}.${KV_MINOR}/${KERNEL_ARCHIVE}"
+KERNEL_URI="${MIRROR_URI}/${KV_MAJOR}.${KV_MINOR}/${KERNEL_ARCHIVE}"
 RESTRICT="binchecks strip"
 
 LICENSE="GPL-2"
@@ -20,7 +21,7 @@ RDEPEND="binary? ( >=sys-fs/udev-160 )"
 DESCRIPTION="Ubuntu Server sources (and optional binary kernel)"
 HOMEPAGE="http://www.openvz.org"
 MAINPATCH="linux_${CKV}-${EXTRAVERSION}.diff.gz"
-SRC_URI="${KERNEL_URI} http://archive.ubuntu.com/ubuntu/pool/main/l/linux/${MAINPATCH} 
+SRC_URI="${KERNEL_URI} ${MIRROR_URI}/${MAINPATCH} 
 	http://kernel.ubuntu.com/~kernel-ppa/configs/precise/amd64-config.flavour.generic
 	http://kernel.ubuntu.com/~kernel-ppa/configs/precise/i386-config.flavour.generic"
 S="$WORKDIR/linux-$(get_version_component_range 1-2)"
