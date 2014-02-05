@@ -5,7 +5,9 @@ EAPI=5
 AUTOTOOLS_PRUNE_LIBTOOL_FILES=all
 AUTOTOOLS_AUTORECONF=yes
 PYTHON_COMPAT=( python2_7 )
-inherit autotools-utils bash-completion-r1 fcaps linux-info multilib multilib-minimal pam python-single-r1 systemd toolchain-funcs udev user
+inherit autotools-utils bash-completion-r1 fcaps linux-info multilib \
+	multilib-minimal pam python-single-r1 systemd toolchain-funcs udev \
+	user
 
 DESCRIPTION="System and service manager for Linux"
 HOMEPAGE="http://www.freedesktop.org/wiki/Software/systemd"
@@ -45,8 +47,6 @@ COMMON_DEPEND=">=sys-apps/dbus-1.6.8-r1
 # baselayout-2.2 has /run
 RDEPEND="${COMMON_DEPEND}
 	>=sys-apps/baselayout-2.2
-	openrc? ( >=sys-fs/udev-init-scripts-25 )
-	policykit? ( sys-auth/polkit )
 	|| (
 		>=sys-apps/util-linux-2.22
 		<sys-apps/sysvinit-2.88-r4
@@ -56,6 +56,8 @@ RDEPEND="${COMMON_DEPEND}
 	!sys-fs/udev"
 
 PDEPEND=">=sys-apps/hwids-20130326.1[udev]
+	openrc? ( >=sys-fs/udev-init-scripts-25 )
+	policykit? ( sys-auth/polkit )
 	!vanilla? ( ~sys-apps/gentoo-systemd-integration-1 )"
 
 DEPEND="${COMMON_DEPEND}
@@ -131,6 +133,9 @@ src_prepare() {
 		# Backports from newer versions pulled by Fedora maintainers
 		"${WORKDIR}/${P}-patches"/*.patch
 	)
+
+	# Bug 463376
+	sed -i -e 's/GROUP="dialout"/GROUP="uucp"/' rules/*.rules || die
 
 	autotools-utils_src_prepare
 }
@@ -341,9 +346,6 @@ migrate_locale() {
 }
 
 pkg_postinst() {
-	# for udev rules
-	enewgroup dialout
-
 	enewgroup systemd-journal
 	if use http; then
 		enewgroup systemd-journal-gateway
