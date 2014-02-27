@@ -1,6 +1,7 @@
 EXEC 01-linux-profile
 07-updates
 12-eclass
+EXEC 21-baselayout
 EXEC 21-coreutils
 EXEC 21-shadow
 EXEC 21-nm-applet
