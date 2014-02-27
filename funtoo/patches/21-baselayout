@@ -3,8 +3,8 @@
 PATCH="baselayout-usr-merge.patch"
 for i in sys-apps/baselayout/baselayout-*.ebuild; do
 	cat > ${PATCH} << EOF
---- ${i}	2013-07-28 01:01:32.000000000 +0200
-+++ ${i}	2013-10-03 19:18:09.076757264 +0200
+--- a/${i}	2013-07-28 01:01:32.000000000 +0200
++++ b/${i}	2013-10-03 19:18:09.076757264 +0200
 @@ -39,7 +39,7 @@
  	# figure out which paths should be symlinks and which should be directories
  	local dirs syms exp d
