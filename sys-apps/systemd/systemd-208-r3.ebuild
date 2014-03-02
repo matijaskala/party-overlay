@@ -3,7 +3,7 @@
 EAPI=5
 
 AUTOTOOLS_PRUNE_LIBTOOL_FILES=all
-PYTHON_COMPAT=( python2_7 )
+PYTHON_COMPAT=( python{2_7,3_2,3_3} )
 inherit autotools-utils bash-completion-r1 fcaps linux-info multilib \
 	multilib-minimal pam python-single-r1 systemd toolchain-funcs udev \
 	user
@@ -14,7 +14,7 @@ SRC_URI="http://www.freedesktop.org/software/systemd/${P}.tar.xz -> ${P}-r1.tar.
 	http://dev.gentoo.org/~mgorny/dist/${PN}-gentoo-patchset-${PV}_p19.tar.bz2"
 
 LICENSE="GPL-2 LGPL-2.1 MIT public-domain"
-SLOT="0"
+SLOT="0/1"
 KEYWORDS="alpha amd64 arm ia64 ppc ppc64 sparc x86"
 IUSE="acl audit cryptsetup doc +firmware-loader gcrypt gudev http introspection
 	+kmod lzma openrc pam policykit python qrcode selinux tcpd test
@@ -28,7 +28,7 @@ COMMON_DEPEND=">=sys-apps/dbus-1.6.8-r1
 	acl? ( sys-apps/acl )
 	audit? ( >=sys-process/audit-2 )
 	cryptsetup? ( >=sys-fs/cryptsetup-1.6 )
-	gcrypt? ( >=dev-libs/libgcrypt-1.4.5 )
+	gcrypt? ( >=dev-libs/libgcrypt-1.4.5:0 )
 	gudev? ( >=dev-libs/glib-2[${MULTILIB_USEDEP}] )
 	http? ( net-libs/libmicrohttpd )
 	introspection? ( >=dev-libs/gobject-introspection-1.31.1 )
