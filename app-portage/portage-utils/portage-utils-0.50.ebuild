@@ -1,8 +1,8 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-portage/portage-utils/portage-utils-0.41.ebuild,v 1.2 2013/10/31 03:47:51 floppym Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-portage/portage-utils/portage-utils-0.50.ebuild,v 1.1 2014/03/10 08:46:39 vapier Exp $
 
-EAPI="3"
+EAPI="4"
 
 inherit flag-o-matic toolchain-funcs eutils
 
@@ -13,8 +13,8 @@ SRC_URI="mirror://gentoo/${P}.tar.xz
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="alpha amd64 arm arm64 hppa ia64 m68k ~mips ppc ppc64 s390 sh sparc x86 ~ppc-aix ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~x64-freebsd ~x86-freebsd ~hppa-hpux ~ia64-hpux ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
-IUSE="static"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~ppc-aix ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~x64-freebsd ~x86-freebsd ~hppa-hpux ~ia64-hpux ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+IUSE="nls static"
 
 DEPEND="app-arch/xz-utils"
 RDEPEND=""
@@ -22,6 +22,7 @@ RDEPEND=""
 src_prepare() {
 	epatch "${FILESDIR}/${PN}-0.21-funtoo-sync.patch"
 	epatch "${FILESDIR}/partylinux-usr-merge.patch"
+	epatch_user
 }
 
 src_configure() {
@@ -37,14 +38,17 @@ src_configure() {
 	fi
 }
 
+src_compile() {
+	emake NLS=$(usex nls)
+}
+
 src_install() {
-	emake install DESTDIR="${D}" || die
-	prepalldocs
+	default
 
 	exeinto /etc/portage/bin
-	doexe "${FILESDIR}"/post_sync || die
+	doexe "${FILESDIR}"/post_sync
 	insinto /etc/portage/postsync.d
-	doins "${FILESDIR}"/q-reinitialize || die
+	doins "${FILESDIR}"/q-reinitialize
 
 	# Portage fixes shebangs, we just need to fix the paths in the files
 	sed -i \
