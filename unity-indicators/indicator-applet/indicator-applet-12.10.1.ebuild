@@ -4,13 +4,10 @@
 
 EAPI=4
 
-inherit autotools eutils versionator
-
-MAJOR_BRANCH=$(get_version_component_range 1-2)
+inherit autotools eutils launchpad
 
 DESCRIPTION="A small applet to display information from various applications consistently in the panel"
 HOMEPAGE="https://launchpad.net/indicator-applet"
-SRC_URI="https://launchpad.net/${PN}/${MAJOR_BRANCH}/${PV}/+download/${P}.tar.gz"
 
 LICENSE="LGPL-2.1 LGPL-3 GPL-3"
 SLOT="0"
