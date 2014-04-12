@@ -5,16 +5,17 @@ EAPI=5
 inherit mount-boot versionator
 
 SLOT=$PVR
-CKV=$(get_version_component_range 1-3)
+CKV=$(get_version_component_range 1-2)
 KV_FULL=${PN}-${PVR}
-EXTRAVERSION=$(get_version_component_range 4-5)
+EXTRAVERSION=$(get_version_component_range 3-4)
+KERNEL_URI="mirror://kernel/linux/kernel/v3.x/linux-${CKV}.tar.bz2"
 MIRROR_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux"
 
 DESCRIPTION="Ubuntu patched kernel sources"
 HOMEPAGE="https://launchpad.net/ubuntu/+source/linux"
-SRC_URI="${KERNEL_URI} ${MIRROR_URI}/linux_${CKV}-${EXTRAVERSION}.diff.gz 
-	amd64? ( http://kernel.ubuntu.com/~kernel-ppa/configs/precise/amd64-config.flavour.generic )
-	x86? ( http://kernel.ubuntu.com/~kernel-ppa/configs/precise/i386-config.flavour.generic" )
+SRC_URI="${KERNEL_URI} ${MIRROR_URI}/linux_${CKV}.0-${EXTRAVERSION}.diff.gz 
+	amd64? ( http://kernel.ubuntu.com/~kernel-ppa/configs/trusty/amd64-config.flavour.generic )
+	x86? ( http://kernel.ubuntu.com/~kernel-ppa/configs/trusty/i386-config.flavour.generic )"
 LICENSE="GPL-2"
 KEYWORDS="amd64 x86"
 IUSE="binary"
