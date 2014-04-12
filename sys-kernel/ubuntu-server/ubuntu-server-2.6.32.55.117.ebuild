@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=2
+EAPI=5
 
 inherit mount-boot versionator
 
@@ -9,8 +9,6 @@ CKV=$(get_version_component_range 1-3)
 KV_FULL=${PN}-${PVR}
 EXTRAVERSION=$(get_version_component_range 4-5)
 MIRROR_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux"
-KERNEL_ARCHIVE="linux-${CKV}.tar.bz2"
-KERNEL_URI="mirror://kernel/linux/kernel/v${KV_MAJOR}.${KV_MINOR}/${KERNEL_ARCHIVE}"
 
 DESCRIPTION="Ubuntu patched kernel sources"
 HOMEPAGE="https://launchpad.net/ubuntu/+source/linux"
