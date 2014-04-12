@@ -23,7 +23,7 @@ RESTRICT="binchecks mirror strip"
 DEPEND="binary? ( >=sys-kernel/genkernel-3.4.12.6-r4 )"
 RDEPEND="binary? ( virtual/udev )"
 
-S="${WORKDIR}/linux-$(get_version_component_range 1-2)"
+S="${WORKDIR}/linux-${CKV}"
 
 apply() {
 	p=$1; shift
