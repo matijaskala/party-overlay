@@ -6,7 +6,7 @@ EXEC 21-coreutils
 EXEC 21-shadow
 EXEC 21-nm-applet
 EXEC 21-wxGTK
-EXEC 21-firefox
+#EXEC 21-firefox
 EXEC 21-mimeinfo
 EXEC 21-plymouth
 EXEC 21-sandbox
