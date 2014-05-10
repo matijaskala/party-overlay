@@ -14,9 +14,9 @@ SRC_URI="http://www.freedesktop.org/software/systemd/${P}.tar.xz"
 
 LICENSE="GPL-2 LGPL-2.1 MIT public-domain"
 SLOT="0/2"
-KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
+KEYWORDS="alpha amd64 arm ia64 ppc ppc64 sparc x86"
 IUSE="acl audit cryptsetup doc +firmware-loader gcrypt gudev http introspection
-	kdbus +kmod lzma openrc pam policykit python qrcode +seccomp selinux ssl
+	kdbus +kmod lzma pam policykit python qrcode +seccomp selinux ssl
 	test vanilla xattr"
 
 MINKV="3.7"
@@ -58,7 +58,6 @@ RDEPEND="${COMMON_DEPEND}
 
 PDEPEND=">=sys-apps/dbus-1.6.8-r1:0
 	>=sys-apps/hwids-20130717-r1[udev]
-	openrc? ( >=sys-fs/udev-init-scripts-25 )
 	policykit? ( sys-auth/polkit )
 	!vanilla? ( sys-apps/gentoo-systemd-integration )"
 
@@ -138,6 +137,15 @@ pkg_setup() {
 	use python && python-single-r1_pkg_setup
 }
 
+src_configure() {
+	# Keep using the one where the rules were installed.
+	MY_UDEVDIR=$(get_udevdir)
+	# Fix systems broken by bug #509454.
+	[[ ${MY_UDEVDIR} ]] || MY_UDEVDIR=/lib/udev
+
+	multilib-minimal_src_configure
+}
+
 multilib_src_configure() {
 	local myeconfargs=(
 		# disable -flto since it is an optimization flag
@@ -185,10 +193,13 @@ multilib_src_configure() {
 		# hardcode a few paths to spare some deps
 		QUOTAON=/usr/sbin/quotaon
 		QUOTACHECK=/usr/sbin/quotacheck
-	)
 
-	# Keep using the one where the rules were installed.
-	MY_UDEVDIR=$(get_udevdir)
+		# dbus paths
+		--with-dbuspolicydir="${EPREFIX}/etc/dbus-1/system.d"
+		--with-dbussessionservicedir="${EPREFIX}/usr/share/dbus-1/services"
+		--with-dbussystemservicedir="${EPREFIX}/usr/share/dbus-1/system-services"
+		--with-dbusinterfacedir="${EPREFIX}/usr/share/dbus-1/interfaces"
+	)
 
 	if use firmware-loader; then
 		myeconfargs+=(
@@ -296,8 +307,6 @@ multilib_src_install_all() {
 
 	dosym ../lib/systemd/systemd-udevd /usr/sbin/udevd
 	dosym ../lib/systemd/systemd /usr/bin/systemd
-
-	newinitd "${FILESDIR}/functions.sh" "functions.sh"
 
 	# we just keep sysvinit tools, so no need for the mans
 	rm "${D}"/usr/share/man/man8/{halt,poweroff,reboot,runlevel,shutdown,telinit}.8 \
