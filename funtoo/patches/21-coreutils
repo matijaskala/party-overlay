@@ -23,7 +23,7 @@ for i in sys-apps/coreutils/coreutils-*.ebuild; do
 +		# but DON'T
  	else
  		# For now, drop the man pages, collides with the ones of the system.
-@@ -159,4 +148,8 @@
+@@ -159,3 +148,7 @@
  	ewarn "You should also re-source your shell settings for LS_COLORS"
  	ewarn "  changes, such as: source /etc/profile"
 +}
@@ -31,7 +31,6 @@ for i in sys-apps/coreutils/coreutils-*.ebuild; do
 +pkg_noinst_ever() {
 +	# whatever follows, it can't be good
  
- 	# /bin/dircolors sometimes sticks around #224823
 EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
