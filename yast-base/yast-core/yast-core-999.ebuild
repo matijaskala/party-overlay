@@ -11,8 +11,3 @@ DESCRIPTION="Yet another Setup Tool (YaST)"
 SLOT="0"
 KEYWORDS="amd64"
 IUSE=""
-
-src_install() {
-	default
-	rm -rf ${ED}/sbin || die
-}
