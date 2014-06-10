@@ -9,7 +9,7 @@ inherit yast
 DESCRIPTION="Yet another Setup Tool (YaST)"
 
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="~amd64"
 IUSE=""
 
 DEPEND="dev-tcltk/expect

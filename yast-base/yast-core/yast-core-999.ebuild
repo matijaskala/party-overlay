@@ -9,5 +9,12 @@ inherit yast
 DESCRIPTION="Yet another Setup Tool (YaST)"
 
 SLOT="0"
-KEYWORDS="amd64"
+KEYWORDS="~amd64"
 IUSE=""
+
+DEPEND="app-doc/doxygen"
+
+src_prepare() {
+	epatch "${FILESDIR}"/libxcrypt.patch
+	yast_src_prepare
+}
