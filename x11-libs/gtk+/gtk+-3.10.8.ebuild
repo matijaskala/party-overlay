@@ -1,10 +1,12 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/x11-libs/gtk+/gtk+-3.10.7.ebuild,v 1.4 2014/03/17 13:36:30 hasufell Exp $
+# $Header: /var/cvsroot/gentoo-x86/x11-libs/gtk+/gtk+-3.10.8.ebuild,v 1.13 2014/05/02 09:11:41 pacho Exp $
 
 EAPI="5"
+GCONF_DEBUG="no"
+GNOME2_LA_PUNT="yes"
 
-inherit autotools eutils flag-o-matic gnome.org gnome2-utils multilib virtualx
+inherit autotools eutils flag-o-matic gnome2 multilib virtualx
 WANT_AUTOMAKE=1.14
 
 DESCRIPTION="Gimp ToolKit +"
@@ -20,7 +22,8 @@ SLOT="3"
 IUSE="aqua colord cups debug examples +introspection packagekit test vim-syntax wayland X xinerama"
 REQUIRED_USE="
 	|| ( aqua wayland X )
-	xinerama? ( X )"
+	xinerama? ( X )
+"
 
 KEYWORDS="~alpha amd64 ~arm ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc x86 ~amd64-fbsd ~x86-fbsd ~x86-freebsd ~x86-interix ~amd64-linux ~arm-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 
@@ -37,7 +40,7 @@ COMMON_DEPEND="
 	>=x11-libs/pango-1.32.4[introspection?]
 	x11-misc/shared-mime-info
 
-	colord? ( >=x11-misc/colord-0.1.9 )
+	colord? ( >=x11-misc/colord-0.1.9:0= )
 	cups? ( >=net-print/cups-1.2 )
 	introspection? ( >=dev-libs/gobject-introspection-1.32 )
 	wayland? (
@@ -64,7 +67,8 @@ DEPEND="${COMMON_DEPEND}
 	app-text/docbook-xml-dtd:4.1.2
 	dev-libs/libxslt
 	dev-util/gdbus-codegen
-	>=dev-util/gtk-doc-am-1.11
+	>=dev-util/gtk-doc-am-1.20
+	sys-devel/gettext
 	virtual/pkgconfig
 	X? (
 		x11-proto/xextproto
@@ -102,8 +106,6 @@ src_prepare() {
 	epatch "${FILESDIR}/ubuntu_gtk_custom_menu_items.patch"
 	eautoreconf
 
-	gnome2_environment_reset
-
 	# -O3 and company cause random crashes in applications. Bug #133469
 	replace-flags -O3 -O2
 	strip-flags
@@ -123,13 +125,15 @@ src_prepare() {
 		strip_builddir SRC_SUBDIRS examples Makefile.am
 		strip_builddir SRC_SUBDIRS examples Makefile.in
 	fi
+
+	gnome2_src_prepare
 }
 
 src_configure() {
 	# Passing --disable-debug is not recommended for production use
 	# need libdir here to avoid a double slash in a path that libtool doesn't
 	# grok so well during install (// between $EPREFIX and usr ...)
-	econf \
+	gnome2_src_configure \
 		$(use_enable aqua quartz-backend) \
 		$(use_enable colord) \
 		$(use_enable cups cups auto) \
@@ -144,12 +148,11 @@ src_configure() {
 		$(use_enable X xkb) \
 		$(use_enable X xrandr) \
 		$(use_enable xinerama) \
-		--disable-gtk-doc \
 		--disable-papi \
 		--enable-man \
 		--enable-gtk2-dependency \
 		--with-xml-catalog="${EPREFIX}"/etc/xml/catalog \
-		--libdir="${EPREFIX}/usr/$(get_libdir)"
+		--libdir="${EPREFIX}"/usr/$(get_libdir)
 }
 
 src_test() {
@@ -171,14 +174,12 @@ src_test() {
 }
 
 src_install() {
-	emake DESTDIR="${D}" install
+	gnome2_src_install
 
 	insinto /etc/gtk-3.0
 	doins "${FILESDIR}"/settings.ini
 
 	dodoc AUTHORS ChangeLog* HACKING NEWS* README*
-
-	prune_libtool_files --modules
 
 	# add -framework Carbon to the .pc files
 	if use aqua ; then
@@ -190,7 +191,7 @@ src_install() {
 }
 
 pkg_preinst() {
-	gnome2_schemas_savelist
+	gnome2_pkg_preinst
 
 	# Make sure loaders.cache belongs to gdk-pixbuf alone
 	local cache="usr/$(get_libdir)/gtk-3.0/3.0.0/immodules.cache"
@@ -203,7 +204,7 @@ pkg_preinst() {
 }
 
 pkg_postinst() {
-	gnome2_schemas_update
+	gnome2_pkg_postinst
 	gnome2_query_immodules_gtk3
 
 	if ! has_version "app-text/evince"; then
@@ -214,7 +215,7 @@ pkg_postinst() {
 }
 
 pkg_postrm() {
-	gnome2_schemas_update
+	gnome2_pkg_postrm
 
 	if [[ -z ${REPLACED_BY_VERSIONS} ]]; then
 		rm -f "${EROOT}"usr/$(get_libdir)/gtk-3.0/3.0.0/immodules.cache
