@@ -53,11 +53,12 @@ RDEPEND="${COMMON_DEPEND}
 	)
 	!sys-auth/nss-myhostname
 	!<sys-libs/glibc-2.14
-	!sys-apps/openrc
 	!sys-fs/udev"
 
+# sys-apps/daemon: the daemon only (+ build-time lib dep for tests)
 PDEPEND=">=sys-apps/dbus-1.6.8-r1:0
 	>=sys-apps/hwids-20130717-r1[udev]
+	>=sys-fs/udev-init-scripts-25
 	policykit? ( sys-auth/polkit )
 	!vanilla? ( sys-apps/gentoo-systemd-integration )"
 
@@ -80,6 +81,7 @@ src_prepare() {
 	local PATCHES=(
 		"${FILESDIR}/${PV}-0001-always-check-for-__BYTE_ORDER-__BIG_ENDIAN-when-chec.patch"
 		"${FILESDIR}/${PV}-0002-endian-explicitly-include-endian.h-wherever-we-want-.patch"
+		"${FILESDIR}/${PV}-0003-udev-exclude-MD-from-block-device-ownership-event-lo.patch"
 	)
 
 	# Bug 463376
@@ -299,11 +301,6 @@ multilib_src_install() {
 
 	if multilib_is_native_abi; then
 		emake "${mymakeopts[@]}" install
-		# Even with --enable-networkd, it's not right to have this running by default
-		# when it's unconfigured.
-		rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
-		rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
-		rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service
 	else
 		mymakeopts+=(
 			install-libLTLIBRARIES
@@ -344,6 +341,13 @@ multilib_src_install_all() {
 
 	# Symlink /etc/sysctl.conf for easy migration.
 	dosym ../sysctl.conf /etc/sysctl.d/99-sysctl.conf
+
+	# If we install these symlinks, there is no way for the sysadmin to remove them
+	# permanently.
+	rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
+	rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
+	rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service
+	rm -rf "${D}"/etc/systemd/system/network-online.target.wants
 }
 
 migrate_locale() {
