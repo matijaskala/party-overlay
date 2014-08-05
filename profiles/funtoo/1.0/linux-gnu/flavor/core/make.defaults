@@ -1,4 +1,5 @@
-USE="pam ssl crypt cracklib" 									#core security
+USE="gdbm nptl unicode"
+USE="$USE acl pam ssl crypt cracklib" 									#core security
 USE="$USE nls iconv xml pcre" 									#core subsystems
 USE="$USE zlib bzip2"										#core compression
 USE="$USE readline ncurses"									#core gui/interactivity frameworks
