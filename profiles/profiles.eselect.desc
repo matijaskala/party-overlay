@@ -25,7 +25,6 @@ arch		arch/x86-fbsd						exp
 
 build		funtoo/1.0/linux-gnu/build/stable			stable
 build		funtoo/1.0/linux-gnu/build/current			stable
-build		funtoo/1.0/linux-gnu/build/experimental			stable
 
 flavor		funtoo/1.0/linux-gnu/flavor/minimal			stable
 flavor		funtoo/1.0/linux-gnu/flavor/core			stable
