@@ -10,7 +10,7 @@ HOMEPAGE="https://launchpad.net/indicator-appmenu"
 SRC_URI="http://launchpad.net/${PN}/12.10/${PV}/+download/${P}.tar.gz"
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 IUSE=""
 
 RDEPEND="dev-libs/libdbusmenu:=
@@ -29,6 +29,5 @@ src_prepare() {
 }
 
 src_configure() {
-	econf \
-		--with-gtk=$(usex gtk3 "3" "2")
+	econf --with-gtk=3
 }
