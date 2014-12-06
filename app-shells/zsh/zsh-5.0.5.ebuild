@@ -1,40 +1,19 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/app-shells/zsh/zsh-5.0.2-r3.ebuild,v 1.11 2013/09/07 20:13:48 ago Exp $
+# $Header: /var/cvsroot/gentoo-x86/app-shells/zsh/zsh-5.0.5.ebuild,v 1.11 2014/11/21 09:58:51 radhermit Exp $
 
 EAPI=5
 
-# doc package for -dev version exists?
-doc_available=true
-
 inherit eutils flag-o-matic multilib prefix
-
-MY_PV=${PV/_p/-dev-}
-S=${WORKDIR}/${PN}-${MY_PV}
-
-zsh_ftp="ftp://ftp.zsh.org/pub"
-
-if [[ ${PV} != "${MY_PV}" ]] ; then
-	ZSH_URI="${zsh_ftp}/development/${PN}-${MY_PV}.tar.bz2"
-	if ${doc_available} ; then
-		ZSH_DOC_URI="${zsh_ftp}/development/${PN}-${MY_PV}-doc.tar.bz2"
-	else
-		ZSH_DOC_URI="${zsh_ftp}/${PN}-${PV%_*}-doc.tar.bz2"
-	fi
-else
-	ZSH_URI="mirror://sourceforge/${PN}/${P}.tar.bz2
-		${zsh_ftp}/${P}.tar.bz2"
-	ZSH_DOC_URI="${zsh_ftp}/${PN}-${PV%_*}-doc.tar.bz2"
-fi
 
 DESCRIPTION="UNIX Shell similar to the Korn shell"
 HOMEPAGE="http://www.zsh.org/"
-SRC_URI="${ZSH_URI}
-	doc? ( ${ZSH_DOC_URI} )"
+SRC_URI="http://www.zsh.org/pub/${P}.tar.bz2
+	doc? ( http://www.zsh.org/pub/${P}-doc.tar.bz2 )"
 
 LICENSE="ZSH gdbm? ( GPL-2 )"
 SLOT="0"
-KEYWORDS="alpha amd64 arm hppa ia64 ppc ppc64 s390 sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
+KEYWORDS="alpha amd64 arm hppa ia64 ppc ppc64 ~s390 ~sh sparc x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~ppc-macos ~x64-macos ~x86-macos ~m68k-mint ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 IUSE="caps debug doc examples gdbm maildir pcre static unicode"
 
 RDEPEND="
@@ -58,8 +37,6 @@ src_prepare() {
 	soelim Doc/zshall.1.soelim > Doc/zshall.1
 
 	epatch "${FILESDIR}"/${PN}-init.d-gentoo-r1.diff
-	epatch "${FILESDIR}"/${PN}-fix-parameter-modifier-crash.patch
-	epatch "${FILESDIR}"/${PN}-5.0.2-texinfo-5.1.patch
 
 	cp "${FILESDIR}"/zshrc-1 "${T}"/zshrc || die
 
@@ -97,6 +74,7 @@ src_configure() {
 		--bindir="${EPREFIX}"/bin \
 		--libdir="${EPREFIX}"/usr/$(get_libdir) \
 		--enable-etcdir="${EPREFIX}"/etc/zsh \
+		--enable-runhelpdir="${EPREFIX}"/usr/share/zsh/${PV%_*}/help \
 		--enable-fndir="${EPREFIX}"/usr/share/zsh/${PV%_*}/functions \
 		--enable-site-fndir="${EPREFIX}"/usr/share/zsh/site-functions \
 		--enable-function-subdirs \
@@ -125,9 +103,9 @@ src_configure() {
 }
 
 src_test() {
-	local i
 	addpredict /dev/ptmx
-	for i in C02cond.ztst Y01completion.ztst Y02compmatch.ztst Y03arguments.ztst ; do
+	local i
+	for i in C02cond.ztst V08zpty.ztst X02zlevi.ztst Y01completion.ztst Y02compmatch.ztst Y03arguments.ztst ; do
 		rm "${S}"/Test/${i} || die
 	done
 	emake check
