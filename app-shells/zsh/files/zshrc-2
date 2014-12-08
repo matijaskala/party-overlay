@@ -37,7 +37,7 @@ bindkey "[1;5D" backward-word
 export HISTSIZE=500
 export HISTFILE="$HOME/.history"
 export SAVEHIST=$HISTSIZE
-[[ -z "${-##*i*}" ]] && export LESSOPEN="|LESSCOLOR=always lesspipe %s"
+export LESSOPEN="|LESSCOLOR=always lesspipe %s"
 setopt hist_ignore_all_dups
 
 #some aliases
