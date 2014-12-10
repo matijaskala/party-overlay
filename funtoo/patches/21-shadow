@@ -10,7 +10,7 @@ for i in sys-apps/shadow/shadow-*.ebuild; do
  	doins "\${FILESDIR}"/default/useradd
 -
 -	# move passwd to / to help recover broke systems #64441
--	mv "\${D}"/usr/bin/passwd "\${D}"/bin/
+-	mv "\${ED}"/usr/bin/passwd "\${ED}"/bin/
 -	dosym /bin/passwd /usr/bin/passwd
  
  	cd "\${S}"
