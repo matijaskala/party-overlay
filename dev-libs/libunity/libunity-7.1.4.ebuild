@@ -6,7 +6,7 @@ EAPI=5
 PYTHON_COMPAT=( python{2_7,3_3,3_4} )
 UVER_PREFIX="+14.10.20140808"
 
-inherit base python-r1 ubuntu vala
+inherit autotools base python-r1 ubuntu vala
 
 DESCRIPTION="Library for instrumenting and integrating with all aspects of the Unity shell"
 HOMEPAGE="https://launchpad.net/libunity"
@@ -24,6 +24,13 @@ DEPEND=">=dev-libs/dee-1.2.5:=
 	$(vala_depend)"
 
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	base_src_prepare
+	vala_src_prepare
+	export VALA_API_GEN="$VAPIGEN"
+	eautoreconf
+}
 
 src_configure() {
 	python_copy_sources
