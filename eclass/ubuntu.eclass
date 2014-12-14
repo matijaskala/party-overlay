@@ -5,3 +5,5 @@
 UURL="https://launchpad.net/ubuntu/+archive/primary/+files/"
 SRC_URI="${UURL}${PN}_${PV}${UVER_PREFIX}.orig.tar.gz"
 RESTRICT="mirror"
+
+S="${WORKDIR}/${P}${UVER_PREFIX}"
