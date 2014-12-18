@@ -21,6 +21,7 @@ then
 		else
 			UVER_PREFIX="+${UVER_PREFIX}"
 		fi
+		P=${PN}-${PV}
 	fi
 fi
 
