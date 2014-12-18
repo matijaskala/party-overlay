@@ -8,6 +8,7 @@ then
 	[[ ${UVER_PREFIX} == ${PV} ]] && UVER_PREFIX=
 	if [[ -n ${UVER_PREFIX} ]]
 	then
+		PV=${PV%_p*}
 		[[ ${PV} == *14.04* ]] && UVER_RELEASE=14.04
 		[[ ${PV} == *14.10* ]] && UVER_RELEASE=14.10
 		[[ ${PV} == *15.04* ]] && UVER_RELEASE=15.04
@@ -20,7 +21,6 @@ then
 		else
 			UVER_PREFIX="+${UVER_PREFIX}"
 		fi
-		PV=${PV%_p*}
 	fi
 fi
 
