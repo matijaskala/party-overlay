@@ -86,11 +86,12 @@ DEPEND="${COMMON_DEPEND}
 	test? ( >=sys-apps/dbus-1.6.8-r1:0 )"
 
 pkg_pretend() {
-	local CONFIG_CHECK="~AUTOFS4_FS ~BLK_DEV_BSG ~CGROUPS ~DEVTMPFS ~DMIID
-		~EPOLL ~FANOTIFY ~FHANDLE ~INOTIFY_USER ~IPV6 ~NET ~NET_NS ~PROC_FS
-		~SECCOMP ~SIGNALFD ~SYSFS ~TIMERFD ~TMPFS_XATTR
-		~!IDE ~!SYSFS_DEPRECATED ~!SYSFS_DEPRECATED_V2
-		~!GRKERNSEC_PROC ~!FW_LOADER_USER_HELPER"
+	local CONFIG_CHECK="~AUTOFS4_FS ~BLK_DEV_BSG ~CGROUPS
+		~DEVPTS_MULTIPLE_INSTANCES ~DEVTMPFS ~DMIID ~EPOLL ~FANOTIFY ~FHANDLE
+		~INOTIFY_USER ~IPV6 ~NET ~NET_NS ~PROC_FS ~SECCOMP ~SIGNALFD ~SYSFS
+		~TIMERFD ~TMPFS_XATTR
+		~!FW_LOADER_USER_HELPER ~!GRKERNSEC_PROC ~!IDE ~!SYSFS_DEPRECATED
+		~!SYSFS_DEPRECATED_V2"
 
 	use acl && CONFIG_CHECK+=" ~TMPFS_POSIX_ACL"
 	kernel_is -lt 3 7 && CONFIG_CHECK+=" ~HOTPLUG"
@@ -146,14 +147,6 @@ src_configure() {
 	multilib-minimal_src_configure
 }
 
-multilib_native_enable() {
-	if multilib_is_native_abi; then
-		echo "--enable-${1}"
-	else
-		echo "--disable-${1}"
-	fi
-}
-
 multilib_src_configure() {
 	local myeconfargs=(
 		# disable -flto since it is an optimization flag
@@ -169,6 +162,8 @@ multilib_src_configure() {
 		# avoid bash-completion dep
 		--with-bashcompletiondir="$(get_bashcompdir)"
 		--disable-split-usr
+		--with-rootprefix="${ROOTPREFIX-/usr}"
+		--with-rootlibdir="${ROOTPREFIX-/usr}/$(get_libdir)"
 		# disable sysv compatibility
 		--with-sysvinit-path=
 		--with-sysvrcnd-path=
@@ -206,28 +201,6 @@ multilib_src_configure() {
 		$(multilib_native_use_enable test dbus)
 		$(multilib_native_use_enable xkb xkbcommon)
 
-		# Disable optional binaries for non-native abis
-		$(multilib_native_enable backlight)
-		$(multilib_native_enable binfmt)
-		$(multilib_native_enable bootchart)
-		$(multilib_native_enable coredump)
-		$(multilib_native_enable firstboot)
-		$(multilib_native_enable hibernate)
-		$(multilib_native_enable hostnamed)
-		$(multilib_native_enable localed)
-		$(multilib_native_enable logind)
-		$(multilib_native_enable machined)
-		$(multilib_native_enable networkd)
-		$(multilib_native_enable quotacheck)
-		$(multilib_native_enable randomseed)
-		$(multilib_native_enable resolved)
-		$(multilib_native_enable rfkill)
-		$(multilib_native_enable sysusers)
-		$(multilib_native_enable timedated)
-		$(multilib_native_enable timesyncd)
-		$(multilib_native_enable tmpfiles)
-		$(multilib_native_enable vconsole)
-
 		# not supported (avoid automagic deps in the future)
 		--disable-chkconfig
 
@@ -246,6 +219,8 @@ multilib_src_configure() {
 
 	if ! multilib_is_native_abi; then
 		myeconfargs+=(
+			MOUNT_{CFLAGS,LIBS}=' '
+
 			ac_cv_search_cap_init=
 			ac_cv_header_sys_capability_h=yes
 		)
@@ -320,9 +295,9 @@ multilib_src_install_all() {
 
 	if use sysv-utils; then
 		for app in halt poweroff reboot runlevel shutdown telinit; do
-			dosym "..${ROOTPREFIX}/bin/systemctl" /sbin/${app}
+			dosym "..${ROOTPREFIX-/usr}/bin/systemctl" /sbin/${app}
 		done
-		dosym "..${ROOTPREFIX}/lib/systemd/systemd" /sbin/init
+		dosym "..${ROOTPREFIX-/usr}/lib/systemd/systemd" /sbin/init
 	else
 		# we just keep sysvinit tools, so no need for the mans
 		rm "${D}"/usr/share/man/man8/{halt,poweroff,reboot,runlevel,shutdown,telinit}.8 \
@@ -343,10 +318,10 @@ multilib_src_install_all() {
 
 	# If we install these symlinks, there is no way for the sysadmin to remove them
 	# permanently.
-	rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-networkd.service
-	rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-resolved.service
-	rm -f "${D}"/etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service
-	rm -rf "${D}"/etc/systemd/system/network-online.target.wants
+	rm "${D}"/etc/systemd/system/multi-user.target.wants/systemd-networkd.service || die
+	rm "${D}"/etc/systemd/system/multi-user.target.wants/systemd-resolved.service || die
+	rm -r "${D}"/etc/systemd/system/network-online.target.wants || die
+	rm -r "${D}"/etc/systemd/system/sysinit.target.wants || die
 }
 
 migrate_locale() {
