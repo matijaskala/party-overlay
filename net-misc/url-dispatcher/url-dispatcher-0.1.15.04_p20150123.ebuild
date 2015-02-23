@@ -1,4 +1,4 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -18,7 +18,7 @@ RESTRICT="mirror"
 RDEPEND="dev-libs/libdbusmenu:="
 DEPEND="${RDEPEND}
 	dev-libs/glib:2
-	dev-libs/ubuntu-app-launch
+	dev-libs/libubuntu-app-launch
 	sys-apps/dbus
 	test? ( dev-util/dbus-test-runner )"
 
@@ -28,6 +28,8 @@ src_install() {
 	# Remove upstart jobs as we use xsession based scripts in /etc/X11/xinit/xinitrc.d/ #
 	rm -rf "${ED}usr/share/upstart"
 
-	exeinto /etc/X11/xinit/xinitrc.d/
-	doexe "${FILESDIR}/99url-dispatcher"
+	insinto /etc/xdg/autostart
+	doins "${FILESDIR}/url-dispatcher.desktop"
+	insinto /usr/share/dbus-1/services/
+	doins "${FILESDIR}/com.canonical.URLDispatcher.service"
 }
