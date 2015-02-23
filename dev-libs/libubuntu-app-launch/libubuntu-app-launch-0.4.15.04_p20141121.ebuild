@@ -1,20 +1,20 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI=5
 
+UPN="ubuntu-app-launch"
 inherit cmake-utils ubuntu
 
-DESCRIPTION="An Upstart Job that is used to launch applications in a controlled and predictable manner. This is a small project, but there are *a lot* of different parts from different people, so we need a place to collaborate."
+DESCRIPTION="Session init system job for launching applications, libraries only"
 HOMEPAGE="https://launchpad.net/ubuntu-app-launch"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="+minimal +threads"
+IUSE="+threads"
 RESTRICT="mirror"
-REQUIRED_USE="minimal"
 
 DEPEND="dev-libs/glib:2
 	dev-libs/cgmanager
