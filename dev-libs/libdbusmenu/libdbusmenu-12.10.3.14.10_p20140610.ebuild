@@ -4,7 +4,7 @@
 
 EAPI=5
 
-inherit eutils flag-o-matic ubuntu vala
+inherit autotools eutils flag-o-matic ubuntu vala
 
 DESCRIPTION="Library to pass menu structure across DBus"
 HOMEPAGE="https://launchpad.net/dbusmenu"
@@ -36,6 +36,8 @@ MAKEOPTS="${MAKEOPTS} -j1"
 src_prepare() {
 	vala_src_prepare
 	export VALA_API_GEN="$VAPIGEN"
+
+	eautoreconf
 }
 
 src_configure() {
