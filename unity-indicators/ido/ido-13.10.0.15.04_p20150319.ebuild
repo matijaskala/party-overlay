@@ -1,12 +1,10 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI=5
 GNOME2_LA_PUNT="yes"
 GCONF_DEBUG="yes"
-
-UVER_PREFIX="+14.04.20140423"
 
 inherit autotools eutils flag-o-matic gnome2 ubuntu vala
 
