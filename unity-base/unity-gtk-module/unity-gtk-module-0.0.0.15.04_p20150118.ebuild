@@ -5,8 +5,6 @@
 EAPI=5
 PYTHON_COMPAT=( python2_7 )
 
-UVER_PREFIX="+14.10.20140716"
-
 inherit autotools eutils python-r1 ubuntu
 
 DESCRIPTION="GTK+ module for exporting old-style menus as GMenuModels"
