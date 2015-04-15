@@ -1,6 +1,6 @@
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=3
+EAPI=5
 PYTHON_DEPEND="2"
 SUPPORT_PYTHON_ABIS="1"
 RESTRICT_PYTHON_ABIS="3.*"
@@ -14,7 +14,8 @@ SRC_URI="http://launchpad.net/${PN}/stable/${PV}/+download/${P}.tar.gz"
 LICENSE="GPL-3 LGPL-3"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="pulseaudio"
+IUSE=""
+RESTRICT="mirror"
 
 DEPEND="dev-python/python-distutils-extra"
 RDEPEND="x11-libs/gtk+:3[introspection]
@@ -27,8 +28,7 @@ RDEPEND="x11-libs/gtk+:3[introspection]
 	media-libs/gst-plugins-good:0.10
 	media-plugins/gst-plugins-x264:0.10
 	media-plugins/gst-plugins-ximagesrc:0.10
-	pulseaudio? ( media-sound/pulseaudio )
-	virtual/python-argparse
+	media-sound/pulseaudio
 	virtual/ffmpeg
 "
 
