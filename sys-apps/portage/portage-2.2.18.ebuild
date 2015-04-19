@@ -4,7 +4,7 @@ EAPI=5
 
 PYTHON_COMPAT=(
 	pypy
-	python3_2 python3_3 python3_4
+	python3_3 python3_4
 	python2_7
 )
 # Note: substituted below
@@ -18,7 +18,7 @@ HOMEPAGE="http://www.gentoo.org/proj/en/portage/index.xml"
 LICENSE="GPL-2"
 KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
 SLOT="0"
-IUSE="build doc epydoc +ipc linguas_pl linguas_ru selinux xattr"
+IUSE="build doc epydoc +ipc linguas_ru selinux xattr"
 
 DEPEND="!build? ( ${PYTHON_DEPS//bzip2(+)/ssl(+),bzip2(+)} )
 	dev-lang/python-exec:2
@@ -30,7 +30,7 @@ DEPEND="!build? ( ${PYTHON_DEPS//bzip2(+)/ssl(+),bzip2(+)} )
 # quite slow, so it's not considered in the dependencies as an alternative to
 # to python-3.3 / pyxattr. Also, xattr support is only tested with Linux, so
 # for now, don't pull in xattr deps for other kernels.
-# For whirlpool hash, require python[ssl] or python-mhash (bug #425046).
+# For whirlpool hash, require python[ssl] (bug #425046).
 # For compgen, require bash[readline] (bug #445576).
 RDEPEND="
 	dev-lang/python-exec:2
@@ -47,7 +47,7 @@ RDEPEND="
 	xattr? ( kernel_linux? (
 		>=sys-apps/install-xattr-0.3
 		$(python_gen_cond_dep 'dev-python/pyxattr[${PYTHON_USEDEP}]' \
-			python{2_7,3_2} pypy)
+			python2_7 pypy)
 	) )
 	!<app-admin/logrotate-3.8.0"
 PDEPEND="
@@ -73,11 +73,7 @@ prefix_src_archives() {
 
 TARBALL_PV=${PV}
 SRC_URI="mirror://gentoo/${PN}-${TARBALL_PV}.tar.bz2
-	$(prefix_src_archives ${PN}-${TARBALL_PV}.tar.bz2)
-	linguas_pl? ( mirror://gentoo/${PN}-man-pl-2.1.2.tar.bz2
-		$(prefix_src_archives ${PN}-man-pl-2.1.2.tar.bz2) )"
-
-S_PL=${WORKDIR}/${PN}-2.1.2
+	$(prefix_src_archives ${PN}-${TARBALL_PV}.tar.bz2)"
 
 python_prepare_all() {
 	distutils-r1_python_prepare_all
@@ -187,12 +183,6 @@ python_install_all() {
 	# install docs
 	if [[ ${targets[@]} ]]; then
 		esetup.py "${targets[@]}"
-	fi
-
-
-	if use linguas_pl; then
-		doman -i18n=pl "${S_PL}"/man/pl/*.[0-9] || die
-		doman -i18n=pl_PL.UTF-8 "${S_PL}"/man/pl_PL.UTF-8/*.[0-9] || die
 	fi
 
 	# Due to distutils/python-exec limitations
@@ -350,18 +340,6 @@ pkg_postinst() {
 				! \( -user "${ownership%:*}" -a -group "${ownership#*:}" \) \
 				-exec chown "${ownership}" {} +
 		fi
-	fi
-
-	if [[ ! -L ${EROOT}etc/make.conf ]]; then
-		if [[ -e ${EROOT}etc/make.conf ]]; then
-			if [[ -e ${EROOT}etc/portage/make.conf ]]; then
-				mv "${EROOT}etc/make.conf" "${EROOT}etc/make.conf.backup"
-				ewarn "Redundant '${EROOT}etc/make.conf' has been renamed to '${EROOT}etc/make.conf.backup'."
-			else
-				mv "${EROOT}etc/make.conf" "${EROOT}etc/portage/make.conf"
-			fi
-		fi
-		ln -s portage/make.conf "${EROOT}etc/make.conf"
 	fi
 
 	# Do this last, since it could take a long time if there
