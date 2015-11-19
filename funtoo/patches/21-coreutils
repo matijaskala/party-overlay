@@ -2,6 +2,7 @@
 
 PATCH="coreutils-usr-merge.patch"
 rm sys-apps/coreutils/coreutils-8.23.ebuild
+rm sys-apps/coreutils/coreutils-8.24.ebuild
 for i in sys-apps/coreutils/coreutils-*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-04-28 03:31:29.000000000 +0200
