@@ -16,9 +16,13 @@ then
 		[[ ${UPV} == *14.04* ]] && UVER_RELEASE=14.04
 		[[ ${UPV} == *14.10* ]] && UVER_RELEASE=14.10
 		[[ ${UPV} == *15.04* ]] && UVER_RELEASE=15.04
+		[[ ${UPV} == *15.10* ]] && UVER_RELEASE=15.10
+		[[ ${UPV} == *16.04* ]] && UVER_RELEASE=16.04
 		[[ ${UPV} == *.14.04 ]] && UPV=${UPV%.14.04}
 		[[ ${UPV} == *.14.10 ]] && UPV=${UPV%.14.10}
 		[[ ${UPV} == *.15.04 ]] && UPV=${UPV%.15.04}
+		[[ ${UPV} == *.15.10 ]] && UPV=${UPV%.15.10}
+		[[ ${UPV} == *.16.04 ]] && UPV=${UPV%.16.04}
 		if [[ -n ${UVER_RELEASE} ]]
 		then
 			UVER_PREFIX="+${UVER_RELEASE}.${UVER_PREFIX}"
