@@ -1,14 +1,14 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Id$
 
 EAPI=5
 
-PATCH_VER="1.0"
+PATCH_VER="1.4"
 UCLIBC_VER="1.0"
 
 # Hardened gcc 4 stuff
-PIE_VER="0.6.1"
+PIE_VER="0.6.4"
 SPECS_VER="0.2.0"
 SPECS_GCC_VER="4.4.3"
 # arch/libc configurations known to be stable with {PIE,SSP}-by-default
@@ -26,7 +26,7 @@ MPC_VER="1.0.1"
 
 inherit eutils toolchain
 
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
+KEYWORDS="alpha amd64 arm arm64 hppa ~ia64 m68k ~mips ppc ppc64 s390 sh ~sparc x86 ~amd64-fbsd ~x86-fbsd"
 
 RDEPEND=""
 DEPEND="${RDEPEND}
