@@ -2,7 +2,7 @@
 
 EAPI=5
 
-inherit cmake-utils eutils gnome2-utils python versionator
+inherit cmake-utils eutils gnome2-utils python-r1 versionator
 
 DESCRIPTION="OpenGL window and compositing manager"
 HOMEPAGE="https://launchpad.net/compiz"
@@ -21,7 +21,8 @@ fi
 
 LICENSE="GPL-2 LGPL-2.1 MIT"
 SLOT="0"
-IUSE="debug dbus fuse +gconf gnome gtk kde +python +svg test"
+IUSE="debug kde test"
+RESTRICT="mirror"
 
 COMMONDEPEND="
 	!x11-wm/compiz-fusion
@@ -35,54 +36,49 @@ COMMONDEPEND="
 	!x11-apps/ccsm
 	!dev-python/compizconfig-python
 	!x11-apps/fusion-icon
-	>=dev-libs/boost-1.34.0
-	>=dev-libs/glib-2.30.0
-	>=dev-cpp/glibmm-2.30.0
-	dev-libs/libxml2
-	dev-libs/libxslt
-	dev-python/pyrex
+	dev-libs/boost:=[${PYTHON_USEDEP}]
+	dev-libs/glib:2[${PYTHON_USEDEP}]
+	dev-cpp/glibmm
+	dev-libs/libxml2[${PYTHON_USEDEP}]
+	dev-libs/libxslt[${PYTHON_USEDEP}]
+	dev-python/pyrex[${PYTHON_USEDEP}]
+	gnome-base/gconf[${PYTHON_USEDEP}]
+	>=gnome-base/gsettings-desktop-schemas-3.8
+	>=gnome-base/librsvg-2.14.0:2
 	media-libs/libpng:0=
-	>=media-libs/mesa-6.5.1-r1
-	>=x11-base/xorg-server-1.1.1-r1
+	media-libs/mesa[gallium,llvm]
+	x11-base/xorg-server
 	>=x11-libs/cairo-1.0
-	>=x11-libs/libX11-1.4
+	x11-libs/gtk+:3
+	x11-libs/pango
+	x11-libs/libwnck:1
+	x11-libs/libX11
 	x11-libs/libXcomposite
 	x11-libs/libXdamage
 	x11-libs/libXext
+	x11-libs/libXfixes
 	x11-libs/libXrandr
-	>=x11-libs/libXrender-0.9.3
+	x11-libs/libXrender
 	x11-libs/libXinerama
 	x11-libs/libICE
 	x11-libs/libSM
 	>=x11-libs/startup-notification-0.7
 	virtual/opengl
 	virtual/glu
-	fuse? ( sys-fs/fuse )  
-	gnome? (
-		gnome-base/gnome-desktop
-		>=x11-wm/metacity-2.23.2
-	)
-	gtk? (
-		>=x11-libs/gtk+-2.18.0
-		>=x11-libs/libwnck-2.19.4
-		x11-libs/pango
-	)
-	gconf? ( gnome-base/gconf )
+	>=x11-wm/metacity-3.12
 	kde? ( >=kde-base/kwin-4.2.0 )
-	svg? ( >=gnome-base/librsvg-2.14.0:2 )
-	dbus? ( >=sys-apps/dbus-1.0 )
+	${PYTHON_DEPS}"
+
+DEPEND="${COMMONDEPEND}
+	sys-devel/gettext
+	virtual/pkgconfig
+	x11-proto/damageproto
+	x11-proto/xineramaproto
 	test? ( dev-cpp/gtest
 		dev-cpp/gmock
 		sys-apps/xorg-gtest )"
 
-DEPEND="${COMMONDEPEND}
-	app-admin/chrpath
-	dev-util/pkgconfig
-	x11-proto/damageproto
-	x11-proto/xineramaproto"
-
 RDEPEND="${COMMONDEPEND}
-	python? ( dev-python/pygtk )
 	x11-apps/mesa-progs
 	x11-apps/xvinfo"
 
