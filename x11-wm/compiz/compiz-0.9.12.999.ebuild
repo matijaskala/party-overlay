@@ -1,8 +1,10 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=5
+GCONF_DEBUG="no"
+PYTHON_COMPAT=( python2_7 )
 
-inherit cmake-utils eutils gnome2-utils python-r1 versionator
+inherit base gnome2 cmake-utils eutils python-r1 versionator
 
 DESCRIPTION="OpenGL window and compositing manager"
 HOMEPAGE="https://launchpad.net/compiz"
@@ -82,12 +84,10 @@ RDEPEND="${COMMONDEPEND}
 	x11-apps/mesa-progs
 	x11-apps/xvinfo"
 
-pkg_setup() {
-	python_set_active_version 2
-}
-
 src_prepare() {
-	default
+	base_src_prepare
+
+	export CMAKE_BUILD_TYPE=none
 
 	epatch "${FILESDIR}/${PN}-sandbox.patch"
 	epatch "${FILESDIR}/use_python.patch"
@@ -97,36 +97,67 @@ src_prepare() {
 
 	echo "gtk/gnome/compiz-wm.desktop.in" >> "${S}/po/POTFILES.skip"
 	echo "metadata/core.xml.in" >> "${S}/po/POTFILES.skip"
+	python_copy_sources
 }
 
 src_configure() {
-	local mycmakeargs=(
-		"$(cmake-utils_use_use gconf GCONF)"
-		"$(cmake-utils_use_use gnome GNOME)"
-		"$(cmake-utils_use_use gtk GTK)"
-		"$(cmake-utils_use_use kde KDE4)"
-		"$(cmake-utils_use_use python PYTHON)"
-		"$(cmake-utils_use test COMPIZ_BUILD_TESTING)"
-		"-DCMAKE_C_FLAGS=$(usex debug '-DDEBUG -ggdb' '')"
-		"-DCMAKE_CXX_FLAGS=$(usex debug '-DDEBUG -ggdb' '')"
-		"-DCOMPIZ_DEFAULT_PLUGINS=ccp"
-		"-DCOMPIZ_DISABLE_SCHEMAS_INSTALL=ON"
-		"-DCOMPIZ_PACKAGING_ENABLED=ON"
-		"-DCOMPIZ_DESTDIR=${D}"
-	)
+	mycmakeargs="${mycmakeargs}
+		-DCMAKE_INSTALL_PREFIX="/usr"
+		-DCOMPIZ_INSTALL_GCONF_SCHEMA_DIR="/etc/gconf/schemas"
+		-DCOMPIZ_DISABLE_GCONF_SCHEMAS_INSTALL=TRUE
+		-DCOMPIZ_BUILD_WITH_RPATH=FALSE
+		-DCOMPIZ_PACKAGING_ENABLED=TRUE
+		-DUSE_GCONF=OFF
+		-DUSE_GSETTINGS=ON
+		-DCOMPIZ_DISABLE_GS_SCHEMAS_INSTALL=OFF
+		$(cmake-utils_use_use kde KDE4)
+		$(cmake-utils_use test COMPIZ_BUILD_TESTING)
+		-DCOMPIZ_DEFAULT_PLUGINS="ccp"
+		-DCOMPIZ_DESTDIR=${D}
+		"
+	configuration() {
+		cmake-utils_src_configure
+	}
+	python_foreach_impl run_in_build_dir configuration
+}
 
-	cmake-utils_src_configure
+src_compile() {
+	compilation() {
+		cmake-utils_src_compile VERBOSE=1
+	}
+	python_foreach_impl run_in_build_dir compilation
+}
+
+src_install() {
+	installation() {
+		pushd ${CMAKE_BUILD_DIR}
+			addpredict /usr/share/glib-2.0/schemas/
+			emake DESTDIR="${ED}" install
+
+			# Window manager desktop file for GNOME #
+			insinto /usr/share/gnome/wm-properties/
+			doins gtk/gnome/compiz.desktop
+
+			# Keybinding files #
+			insinto /usr/share/gnome-control-center/keybindings
+			doins gtk/gnome/*.xml
+		popd &> /dev/null
+	}
+	python_foreach_impl run_in_build_dir installation
 }
 
 pkg_preinst() {
-	use gnome && gnome2_gconf_savelist
+	gnome2_gconf_savelist
+	gnome2_schemas_savelist
+	gnome2_icon_savelist
 }
 
 pkg_postinst() {
-	use gnome && gnome2_gconf_install
+	gnome2_gconf_install
+	gnome2_schemas_update
+	gnome2_icon_cache_update
 }
 
-pkg_prerm() {
-	use gnome && gnome2_gconf_uninstall
+pkg_postrm() {
+	gnome2_schemas_update
 }
-
