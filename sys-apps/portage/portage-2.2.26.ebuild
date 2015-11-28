@@ -1,10 +1,12 @@
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Id$
 
 EAPI=5
 
 PYTHON_COMPAT=(
 	pypy
-	python3_3 python3_4
+	python3_3 python3_4 python3_5
 	python2_7
 )
 # Note: substituted below
@@ -13,7 +15,7 @@ PYTHON_REQ_USE='bzip2(+)'
 inherit distutils-r1 multilib
 
 DESCRIPTION="Portage is the package management and distribution system for Gentoo"
-HOMEPAGE="http://www.gentoo.org/proj/en/portage/index.xml"
+HOMEPAGE="https://wiki.gentoo.org/wiki/Project:Portage"
 
 LICENSE="GPL-2"
 KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
@@ -21,6 +23,7 @@ SLOT="0"
 IUSE="build doc epydoc +ipc linguas_ru selinux xattr"
 
 DEPEND="!build? ( ${PYTHON_DEPS//bzip2(+)/ssl(+),bzip2(+)} )
+	>=app-arch/tar-1.27
 	dev-lang/python-exec:2
 	>=sys-apps/sed-4.0.5 sys-devel/patch
 	doc? ( app-text/xmlto ~app-text/docbook-xml-dtd-4.4 )
@@ -33,6 +36,7 @@ DEPEND="!build? ( ${PYTHON_DEPS//bzip2(+)/ssl(+),bzip2(+)} )
 # For whirlpool hash, require python[ssl] (bug #425046).
 # For compgen, require bash[readline] (bug #445576).
 RDEPEND="
+	>=app-arch/tar-1.27
 	dev-lang/python-exec:2
 	!build? (
 		>=sys-apps/sed-4.0.5
@@ -60,7 +64,7 @@ PDEPEND="
 
 REQUIRED_USE="epydoc? ( $(python_gen_useflags 'python2*') )"
 
-SRC_ARCHIVES="http://dev.gentoo.org/~dolsen/releases/portage"
+SRC_ARCHIVES="https://dev.gentoo.org/~dolsen/releases/portage"
 
 prefix_src_archives() {
 	local x y
