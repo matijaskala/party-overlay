@@ -1,4 +1,0 @@
-x11-base/xorg-server xorg
-app-admin/sudo -ldap
-media-gfx/blender python_single_target_python3_4
-net-nds/openldap -cxx
