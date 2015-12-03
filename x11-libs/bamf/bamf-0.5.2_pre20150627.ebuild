@@ -1,20 +1,21 @@
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Header: $
 
 EAPI=5
-VALA_USE_DEPEND=vapigen
 PYTHON_COMPAT=( python2_7 )
 
-UVER_PREFIX="+14.04.20140409"
-
-inherit autotools eutils ubuntu vala python-single-r1
+inherit autotools eutils vala python-single-r1
 
 DESCRIPTION="BAMF Application Matching Framework"
 HOMEPAGE="https://launchpad.net/bamf"
+MY_PV="${PV/_pre/~bzr0+15.10.}.1"
+SRC_URI="https://launchpad.net/ubuntu/+archive/primary/+files/${PN}_${MY_PV}.orig.tar.gz"
 
 LICENSE="LGPL-3"
 SLOT="0"
-IUSE=""
 KEYWORDS="amd64 x86"
+IUSE=""
 RESTRICT="mirror"
 
 RDEPEND="dev-libs/gobject-introspection
@@ -24,12 +25,14 @@ RDEPEND="dev-libs/gobject-introspection
 	x11-libs/gtk+:2
 	x11-libs/gtk+:3
 	x11-libs/libwnck:1
-	>=x11-libs/libwnck-3.4.7:3
+	x11-libs/libwnck:3
 	x11-libs/libXfixes
 	$(vala_depend)"
 
 DEPEND="${RDEPEND}
 	virtual/pkgconfig"
+
+S=${WORKDIR}/${PN}-${MY_PV}
 
 src_prepare() {
 	vala_src_prepare
