@@ -9,7 +9,7 @@ inherit eutils cmake-utils
 MY_PN="PackageKit-Qt"
 MY_P=${MY_PN}-${PV}
 
-DESCRIPTION="Qt5 PackageKit backend library"
+DESCRIPTION="Qt4 PackageKit backend library"
 HOMEPAGE="http://www.freedesktop.org/software/PackageKit"
 SRC_URI="http://www.freedesktop.org/software/PackageKit/releases/${MY_P}.tar.xz"
 RESTRICT="mirror"
@@ -28,8 +28,3 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig"
 
 S="${WORKDIR}/${MY_P}"
-
-src_configure() {
-	mycmakeargs="${mycmakeargs} -DUSE_QT5=ON"
-	cmake-utils_src_configure
-}
