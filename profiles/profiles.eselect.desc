@@ -30,7 +30,6 @@ arch		default/linux/x86					stable
 
 build		funtoo/1.0/linux-gnu/build/stable			stable
 
-flavor		funtoo/1.0/linux-gnu/flavor/minimal			stable
 flavor		funtoo/1.0/linux-gnu/flavor/core			stable
 flavor		funtoo/1.0/linux-gnu/flavor/desktop			stable
 flavor		hardened/linux						exp
