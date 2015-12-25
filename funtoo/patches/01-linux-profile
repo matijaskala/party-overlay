@@ -1,3 +1,0 @@
-#!/bin/sh
-
-echo USE=\"\" > profiles/default/linux/make.defaults

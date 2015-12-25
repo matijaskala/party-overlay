@@ -1,4 +1,3 @@
-EXEC 01-linux-profile
 07-updates
 12-eclass
 EXEC 21-baselayout
