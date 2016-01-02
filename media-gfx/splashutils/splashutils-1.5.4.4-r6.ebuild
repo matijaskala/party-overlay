@@ -1,6 +1,6 @@
 # Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/media-gfx/splashutils/splashutils-1.5.4.4-r5.ebuild,v 1.4 2015/02/02 15:38:01 pinkbyte Exp $
+# $Id$
 
 EAPI=5
 inherit autotools eutils multilib toolchain-funcs
@@ -87,6 +87,8 @@ src_prepare() {
 
 	epatch "${FILESDIR}/${P}-bzip2.patch"
 	epatch "${FILESDIR}/${P}-multi-keyboard.patch"
+	# Bug #557126
+	epatch "${FILESDIR}/${P}-no-la.patch"
 
 	if ! tc-is-cross-compiler && \
 	   has_version "sys-devel/gcc:$(gcc-version)[vanilla]" ; then
@@ -109,6 +111,7 @@ src_prepare() {
 
 	rm -f m4/*
 	epatch_user
+	export PKG_CONFIG="pkg-config --static"
 	eautoreconf
 }
 
