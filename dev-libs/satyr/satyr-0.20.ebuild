@@ -14,7 +14,7 @@ SRC_URI="https://fedorahosted.org/released/abrt/satyr-${PV}.tar.xz"
 LICENSE="GPL-2+"
 SLOT="0"
 IUSE=""
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 
 RDEPEND="${PYTHON_DEPS}
 	app-arch/rpm
