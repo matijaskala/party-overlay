@@ -1,5 +1,6 @@
 07-updates
 EXEC 21-baselayout
+EXEC 21-openrc
 EXEC 21-coreutils
 EXEC 21-shadow
 EXEC 21-wxGTK
