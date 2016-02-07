@@ -8,13 +8,13 @@ for i in sys-apps/openrc/openrc-*.ebuild; do
 @@ -88,8 +88,8 @@
  		brand="Linux"
  	elif use kernel_FreeBSD ; then
- 		MAKE_ARGS="${MAKE_ARGS} OS=FreeBSD"
+ 		MAKE_ARGS="\${MAKE_ARGS} OS=FreeBSD"
  		brand="FreeBSD"
  	fi
--	export BRANDING="Gentoo ${brand}"
-+	export BRANDING="Slontoo ${brand}"
- 	use prefix && MAKE_ARGS="${MAKE_ARGS} MKPREFIX=yes PREFIX=${EPREFIX}"
- 	export DEBUG=$(usev debug)
+-	export BRANDING="Gentoo \${brand}"
++	export BRANDING="Slontoo \${brand}"
+ 	use prefix && MAKE_ARGS="\${MAKE_ARGS} MKPREFIX=yes PREFIX=\${EPREFIX}"
+ 	export DEBUG=\$(usev debug)
 EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
