@@ -2,6 +2,8 @@
 
 EAPI=4
 
+inherit autotools eutils
+
 DESCRIPTION="LightDM Webkit Greeter"
 HOMEPAGE="http://launchpad.net/lightdm-webkit-greeter"
 SRC_URI="http://launchpad.net/lightdm-webkit-greeter/trunk/${PV}/+download/${P}.tar.gz"
@@ -9,8 +11,16 @@ SRC_URI="http://launchpad.net/lightdm-webkit-greeter/trunk/${PV}/+download/${P}.
 LICENSE="GPL-3 LGPL-3"
 SLOT="0"
 KEYWORDS="amd64 x86"
+IUSE="+gtk3"
 RESTRICT="mirror"
 
-DEPEND="net-libs/webkit-gtk:3
+DEPEND="gtk3? (net-libs/webkit-gtk:3)
+	!gtk3? (net-libs/webkit-gtk:2)
 	x11-misc/lightdm"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	epatch "${FILESDIR}"/gtk2.patch
+
+	eautoreconf
+}
