@@ -20,7 +20,5 @@ DEPEND="gtk3? (net-libs/webkit-gtk:3)
 RDEPEND="${DEPEND}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/gtk2.patch
-
-	eautoreconf
+	use gtk3 || ( epatch "${FILESDIR}"/gtk2.patch ; eautoconf )
 }
