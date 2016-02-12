@@ -11,6 +11,6 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 RESTRICT="mirror"
 
-DEPEND="net-libs/webkit-gtk:2
-	>=x11-misc/lightdm-1.0.0"
+DEPEND="net-libs/webkit-gtk:3
+	x11-misc/lightdm"
 RDEPEND="${DEPEND}"
