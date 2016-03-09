@@ -7,4 +7,3 @@ EXEC 21-mimeinfo
 EXEC 21-plymouth
 EXEC 21-sandbox
 EXEC 21-util-linux
-EXEC 24-lightdm
