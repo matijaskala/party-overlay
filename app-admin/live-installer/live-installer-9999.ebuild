@@ -17,9 +17,10 @@ IUSE=""
 #S=${WORKDIR}/${PN}
 RESTRICT="mirror"
 
-RDEPEND="
-	dev-python/pygtk"
-DEPEND="${RDEPEND}"
+DEPEND=""
+RDEPEND="${DEPEND}
+	dev-python/pygtk
+	dev-python/pyparted"
 
 src_install() {
 	mv ${S}/etc ${ED}
