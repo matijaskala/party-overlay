@@ -66,15 +66,6 @@ for i in sys-apps/baselayout/baselayout-*.ebuild; do
  	if use build ; then
  		emake -C "\${D}/usr/share/\${PN}" DESTDIR="\${ROOT}" layout || die
  	fi
-@@ -171,7 +200,7 @@
- 	echo "LDPATH='\${ldpaths#:}'" >> "\${D}"/etc/env.d/00basic
- 
- 	# rc-scripts version for testing of features that *should* be present
--	echo "Gentoo Base System release \${PV}" > "\${D}"/etc/gentoo-release
-+	echo "Party Linux System release \${PV}" > "\${D}"/etc/gentoo-release
- }
- 
- pkg_postinst() {
 EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
