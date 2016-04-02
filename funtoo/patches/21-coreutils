@@ -1,16 +1,20 @@
 #!/bin/bash
 
 PATCH="coreutils-usr-merge.patch"
+rm sys-apps/coreutils/coreutils-8.23.ebuild
 for i in sys-apps/coreutils/coreutils-*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-04-28 03:31:29.000000000 +0200
 +++ b/${i}	2013-10-14 15:02:15.851549730 +0200
-@@ -136,16 +136,5 @@
+@@ -136,19 +136,5 @@
  		dodir /bin
  		# move critical binaries into /bin (required by FHS)
 -		local fhs="cat chgrp chmod chown cp date dd df echo false ln ls
 -		           mkdir mknod mv pwd rm rmdir stty sync true uname"
 -		mv \${fhs} ../../bin/ || die "could not move fhs bins"
+-		if use kill; then
+-			mv kill ../../bin/ || die
+-		fi
 -		# move critical binaries into /bin (common scripts)
 -		local com="basename chroot cut dir dirname du env expr head mkfifo
 -		           mktemp readlink seq sleep sort tail touch tr tty vdir wc yes"
