@@ -3,6 +3,7 @@
 # $Id$
 
 EAPI=5
+inherit gnome2-utils
 
 DESCRIPTION="Default Lubuntu themes"
 HOMEPAGE="https://launchpad.net/lubuntu-desktop"
@@ -13,9 +14,13 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
 
-DEPEND="app-arch/xz-utils"
 RDEPEND="x11-themes/gtk-engines-murrine"
+DEPEND="app-arch/xz-utils"
 
 src_compile() {
 	:
 }
+
+pkg_preinst() { gnome2_icon_savelist; }
+pkg_postinst() { gnome2_icon_cache_update; }
+pkg_postrm() { gnome2_icon_cache_update; }
