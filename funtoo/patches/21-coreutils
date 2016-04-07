@@ -27,7 +27,7 @@ i=sys-apps/coreutils/coreutils-8.23.ebuild
 EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
-for i in sys-apps/coreutils/coreutils-*.ebuild; do
+for i in sys-apps/coreutils/coreutils-*{4,5}.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-04-28 03:31:29.000000000 +0200
 +++ b/${i}	2013-10-14 15:02:15.851549730 +0200
