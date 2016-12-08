@@ -1,3 +1,13 @@
+# FL-1940: prefer gstreamer for app-misc/tracker
+app-misc/tracker -ffmpeg
+
+# Required by GNOME for a more complete experience.
+app-editors/gedit spell
+gnome-base/gnome accessibility
+gnome-base/nautilus sendto
+mail-client/evolution spell
+net-im/empathy spell
+
 # eds is a problematic flag, causing many package to fail. It does allow
 # to build gnome clean but leading to pidgin failures. FL-347
 net-im/pidgin -eds
