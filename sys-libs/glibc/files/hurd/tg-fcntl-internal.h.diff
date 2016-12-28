@@ -13,7 +13,7 @@ diff --git a/hurd/fcntl-internal.h b/hurd/fcntl-internal.h
 new file mode 100644
 index 0000000..c816b37
 --- /dev/null
-+++ b/hurd/fcntl-internal.h
++++ hurd/fcntl-internal.h
 @@ -0,0 +1,60 @@
 +/* Copyright (C) 2008 Free Software Foundation, Inc.
 +

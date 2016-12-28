@@ -8,7 +8,7 @@ i386 version of tlsdesc.sym for GNU Hurd.
  1 file changed, 19 insertions(+)
 
 --- /dev/null
-+++ b/sysdeps/mach/hurd/i386/tlsdesc.sym
++++ sysdeps/mach/hurd/i386/tlsdesc.sym
 @@ -0,0 +1,19 @@
 +#include <stddef.h>
 +#include <sysdep.h>

@@ -54,7 +54,7 @@ I think that's the corresponding error message:
  };
  # define __rtld_global_attribute__
 --- /dev/null
-+++ b/sysdeps/mach/hurd/sysdep-cancel.h
++++ sysdeps/mach/hurd/sysdep-cancel.h
 @@ -0,0 +1,9 @@
 +#include <sysdep.h>
 +
