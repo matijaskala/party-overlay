@@ -1,4 +1,4 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
@@ -70,7 +70,7 @@ case ${PV} in
 		# development release
 		QT5_BUILD_TYPE="release"
 		MY_P=${QT5_MODULE}-opensource-src-${PV/_/-}
-		SRC_URI="http://download.qt.io/development_releases/qt/${PV%.*}/${PV/_/-}/submodules/${MY_P}.tar.xz"
+		SRC_URI="https://download.qt.io/development_releases/qt/${PV%.*}/${PV/_/-}/submodules/${MY_P}.tar.xz"
 		S=${WORKDIR}/${MY_P}
 		;;
 	*)
@@ -123,20 +123,16 @@ EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install sr
 # @DESCRIPTION:
 # Unpacks the sources.
 qt5-build_src_unpack() {
-	local gcc_version_check_fatal=false
-	local min_gcc4_minor_version=5
-	if [[ ${QT5_MINOR_VERSION} -ge 6 ]]; then
-		gcc_version_check_fatal=true
-	fi
-	if [[ ${QT5_MINOR_VERSION} -ge 7 || ${PN} == qtwebengine ]]; then
-		min_gcc4_minor_version=7
-	fi
-	if [[ $(gcc-major-version) -lt 4 ]] || \
-	   [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt ${min_gcc4_minor_version} ]]; then
-		if ${gcc_version_check_fatal}; then
-			die "GCC version 4.${min_gcc4_minor_version} or later is required to build this package"
-		else
-			ewarn "Using a GCC version lower than 4.${min_gcc4_minor_version} is not supported"
+		local min_gcc4_minor_version=5
+		if [[ ${QT5_MINOR_VERSION} -ge 7 || ${PN} == qtwebengine ]]; then
+			min_gcc4_minor_version=7
+		fi
+		if [[ $(gcc-major-version) -lt 4 ]] || \
+		   [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt ${min_gcc4_minor_version} ]]; then
+			if [[ ${QT5_MINOR_VERSION} -ge 6 ]]; then
+				die "GCC version 4.${min_gcc4_minor_version} or later is required to build this package"
+			else
+				ewarn "Using a GCC version lower than 4.${min_gcc4_minor_version} is not supported"
 		fi
 	fi
 
@@ -173,11 +169,13 @@ qt5-build_src_prepare() {
 			configure || die "sed failed (skip qmake bootstrap)"
 
 		# Respect CC, CXX, *FLAGS, MAKEOPTS and EXTRA_EMAKE when bootstrapping qmake
+		if [[ ${CHOST} == ${CBUILD} ]] || [[ ${PN} != qtcore ]] ; then
 		sed -i -e "/outpath\/qmake\".*\"\$MAKE\")/ s:): \
 			${MAKEOPTS} ${EXTRA_EMAKE} 'CC=$(tc-getCC)' 'CXX=$(tc-getCXX)' \
 			'QMAKE_CFLAGS=${CFLAGS}' 'QMAKE_CXXFLAGS=${CXXFLAGS}' 'QMAKE_LFLAGS=${LDFLAGS}'&:" \
 			-e '/"$CFG_RELEASE_QMAKE"/,/^\s\+fi$/ d' \
 			configure || die "sed failed (respect env for qmake build)"
+		fi
 		sed -i -e '/^CPPFLAGS\s*=/ s/-g //' \
 			qmake/Makefile.unix || die "sed failed (CPPFLAGS for qmake build)"
 
@@ -465,8 +463,8 @@ qt5_symlink_tools_to_build_dir() {
 	pushd "${QT5_BUILD_DIR}"/bin >/dev/null || die
 
 	for tool in "${tools[@]}"; do
-		[[ -e ${QT5_BINDIR}/${tool} ]] || continue
-		ln -s "${QT5_BINDIR}/${tool}" . || die "failed to symlink ${tool}"
+		[[ -e ${SYSROOT}${QT5_BINDIR}/${tool} ]] || continue
+		ln -s "${SYSROOT}${QT5_BINDIR}/${tool}" . || die "failed to symlink ${tool}"
 	done
 
 	popd >/dev/null || die
@@ -477,9 +475,11 @@ qt5_symlink_tools_to_build_dir() {
 # @DESCRIPTION:
 # Runs ./configure for modules belonging to qtbase.
 qt5_base_configure() {
+	if [[ ${CHOST} == ${CBUILD} ]] || [[ ${PN} != qtcore ]] ; then
 	# setup toolchain variables used by configure
 	tc-export AR CC CXX OBJDUMP RANLIB STRIP
 	export LD="$(tc-getCXX)"
+	fi
 
 	# configure arguments
 	local conf=(
@@ -648,6 +648,8 @@ qt5_base_configure() {
 		# do not build with -Werror
 		-no-warnings-are-errors
 
+		$([[ ${CHOST} == *mingw* ]] && echo -xplatform win32-g++ -device-option CROSS_COMPILE=${CHOST}-)
+
 		# module-specific options
 		"${myconf[@]}"
 	)
@@ -674,29 +676,37 @@ qt5_qmake() {
 		qmakepath=${QT5_BINDIR}
 	fi
 
+	local qmakeargs=(
+		CONFIG+=$(usex debug debug release)
+		CONFIG-=$(usex debug release debug)
+	)
+	[[ ${CHOST} == ${CBUILD} ]] || [[ ${PN} != qtcore ]] && \
+	qmakeargs+=(
+		QMAKE_AR="$(tc-getAR) cqs"
+		QMAKE_CC="$(tc-getCC)"
+		QMAKE_LINK_C="$(tc-getCC)"
+		QMAKE_LINK_C_SHLIB="$(tc-getCC)"
+		QMAKE_CXX="$(tc-getCXX)"
+		QMAKE_LINK="$(tc-getCXX)"
+		QMAKE_LINK_SHLIB="$(tc-getCXX)"
+		QMAKE_OBJCOPY="$(tc-getOBJCOPY)"
+		QMAKE_RANLIB=
+		QMAKE_STRIP="$(tc-getSTRIP)"
+	)
+	qmakeargs+=(
+		QMAKE_CFLAGS="${CFLAGS}"
+		QMAKE_CFLAGS_RELEASE=
+		QMAKE_CFLAGS_DEBUG=
+		QMAKE_CXXFLAGS="${CXXFLAGS} $([[ ${CHOST} == *mingw* ]] && [[ ${PN} == qtcore ]] && echo -D_POSIX_C_SOURCE=1)"
+		QMAKE_CXXFLAGS_RELEASE=
+		QMAKE_CXXFLAGS_DEBUG=
+		QMAKE_LFLAGS="${LDFLAGS}"
+		QMAKE_LFLAGS_RELEASE=
+		QMAKE_LFLAGS_DEBUG=
+	)
 	"${qmakepath}"/qmake \
 		"${projectdir}" \
-		CONFIG+=$(usex debug debug release) \
-		CONFIG-=$(usex debug release debug) \
-		QMAKE_AR="$(tc-getAR) cqs" \
-		QMAKE_CC="$(tc-getCC)" \
-		QMAKE_LINK_C="$(tc-getCC)" \
-		QMAKE_LINK_C_SHLIB="$(tc-getCC)" \
-		QMAKE_CXX="$(tc-getCXX)" \
-		QMAKE_LINK="$(tc-getCXX)" \
-		QMAKE_LINK_SHLIB="$(tc-getCXX)" \
-		QMAKE_OBJCOPY="$(tc-getOBJCOPY)" \
-		QMAKE_RANLIB= \
-		QMAKE_STRIP="$(tc-getSTRIP)" \
-		QMAKE_CFLAGS="${CFLAGS}" \
-		QMAKE_CFLAGS_RELEASE= \
-		QMAKE_CFLAGS_DEBUG= \
-		QMAKE_CXXFLAGS="${CXXFLAGS}" \
-		QMAKE_CXXFLAGS_RELEASE= \
-		QMAKE_CXXFLAGS_DEBUG= \
-		QMAKE_LFLAGS="${LDFLAGS}" \
-		QMAKE_LFLAGS_RELEASE= \
-		QMAKE_LFLAGS_DEBUG= \
+		"${qmakeargs[@]}" \
 		"${myqmakeargs[@]}" \
 		|| die "qmake failed (${projectdir#${S}/})"
 }
