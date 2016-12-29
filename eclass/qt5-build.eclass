@@ -48,12 +48,22 @@ esac
 inherit eutils flag-o-matic toolchain-funcs versionator virtualx
 
 HOMEPAGE="https://www.qt.io/"
-LICENSE="|| ( LGPL-2.1 LGPL-3 ) FDL-1.3"
 
 QT5_MINOR_VERSION=$(get_version_component_range 2)
-readonly QT5_MINOR_VERSION
+QT5_PATCH_VERSION=$(get_version_component_range 3)
+readonly QT5_MINOR_VERSION QT5_PATCH_VERSION
 
-SLOT="5"
+if [[ ${QT5_MINOR_VERSION} -ge 7 ]]; then
+	LICENSE="|| ( GPL-2 GPL-3 LGPL-3 ) FDL-1.3"
+else
+	LICENSE="|| ( LGPL-2.1 LGPL-3 ) FDL-1.3"
+fi
+
+if [[ ${QT5_MINOR_VERSION} -ge 6 ]]; then
+	SLOT=5/$(get_version_component_range 1-2)
+else
+	SLOT=5
+fi
 
 case ${PV} in
 	5.9999)
@@ -77,7 +87,12 @@ case ${PV} in
 		# official stable release
 		QT5_BUILD_TYPE="release"
 		MY_P=${QT5_MODULE}-opensource-src-${PV}
-		SRC_URI="http://download.qt.io/official_releases/qt/${PV%.*}/${PV}/submodules/${MY_P}.tar.xz"
+		# bug 586646
+		if [[ ${PV} = 5.6.1 ]]; then
+			SRC_URI="https://download.qt.io/official_releases/qt/${PV%.*}/${PV}-1/submodules/${MY_P}-1.tar.xz"
+		else
+			SRC_URI="https://download.qt.io/official_releases/qt/${PV%.*}/${PV}/submodules/${MY_P}.tar.xz"
+		fi
 		S=${WORKDIR}/${MY_P}
 		;;
 esac
@@ -179,24 +194,24 @@ qt5-build_src_prepare() {
 		sed -i -e '/^CPPFLAGS\s*=/ s/-g //' \
 			qmake/Makefile.unix || die "sed failed (CPPFLAGS for qmake build)"
 
-		# Respect CXX in {bsymbolic_functions,fvisibility,precomp}.test
+		# Respect CXX in bsymbolic_functions, fvisibility, precomp, and a few other tests
 		sed -i -e "/^QMAKE_CONF_COMPILER=/ s:=.*:=\"$(tc-getCXX)\":" \
 			configure || die "sed failed (QMAKE_CONF_COMPILER)"
 
 		# Respect toolchain and flags in config.tests
 		find config.tests/unix -name '*.test' -type f -execdir \
-			sed -i -e '/bin\/qmake/ s/-nocache //' '{}' + || die
-
-		# Don't add -O3 to CXXFLAGS (bug 549140)
-		sed -i -e '/CONFIG\s*+=/ s/optimize_full//' \
-			src/{corelib/corelib,gui/gui}.pro || die "sed failed (optimize_full)"
+			sed -i -e 's/-nocache //' '{}' + || die
 
 		# Don't inject -msse/-mavx/... into CXXFLAGS when detecting
 		# compiler support for extended instruction sets (bug 552942)
 		if [[ ${QT5_MINOR_VERSION} -ge 5 ]]; then
-			find config.tests/common -name '*.pro' -type f -execdir \
-				sed -i -e '/else:QMAKE_CXXFLAGS\s*+=/ d' '{}' + || die
+		find config.tests/common -name '*.pro' -type f -execdir \
+			sed -i -e '/else:QMAKE_CXXFLAGS\s*+=/ d' '{}' + || die
 		fi
+
+		# Don't add -O3 to CXXFLAGS (bug 549140)
+		sed -i -e '/CONFIG\s*+=/ s/optimize_full//' \
+			src/{corelib/corelib,gui/gui}.pro || die "sed failed (optimize_full)"
 	fi
 
 	if [[ ${EAPI} == 5 ]]; then
@@ -263,7 +278,22 @@ qt5-build_src_install() {
 	if [[ ${PN} == qtcore ]]; then
 		pushd "${QT5_BUILD_DIR}" >/dev/null || die
 
-		set -- emake INSTALL_ROOT="${D}" install_{global_docs,mkspecs,qmake,syncqt}
+		local qmake_install_target=install_qmake
+		if [[ ${QT5_MINOR_VERSION} -ge 7 ]]; then
+			# qmake/qmake-aux.pro
+			qmake_install_target=sub-qmake-qmake-aux-pro-install_subtargets
+		fi
+
+		local global_docs_install_target=
+		if [[ ${QT5_MINOR_VERSION} -le 6 && ${QT5_PATCH_VERSION} -le 2 || ${QT5_MINOR_VERSION} -lt 6 ]]; then
+			global_docs_install_target=install_global_docs
+		fi
+
+		set -- emake INSTALL_ROOT="${D}" \
+			${qmake_install_target} \
+			install_{syncqt,mkspecs} \
+			${global_docs_install_target}
+
 		einfo "Running $*"
 		"$@"
 
@@ -529,8 +559,8 @@ qt5_base_configure() {
 		-no-sql-db2 -no-sql-ibase -no-sql-mysql -no-sql-oci -no-sql-odbc
 		-no-sql-psql -no-sql-sqlite -no-sql-sqlite2 -no-sql-tds
 
-		# obsolete flag, does nothing
-		#-qml-debug
+		# ensure the QML debugging support (qmltooling) is built in qtdeclarative
+		-qml-debug
 
 		# extended instruction sets support
 		$([[ ${QT5_MINOR_VERSION} -le 4 ]] && is-flagq -mno-sse2   && echo -no-sse2)
@@ -546,7 +576,7 @@ qt5_base_configure() {
 		# use pkg-config to detect include and library paths
 		-pkg-config
 
-		# prefer system libraries (only common deps here)
+		# prefer system libraries (only common hard deps here)
 		-system-zlib
 		-system-pcre
 
@@ -561,7 +591,7 @@ qt5_base_configure() {
 		$([[ ${QT5_MINOR_VERSION} -ge 5 ]] && echo -no-xkbcommon-{x11,evdev})
 		-no-xinput2 -no-xcb-xlib
 
-		# don't specify -no-gif because there is no way to override it later
+		# cannot use -no-gif because there is no way to override it later
 		#-no-gif
 
 		# always enable glib event loop support
@@ -581,9 +611,6 @@ qt5_base_configure() {
 
 		# print verbose information about each configure test
 		-verbose
-
-		# obsolete flag, does nothing
-		#-nis
 
 		# always enable iconv support
 		-iconv
@@ -642,8 +669,9 @@ qt5_base_configure() {
 		# disable gstreamer by default, override in qtmultimedia
 		$([[ ${QT5_MINOR_VERSION} -ge 5 ]] && echo -no-gstreamer)
 
-		# use upstream default
-		#-no-system-proxies
+		# respect system proxies by default: it's the most natural
+		# setting, and it'll become the new upstream default in 5.8
+		-system-proxies
 
 		# do not build with -Werror
 		-no-warnings-are-errors
