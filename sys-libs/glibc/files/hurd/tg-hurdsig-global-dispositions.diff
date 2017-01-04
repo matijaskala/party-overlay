@@ -923,7 +923,7 @@ during/around the time __proc_dostop executes.
 -  if ((ss->actions[signo].sa_flags & SA_ONSTACK) &&
 +  /* XXX what if handler != action->handler (for instance, if a signal
 +   * preemptor took over) ? */
-+  struct sigaction* action = & _hurd_sigstate_actions (ss) [signo];
++  action = & _hurd_sigstate_actions (ss) [signo];
 +
 +  if ((action->sa_flags & SA_ONSTACK) &&
        !(ss->sigaltstack.ss_flags & (SS_DISABLE|SS_ONSTACK)))
