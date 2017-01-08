@@ -5,9 +5,11 @@
 EAPI="5"
 ETYPE="sources"
 
+inherit versionator
+
 CKV=$(get_version_component_range 1-2)
 
-inherit mount-boot kernel-2 versionator
+inherit mount-boot kernel-2
 detect_version
 
 KCONFIG_URELEASE="utopic"
