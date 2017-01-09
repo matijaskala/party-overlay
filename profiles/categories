@@ -140,9 +140,9 @@ sys-fs
 sys-infiniband
 sys-kernel
 sys-libs
+sys-microkernel
 sys-power
 sys-process
-unity-indicators
 virtual
 www-apache
 www-apps
@@ -162,4 +162,3 @@ x11-themes
 x11-wm
 xfce-base
 xfce-extra
-yast-base
