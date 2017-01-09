@@ -40,14 +40,12 @@ for i in sys-apps/baselayout/baselayout-*.ebuild; do
  pkg_preinst() {
  	# Bug #217848 - Since the remap_dns_vars() called by pkg_preinst() of
  	# the baselayout-1.x ebuild copies all the real configs from the user's
-@@ -141,6 +169,7 @@
+@@ -141,4 +169,5 @@
  	# stages, but they cannot be in CONTENTS.
  	# Also, we cannot reference \$S as binpkg will break so we do this.
  	multilib_layout
 +	usrmerge_layout
  	if use build ; then
- 		emake -C "\${D}/usr/share/\${PN}" DESTDIR="\${ROOT}" layout || die
- 	fi
 EOF
 	git apply ${PATCH} || exit 1
 	sed -i 's|,\(usr/,usr/local/\)|\1|' $i
