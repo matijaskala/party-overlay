@@ -5,24 +5,6 @@ for i in sys-apps/baselayout/baselayout-*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-07-28 01:01:32.000000000 +0200
 +++ b/${i}	2013-10-03 19:18:09.076757264 +0200
-@@ -39,7 +39,7 @@
- 	# figure out which paths should be symlinks and which should be directories
- 	local dirs syms exp d
- 	for libdir in \${libdirs} ; do
--		exp=( {,usr/,usr/local/}\${libdir} )
-+		exp=( {usr/,usr/local/}\${libdir} )
- 		for d in "\${exp[@]/#/\${ROOT}}" ; do
- 			# most things should be dirs
- 			if [ "\${SYMLINK_LIB}" = "yes" ] && [ "\${libdir}" = "lib" ] ; then
-@@ -62,7 +62,7 @@
- 	# setup symlinks and dirs where we expect them to be; do not migrate
- 	# data ... just fall over in that case.
- 	local prefix
--	for prefix in "\${ROOT}"{,usr/,usr/local/} ; do
-+	for prefix in "\${ROOT}"{usr/,usr/local/} ; do
- 		if [ "\${SYMLINK_LIB}" = yes ] ; then
- 			# we need to make sure "lib" points to the native libdir
- 			if [ -h "\${prefix}lib" ] ; then
 @@ -124,6 +124,34 @@
  	done
  }
@@ -68,5 +50,6 @@ for i in sys-apps/baselayout/baselayout-*.ebuild; do
  	fi
 EOF
 	git apply ${PATCH} || exit 1
+	sed -i 's|,\(usr/,usr/local/\)|\1|' $i
 	rm ${PATCH}
 done
