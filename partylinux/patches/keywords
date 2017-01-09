@@ -1,8 +1,6 @@
 #!/bin/sh
 
-PACKAGES=( sys-kernel/debian* )
-
-for p in $PACKAGES ; do
+for p in sys-kernel/debian* ; do
     sed -i \
 	-e 's/KEYWORDS="\*"/KEYWORDS="amd64 x86"/' \
 	-e 's/KEYWORDS="~\*"/KEYWORDS="~amd64 ~x86"/' \
