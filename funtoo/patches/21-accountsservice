@@ -31,7 +31,7 @@ for i in ${CATEGORY}/${PN}/${PN}-0.6.{42,43}.ebuild; do
 +	"\${FILESDIR}/\${PN}-other-display-managers.patch"
  )
  
- gnome2_src_configure() {
+ src_configure() {
 EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
