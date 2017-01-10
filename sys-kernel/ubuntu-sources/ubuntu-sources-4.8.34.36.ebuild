@@ -5,19 +5,17 @@
 EAPI="5"
 ETYPE="sources"
 
-inherit versionator
-
-CKV=$(get_version_component_range 1-2)
-
 inherit mount-boot kernel-2
+OKV=$(get_version_component_range 1-2)
 detect_version
 
 KCONFIG_URELEASE="utopic"
-MIRROR_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux"
+UBUNTU_PATCH="linux_${OKV}.0-$(get_version_component_range 3-4).diff"
+UBUNTU_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux/${UBUNTU_PATCH}.gz"
 
 DESCRIPTION="Ubuntu patched kernel sources"
 HOMEPAGE="https://launchpad.net/ubuntu/+source/linux"
-SRC_URI="${KERNEL_URI} ${MIRROR_URI}/linux_${CKV}.0-$(get_version_component_range 3-4).diff.gz 
+SRC_URI="${KERNEL_URI} ${UBUNTU_URI}
 	amd64? ( http://kernel.ubuntu.com/~kernel-ppa/configs/${KCONFIG_URELEASE}/amd64-config.flavour.generic )
 	x86? ( http://kernel.ubuntu.com/~kernel-ppa/configs/${KCONFIG_URELEASE}/i386-config.flavour.generic )"
 LICENSE="GPL-2"
@@ -45,7 +43,7 @@ pkg_setup() {
 
 src_prepare() {
 	# Ubuntu patchset (don't use epatch so we can easily see what files get patched) #
-	cat "${WORKDIR}/linux_${CKV}.0-$(get_version_component_range 3-4).diff" | patch -p1 || die
+	cat "${WORKDIR}/${UBUNTU_PATCH}" | patch -p1 || die
 
 	sed -i -e "s:^\(EXTRAVERSION =\).*:\1 ${EXTRAVERSION}:" Makefile || die
 	sed	-i -e 's:#export\tINSTALL_PATH:export\tINSTALL_PATH:' Makefile || die
