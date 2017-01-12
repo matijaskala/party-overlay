@@ -13,9 +13,9 @@ DESCRIPTION="Full sources for the Linux kernel including Fedora and openSUSE pat
 HOMEPAGE="https://www.kernel.org"
 
 KEYWORDS="~amd64 ~x86"
-FEDORA_SRC="git://pkgs.fedoraproject.org/kernel.git"
+FEDORA_REPO_URI="git://pkgs.fedoraproject.org/kernel.git"
 FEDORA_BRANCH="f23"
-SUSE_SRC="git://kernel.opensuse.org/kernel-source.git"
+SUSE_REPO_URI="git://kernel.opensuse.org/kernel-source.git"
 SUSE_BRANCH="stable"
 
 fedora_apply() {

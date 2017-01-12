@@ -23,7 +23,7 @@ geek-sources_src_unpack() {
 
 	geek_prepare_storedir
 
-	for i in ${GEEK_IUSE} ; do
+	for i in ${GEEK_SOURCES_IUSE} ; do
 		use ${i} || continue
 		geek_fetch ${i}
 		pushd "${GEEK_STORE_DIR}/$i" > /dev/null || die

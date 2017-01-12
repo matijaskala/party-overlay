@@ -21,14 +21,14 @@ geek_prepare_storedir() {
 geek_fetch() {
 	local uper=$(echo $1 | tr '[:lower:]' '[:upper:]')
 	local BRANCH=${uper}_BRANCH
-	local SRC=${uper}_SRC
+	local REPO=${uper}_REPO_URI
 	local CSD="${GEEK_STORE_DIR}/$1"
 	if [ -d "${CSD}" ] ; then
 		pushd "${CSD}" > /dev/null || die
 		[ -e .git ] && git pull --all --quiet
 		popd > /dev/null || die
 	else
-		git clone --depth=1 -b "${!BRANCH}" "${!SRC}" "${CSD}"
+		git clone --depth=1 -b "${!BRANCH}" "${!REPO}" "${CSD}"
 	fi
 }
 
