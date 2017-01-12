@@ -10,7 +10,6 @@ detect_version
 
 DESCRIPTION="Full sources for the Linux kernel including openSUSE patches"
 HOMEPAGE="https://kernel.opensuse.org"
-UNIPATCH_STRICTORDER="yes"
 SRC_URI="${KERNEL_URI}"
 
 KEYWORDS="~amd64 ~x86"
@@ -24,25 +23,24 @@ geek_prepare_storedir() {
 }
 
 src_unpack() {
+	kernel-2_src_unpack
+
 	geek_prepare_storedir
 
 	local CSD="${GEEK_STORE_DIR}/suse"
 	if [ -d "${CSD}" ] ; then
 		cd "${CSD}" || die "cd ${CSD} failed"
-		[ -e .git ] && git pull --all
+		[ -e .git ] && git pull --all --quiet
 	else
 		git clone -b "${SUSE_BRANCH}" "${SUSE_SRC}" "${CSD}"
 		cd "${CSD}" || die "cd ${CSD} failed"
 	fi
 
-	mkdir -p "${T}/suse"
-	for i in patches.* ; do
-		[ "$i" = patches.kernel.org ] || [ "$i" = patches.rpmify ] || cp -r "$i" "${T}/suse"
-	done
+	cd "${S}" || die "cd ${S} failed"
 
-	for i in $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf) ; do
-		UNIPATCH_LIST+=" ${GEEK_STORE_DIR}/suse/$i"
+	for i in $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' ${CSD}/series.conf) ; do
+		ebegin "Applying $i"
+		patch -f -r - -p1 -s < "${CSD}/$i"
+		eend $?
 	done
-
-	kernel-2_src_unpack
 }
