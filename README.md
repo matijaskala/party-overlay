@@ -2,13 +2,14 @@ party-overlay
 =============
 To add this overlay edit the following files:
 
-`/etc/portage/package.mask:`
+
+/etc/portage/package.mask:
 
 ```
 sys-apps/portage::party-overlay
 ```
 
-`/etc/portage/repos.conf:`
+/etc/portage/repos.conf:
 
 ```
 [party-overlay]
