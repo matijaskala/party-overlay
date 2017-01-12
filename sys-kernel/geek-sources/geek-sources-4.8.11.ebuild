@@ -11,6 +11,7 @@ detect_version
 
 DESCRIPTION="Full sources for the Linux kernel including Fedora and openSUSE patches"
 HOMEPAGE="https://www.kernel.org"
+UNIPATCH_LIST="${FILESDIR}/enable_additional_cpu_optimizations_for_gcc.patch ${FILESDIR}/linux-4.3-colored-printk.patch"
 
 KEYWORDS="~amd64 ~x86"
 FEDORA_REPO_URI="git://pkgs.fedoraproject.org/kernel.git"
