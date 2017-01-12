@@ -40,8 +40,8 @@ src_unpack() {
 		[ "$i" = patches.kernel.org ] || [ "$i" = patches.rpmify ] || cp -r "$i" "${T}/suse"
 	done
 
-	for i in $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf) ; do
-		UNIPATCH_LIST+=" ${T}/suse/$i"
+	for i in $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf) ; do
+		UNIPATCH_LIST+=" ${GEEK_STORE_DIR}/suse/$i"
 	done
 
 	kernel-2_src_unpack
