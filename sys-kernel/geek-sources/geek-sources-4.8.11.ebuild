@@ -23,5 +23,7 @@ fedora_apply() {
 }
 
 suse_apply() {
-	geek_apply $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf)
+	# masked arch.acpi.thermal because it is not compatible with linux 4.8.11
+	# TODO remove the mask in later ebuilds
+	geek_apply $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen|arch.acpi.thermal).*/{gsub(/[ \t]/,"") ; print $1}' series.conf)
 }

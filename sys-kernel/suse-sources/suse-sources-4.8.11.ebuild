@@ -31,7 +31,7 @@ src_unpack() {
 
 	cd "${S}" || die "cd ${S} failed"
 
-	for i in $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' ${CSD}/series.conf) ; do
+	for i in $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen|arch.acpi.thermal).*/{gsub(/[ \t]/,"") ; print $1}' ${CSD}/series.conf) ; do
 		ebegin "Applying $i"
 		patch -f -r - -p1 -s < "${CSD}/$i"
 		eend $?
