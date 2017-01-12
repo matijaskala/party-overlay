@@ -19,13 +19,9 @@ SUSE_SRC="git://kernel.opensuse.org/kernel-source.git"
 SUSE_BRANCH="stable"
 
 fedora_apply() {
-	for i in $(awk '/^Patch.*\.patch/{print $2}' kernel.spec) ; do
-		geek_apply "$i"
-	done
+	geek_apply $(awk '/^Patch.*\.patch/{print $2}' kernel.spec)
 }
 
 suse_apply() {
-	for i in $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf) ; do
-		geek_apply "$i"
-	done
+	geek_apply $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf)
 }

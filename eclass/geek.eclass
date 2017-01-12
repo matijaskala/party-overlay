@@ -41,9 +41,11 @@ geek_fetch() {
 _GEEK_CURRENT_REPO=
 geek_apply() {
 	pushd "${S}" > /dev/null || die
-	ebegin "Applying ${_GEEK_CURRENT_REPO}/$1"
-	patch -f -p1 -r - -s < "${GEEK_STORE_DIR}/${_GEEK_CURRENT_REPO}/$1"
-	eend $?
+	for i ; do
+		ebegin "Applying ${_GEEK_CURRENT_REPO}/$i"
+		patch -f -p1 -r - -s < "${GEEK_STORE_DIR}/${_GEEK_CURRENT_REPO}/$i"
+		eend $?
+	done
 	popd > /dev/null || die
 }
 
