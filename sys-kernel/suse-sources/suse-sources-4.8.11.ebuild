@@ -5,22 +5,15 @@
 EAPI="5"
 ETYPE="sources"
 
-inherit kernel-2
+inherit geek
 detect_version
 
 DESCRIPTION="Full sources for the Linux kernel including openSUSE patches"
 HOMEPAGE="https://kernel.opensuse.org"
-SRC_URI="${KERNEL_URI}"
 
 KEYWORDS="~amd64 ~x86"
 SUSE_SRC="git://kernel.opensuse.org/kernel-source.git"
 SUSE_BRANCH="stable"
-
-: ${GEEK_STORE_DIR:="${PORTAGE_ACTUAL_DISTDIR:-${DISTDIR}}/geek"}
-geek_prepare_storedir() {
-	[[ -d ${GEEK_STORE_DIR} ]] || addwrite /
-	addwrite "${GEEK_STORE_DIR}"
-}
 
 src_unpack() {
 	kernel-2_src_unpack

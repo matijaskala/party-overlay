@@ -5,21 +5,14 @@
 EAPI="5"
 ETYPE="sources"
 
-inherit kernel-2
+inherit geek
 detect_version
 
 DESCRIPTION="Full sources for the Linux kernel including Fedora patches"
 HOMEPAGE="https://src.fedoraproject.org/cgit/rpms/kernel.git"
-SRC_URI="${KERNEL_URI}"
 
 KEYWORDS="~amd64 ~x86"
 FEDORA_SRC="git://pkgs.fedoraproject.org/kernel.git"
-
-: ${GEEK_STORE_DIR:="${PORTAGE_ACTUAL_DISTDIR:-${DISTDIR}}/geek"}
-geek_prepare_storedir() {
-	[[ -d ${GEEK_STORE_DIR} ]] || addwrite /
-	addwrite "${GEEK_STORE_DIR}"
-}
 
 src_unpack() {
 	kernel-2_src_unpack
