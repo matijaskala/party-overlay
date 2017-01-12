@@ -4,9 +4,9 @@
 
 EAPI="5"
 ETYPE="sources"
-GEEK_IUSE="fedora suse"
+GEEK_SOURCES_IUSE="fedora suse"
 
-inherit geek
+inherit geek-sources
 detect_version
 
 DESCRIPTION="Full sources for the Linux kernel including Fedora and openSUSE patches"

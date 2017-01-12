@@ -5,7 +5,7 @@
 EAPI="5"
 ETYPE="sources"
 
-inherit geek
+inherit geek-sources
 detect_version
 
 DESCRIPTION="Full sources for the Linux kernel including openSUSE patches"
