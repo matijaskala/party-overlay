@@ -5,13 +5,15 @@
 EAPI="5"
 ETYPE="sources"
 
-inherit mount-boot kernel-2
+inherit versionator
 OKV=$(get_version_component_range 1-2)
+inherit mount-boot kernel-2
 detect_version
 
 KCONFIG_URELEASE="utopic"
-UBUNTU_PATCH="linux_${OKV}.0-$(get_version_component_range 3-4).diff"
-UBUNTU_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux/${UBUNTU_PATCH}.gz"
+UBUNTU_PATCH="linux_${OKV}.0-$(get_version_component_range 3-4).diff.gz"
+UBUNTU_URI="http://archive.ubuntu.com/ubuntu/pool/main/l/linux/${UBUNTU_PATCH}"
+UNIPATCH_LIST="${DISTDIR}/${UBUNTU_PATCH}"
 
 DESCRIPTION="Ubuntu patched kernel sources"
 HOMEPAGE="https://launchpad.net/ubuntu/+source/linux"
@@ -42,9 +44,6 @@ pkg_setup() {
 }
 
 src_prepare() {
-	# Ubuntu patchset (don't use epatch so we can easily see what files get patched) #
-	cat "${WORKDIR}/${UBUNTU_PATCH}" | patch -p1 || die
-
 	sed -i -e "s:^\(EXTRAVERSION =\).*:\1 ${EXTRAVERSION}:" Makefile || die
 	sed	-i -e 's:#export\tINSTALL_PATH:export\tINSTALL_PATH:' Makefile || die
 	rm -f .config >/dev/null
@@ -52,7 +51,6 @@ src_prepare() {
 	# Ubuntu #
 	install -d ${TEMP}/configs || die
 	make -s mrproper || die "make mrproper failed"
-	make -s include/linux/version.h || die "make include/linux/version.h failed"
 
 	mv "${TEMP}/configs" "${S}" || die
 }
