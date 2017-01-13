@@ -28,7 +28,7 @@ geek_fetch() {
 		REPO_URI="${!REPO}"
 	else
 		REPO_URI="${!REPO% -> *}"
-		CSD="${GEEK_STORE_DIR}/${!REPO# -> *}"
+		CSD="${GEEK_STORE_DIR}/${!REPO#* -> }"
 	fi
 	if [ -d "${CSD}" ] ; then
 		pushd "${CSD}" > /dev/null || die
