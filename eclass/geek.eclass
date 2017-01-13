@@ -23,12 +23,24 @@ geek_fetch() {
 	local BRANCH=${uper}_BRANCH
 	local REPO=${uper}_REPO_URI
 	local CSD="${GEEK_STORE_DIR}/$1"
+	local REPO_URI
+	if [[ "${!REPO% -> *}" == ${!B} ]]
+		REPO_URI="${!REPO}"
+	else
+		REPO_URI="${!REPO% -> *}"
+		CSD="${GEEK_STORE_DIR}/${!REPO# -> *}"
+	fi
 	if [ -d "${CSD}" ] ; then
 		pushd "${CSD}" > /dev/null || die
 		[ -e .git ] && git pull --all --quiet
+		[ -e .svn ] && svn update --quiet
 		popd > /dev/null || die
+	elif [[ ${REPO} == svn:* ]] ; then
+		svn checkout "${REPO_URI}" "${CSD}"
+	else if [[ -z "${!BRANCH}" ]]
+		git clone --depth=1 "${REPO_URI}" "${CSD}"
 	else
-		git clone --depth=1 -b "${!BRANCH}" "${!REPO}" "${CSD}"
+		git clone --depth=1 -b "${!BRANCH}" "${REPO_URI}" "${CSD}"
 	fi
 }
 
