@@ -18,24 +18,28 @@ geek_prepare_storedir() {
 	addwrite "${GEEK_STORE_DIR}"
 }
 
+geek_get_source_repo_path() {
+	local uper=$(echo "$1" | tr '[:lower:]' '[:upper:]')
+	local REPO=${uper}_REPO_URI
+	if [[ ${!REPO% -> *} == ${!REPO} ]] ; then
+		echo "${GEEK_STORE_DIR}/$1"
+	else
+		echo "${GEEK_STORE_DIR}/${!REPO#* -> }"
+	fi
+}
+
 geek_fetch() {
-	local uper=$(echo $1 | tr '[:lower:]' '[:upper:]')
+	local uper=$(echo "$1" | tr '[:lower:]' '[:upper:]')
 	local BRANCH=${uper}_BRANCH
 	local REPO=${uper}_REPO_URI
-	local CSD="${GEEK_STORE_DIR}/$1"
-	local REPO_URI
-	if [[ "${!REPO% -> *}" == ${!REPO} ]] ; then
-		REPO_URI="${!REPO}"
-	else
-		REPO_URI="${!REPO% -> *}"
-		CSD="${GEEK_STORE_DIR}/${!REPO#* -> }"
-	fi
+	local CSD="$(geek_get_source_repo_path "$1")"
+	local REPO_URI="${!REPO% -> *}"
 	if [ -d "${CSD}" ] ; then
 		pushd "${CSD}" > /dev/null || die
 		[ -e .git ] && git pull --all --quiet
 		[ -e .svn ] && svn update --quiet
 		popd > /dev/null || die
-	elif [[ ${REPO} == svn:* ]] ; then
+	elif [[ ${REPO_URI} == svn:* ]] ; then
 		svn checkout "${REPO_URI}" "${CSD}"
 	elif [[ -z "${!BRANCH}" ]] ; then
 		git clone --depth=1 "${REPO_URI}" "${CSD}"
@@ -48,7 +52,7 @@ geek_apply() {
 	pushd "${S}" > /dev/null || die
 	for i ; do
 		ebegin "Applying ${GEEK_SOURCE_REPO}/$i"
-		patch -f -p1 -r - -s < "${GEEK_STORE_DIR}/${GEEK_SOURCE_REPO}/$i"
+		patch -f -p1 -r - -s < "$(geek_get_source_repo_path "${GEEK_SOURCE_REPO}")/$i"
 		eend $?
 	done
 	popd > /dev/null || die
