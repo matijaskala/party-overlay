@@ -34,14 +34,14 @@ geek_fetch() {
 	local REPO=${uper}_REPO_URI
 	local CSD="$(geek_get_source_repo_path "$1")"
 	local REPO_URI="${!REPO% -> *}"
-	if [ -d "${CSD}" ] ; then
+	if [[ -d ${CSD} ]] ; then
 		pushd "${CSD}" > /dev/null || die
-		[ -e .git ] && git pull --all --quiet
-		[ -e .svn ] && svn update --quiet
+		[[ -e .git ]] && git pull --all --quiet
+		[[ -e .svn ]] && svn update --quiet
 		popd > /dev/null || die
 	elif [[ ${REPO_URI} == svn:* ]] ; then
 		svn checkout "${REPO_URI}" "${CSD}"
-	elif [[ -z "${!BRANCH}" ]] ; then
+	elif [[ -z ${!BRANCH} ]] ; then
 		git clone --depth=1 "${REPO_URI}" "${CSD}"
 	else
 		git clone --depth=1 -b "${!BRANCH}" "${REPO_URI}" "${CSD}"
