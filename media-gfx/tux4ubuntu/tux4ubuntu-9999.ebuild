@@ -11,9 +11,7 @@ HOMEPAGE="https://tux4ubuntu.blogspot.com"
 EGIT_REPO_URI="git://github.com/tuxedojoe/${PN}"
 
 LICENSE="MIT"
-SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="+grub +icons"
 
 RDEPEND="sys-boot/plymouth"
 
