@@ -4,7 +4,9 @@
 
 EAPI=6
 
-DESCRIPTION="Let's bring Tux to Linux!"
+inherit git-r3
+
+DESCRIPTION="Tux theme for Plymouth"
 HOMEPAGE="https://tux4ubuntu.blogspot.com"
 EGIT_REPO_URI="git://github.com/tuxedojoe/${PN}"
 
@@ -13,13 +15,9 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="+grub +icons"
 
+RDEPEND="sys-boot/plymouth"
+
 src_install() {
-	if use icons ; then
-		insinto /usr/share/icons
-		doins -r tux-icon-theme
-	fi
-	if use grub ; then
-		insinto /usr/share/grub/themes
-		doins -r tux-grub-theme
-	fi
+	insinto /usr/share/plymouth/themes
+	doins -r tux-plymouth-theme
 }
