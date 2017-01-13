@@ -49,7 +49,6 @@ LICENSE="MPL-2.0 GPL-2 LGPL-2.1 GPL-3 LGPL-3"
 IUSE="hardened +hwaccel pgo selinux +gmp-autoupdate test"
 
 GNUZILLA_REPO_URI="git://git.sv.gnu.org/gnuzilla.git"
-GNUZILLA_BRANCH="master"
 
 # More URIs appended below...
 SRC_URI="${SRC_URI}
