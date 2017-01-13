@@ -24,7 +24,7 @@ geek_fetch() {
 	local REPO=${uper}_REPO_URI
 	local CSD="${GEEK_STORE_DIR}/$1"
 	local REPO_URI
-	if [[ "${!REPO% -> *}" == ${!B} ]] ; then
+	if [[ "${!REPO% -> *}" == ${!REPO} ]] ; then
 		REPO_URI="${!REPO}"
 	else
 		REPO_URI="${!REPO% -> *}"
