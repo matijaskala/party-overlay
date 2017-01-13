@@ -26,7 +26,7 @@ geek-sources_src_unpack() {
 	for i in ${GEEK_SOURCES_IUSE} ; do
 		use ${i} || continue
 		geek_fetch ${i}
-		pushd "${GEEK_STORE_DIR}/$i" > /dev/null || die
+		pushd "$(geek_get_source_repo_path "${i}")" > /dev/null || die
 		GEEK_SOURCE_REPO=${i} ${i}_apply
 		popd > /dev/null || die
 	done

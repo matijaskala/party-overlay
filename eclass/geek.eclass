@@ -49,10 +49,15 @@ geek_fetch() {
 }
 
 geek_apply() {
+	local _cwd="$(pwd)"
 	pushd "${S}" > /dev/null || die
 	for i ; do
-		ebegin "Applying ${GEEK_SOURCE_REPO}/$i"
-		patch -f -p1 -r - -s < "$(geek_get_source_repo_path "${GEEK_SOURCE_REPO}")/$i"
+		ebegin "Applying ${i} from ${GEEK_SOURCE_REPO}"
+		if [[ ${i:0:1} == / ]] ; then
+			patch -f -p1 -r - -s < "${i}"
+		else
+			patch -f -p1 -r - -s < "${_cwd}/${i}"
+		fi
 		eend $?
 	done
 	popd > /dev/null || die
