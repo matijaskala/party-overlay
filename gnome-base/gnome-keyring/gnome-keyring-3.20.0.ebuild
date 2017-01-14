@@ -2,8 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI="5"
-GCONF_DEBUG="yes" # Not gnome macro but similar
+EAPI=6
 GNOME2_LA_PUNT="yes"
 PYTHON_COMPAT=( python2_7 )
 
@@ -25,6 +24,7 @@ RDEPEND="
 	>=dev-libs/libgcrypt-1.2.2:0=
 	caps? ( sys-libs/libcap-ng )
 	pam? ( virtual/pam )
+	selinux? ( sec-policy/selinux-gnome )
 	>=app-crypt/gnupg-2.0.28:=
 "
 DEPEND="${RDEPEND}
@@ -64,11 +64,8 @@ src_configure() {
 }
 
 src_test() {
-	 # FIXME: this should be handled at eclass level
 	 "${EROOT}${GLIB_COMPILE_SCHEMAS}" --allow-any-name "${S}/schema" || die
-
-	 unset DBUS_SESSION_BUS_ADDRESS
-	 GSETTINGS_SCHEMA_DIR="${S}/schema" Xemake check
+	 GSETTINGS_SCHEMA_DIR="${S}/schema" virtx emake check
 }
 
 pkg_postinst() {
