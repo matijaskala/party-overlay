@@ -47,6 +47,8 @@ RDEPEND="${DEPEND}
 	!kde-misc/apper:4
 "
 
+PATCHES=( "${FILESDIR}/${PF}.patch" )
+
 src_configure() {
 	local mycmakeargs=(
 		-DDEBCONF_SUPPORT=OFF
