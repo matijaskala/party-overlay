@@ -3,7 +3,7 @@
 CATEGORY=sys-apps
 PN=accountsservice
 PATCH=accountsservice-other-display-managers.patch
-mkdir ${CATEGORY}/${PN}/files || exit 1
+mkdir -p ${CATEGORY}/${PN}/files || exit 1
 for i in ${CATEGORY}/${PN}/${PN}-*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}
