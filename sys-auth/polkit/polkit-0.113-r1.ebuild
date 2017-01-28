@@ -3,11 +3,11 @@
 # $Id$
 
 EAPI=5
-inherit eutils multilib pam pax-utils systemd user
+inherit eutils libtool multilib pam pax-utils systemd user xdg-utils
 
 DESCRIPTION="Policy framework for controlling privileges for system-wide services"
-HOMEPAGE="http://www.freedesktop.org/wiki/Software/polkit"
-SRC_URI="http://www.freedesktop.org/software/${PN}/releases/${P}.tar.gz"
+HOMEPAGE="https://www.freedesktop.org/wiki/Software/polkit"
+SRC_URI="https://www.freedesktop.org/software/${PN}/releases/${P}.tar.gz"
 
 LICENSE="LGPL-2"
 SLOT="0"
@@ -64,14 +64,21 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}"/${P}-make-netgroup-support-optional.patch
+
 	# Workaround upstream hack around standard gtk-doc behavior, bug #552170
 	sed -i -e 's/@ENABLE_GTK_DOC_TRUE@\(TARGET_DIR\)/\1/' \
 		-e '/install-data-local:/,/uninstall-local:/ s/@ENABLE_GTK_DOC_TRUE@//' \
 		-e 's/@ENABLE_GTK_DOC_FALSE@install-data-local://' \
 		docs/polkit/Makefile.in || die
+
+	# Fix cross-building, bug #590764
+	elibtoolize
 }
 
 src_configure() {
+	xdg_environment_reset
+
 	econf \
 		--localstatedir="${EPREFIX}"/var \
 		--disable-static \
