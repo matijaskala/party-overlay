@@ -1,33 +1,7 @@
 #!/bin/bash
 
 PATCH="coreutils-usr-merge.patch"
-i=sys-apps/coreutils/coreutils-8.23.ebuild
-	cat > ${PATCH} << EOF
---- a/${i}	2013-04-28 03:31:29.000000000 +0200
-+++ b/${i}	2013-10-14 15:02:15.851549730 +0200
-@@ -136,16 +136,5 @@
- 		dodir /bin
- 		# move critical binaries into /bin (required by FHS)
--		local fhs="cat chgrp chmod chown cp date dd df echo false ln ls
--		           mkdir mknod mv pwd rm rmdir stty sync true uname"
--		mv \${fhs} ../../bin/ || die "could not move fhs bins"
--		# move critical binaries into /bin (common scripts)
--		local com="basename chroot cut dir dirname du env expr head mkfifo
--		           mktemp readlink seq sleep sort tail touch tr tty vdir wc yes"
--		mv \${com} ../../bin/ || die "could not move common bins"
--		# create a symlink for uname in /usr/bin/ since autotools require it
--		local x
--		for x in \${com} uname ; do
--			dosym /bin/\${x} /usr/bin/\${x}
--		done
-+		# but DON'T
- 	else
- 		# For now, drop the man pages, collides with the ones of the system.
- 
-EOF
-	git apply ${PATCH} || exit 1
-	rm ${PATCH}
-for i in sys-apps/coreutils/coreutils-8.25.ebuild; do
+for i in sys-apps/coreutils/coreutils-*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-04-28 03:31:29.000000000 +0200
 +++ b/${i}	2013-10-14 15:02:15.851549730 +0200
