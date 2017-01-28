@@ -32,6 +32,7 @@ geek_fetch() {
 	local uper=$(echo "$1" | tr '[:lower:]' '[:upper:]')
 	local BRANCH=${uper}_BRANCH
 	local REPO=${uper}_REPO_URI
+	[[ -z ${!REPO} ]] && return
 	local CSD="$(geek_get_source_repo_path "$1")"
 	local REPO_URI="${!REPO% -> *}"
 	if [[ -d ${CSD} ]] ; then
