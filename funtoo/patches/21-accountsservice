@@ -3,23 +3,8 @@
 CATEGORY=sys-apps
 PN=accountsservice
 PATCH=accountsservice-other-display-managers.patch
-mkdir -p $(dirname ${PATCH})
-	cat > ${PATCH} << EOF
---- a/${CATEGORY}/${PN}/${PN}-0.6.40.ebuild
-+++ b/${CATEGORY}/${PN}/${PN}-0.6.40.ebuild
-@@ -40,7 +40,8 @@
- "
- 
- src_prepare() {
- 	epatch "\${FILESDIR}/\${PN}-0.6.35-gentoo-system-users.patch"
-+	epatch "\${FILESDIR}/\${PN}-other-display-managers.patch"
- 
- 	gnome2_src_prepare
- }
-EOF
-	git apply ${PATCH} || exit 1
-	rm ${PATCH}
-for i in ${CATEGORY}/${PN}/${PN}-0.6.{42,43}.ebuild; do
+mkdir ${CATEGORY}/${PN}/files || exit 1
+for i in ${CATEGORY}/${PN}/${PN}-*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}
 +++ b/${i}
