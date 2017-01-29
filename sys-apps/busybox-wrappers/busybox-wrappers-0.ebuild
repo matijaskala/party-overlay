@@ -95,7 +95,7 @@ provided_by sys-apps/less: less
 provided_by sys-apps/kbd: ${KBD_USR_BIN} setfont
 provided_by sys-apps/kmod: ${KMOD_SBIN}
 provided_by sys-apps/man sys-apps/man-db: man
-provided_by sys-apps/net-tools: arp dnsdomainname hostname ifconfig iptunnel nameif netstat route
+provided_by sys-apps/net-tools: dnsdomainname ifconfig iptunnel nameif netstat route
 provided_by sys-apps/pciutils: lspci
 provided_by sys-apps/sed: sed
 provided_by sys-apps/shadow: chpasswd groupadd groupdel groups login passwd su useradd userdel
@@ -112,6 +112,8 @@ provided_by sys-process/procps: ${PROCPS_USR_BIN} ps sysctl
 provided_by sys-process/psmisc: fuser killall pstree
 provided_by x11-terms/xterm: resize
 
+provided_by 'sys-apps/net-tools[arp(+)]': arp
+provided_by 'sys-apps/coreutils[hostname(-)]' 'sys-apps/net-tools[hostname(+)]': hostname
 provided_by 'sys-apps/coreutils[kill(-)]' 'sys-apps/util-linux[kill(-)]' 'sys-process/procps[kill(+)]': kill
 
 S=${WORKDIR}
