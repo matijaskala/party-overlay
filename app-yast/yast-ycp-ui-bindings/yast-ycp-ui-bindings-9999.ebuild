@@ -1,10 +1,10 @@
-# Copyright 2014 Matija Skala
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Id$
 
 EAPI=5
 
-inherit cmake-utils yast
+inherit yast
 
 DESCRIPTION=""
 HOMEPAGE=""
@@ -12,12 +12,9 @@ SRC_URI=""
 
 LICENSE=""
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="amd64 x86"
 IUSE=""
 
-DEPEND=""
+DEPEND="app-yast/yast-core
+	x11-libs/libyui"
 RDEPEND="${DEPEND}"
-
-src_prepare() {
-	default
-}
