@@ -24,6 +24,17 @@ MAGEIA_REPO_URI="svn://svn.mageia.org/svn/packages/cauldron/kernel/releases/${PV
 SUSE_REPO_URI="git://kernel.opensuse.org/kernel-source.git"
 SUSE_BRANCH="stable"
 
+debian_fetch() {
+	local CSD="$(geek_get_source_repo_path debian)"
+	if [[ -d ${CSD} ]]; then
+		pushd "${CSD}" > /dev/null || die
+		git pull --all --quiet
+		popd > /dev/null || die
+	else
+		git clone -b "${DEBIAN_BRANCH}" "${DEBIAN_REPO_URI% -> *}" "${CSD}"
+	fi
+}
+
 debian_apply() {
 	cd debian/patches
 	geek_apply `grep -ve '#' series`
