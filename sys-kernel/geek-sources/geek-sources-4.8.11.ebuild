@@ -4,7 +4,7 @@
 
 EAPI="5"
 ETYPE="sources"
-GEEK_SOURCES_IUSE="gentoo debian fedora mageia suse"
+GEEK_SOURCES_IUSE="+gentoo debian fedora mageia suse"
 
 inherit geek-sources
 detect_version
@@ -12,6 +12,7 @@ detect_version
 DESCRIPTION="Full sources for the Linux kernel including Gentoo, Debian, Fedora, Mageia and openSUSE patches"
 HOMEPAGE="https://www.kernel.org"
 UNIPATCH_LIST="${FILESDIR}/enable_additional_cpu_optimizations_for_gcc.patch ${FILESDIR}/linux-4.3-colored-printk.patch"
+UNIPATCH_STRICTORDER=1
 
 KEYWORDS="~amd64 ~x86"
 DEBIAN_BRANCH="debian/${PV}-1"
