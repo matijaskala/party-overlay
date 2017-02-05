@@ -1,3 +1,18 @@
+diff -ru a/include/linux/blkdev.h b/include/linux/blkdev.h
+--- a/include/linux/blkdev.h	2016-10-03 01:24:33.000000000 +0200
++++ b/include/linux/blkdev.h	2017-02-05 09:22:24.339859459 +0100
+@@ -39,7 +39,11 @@
+ struct pr_ops;
+ 
+ #define BLKDEV_MIN_RQ	4
++#ifdef CONFIG_ZEN_INTERACTIVE
++#define BLKDEV_MAX_RQ	512
++#else
+ #define BLKDEV_MAX_RQ	128	/* Default maximum */
++#endif
+ 
+ /*
+  * Maximum number of blkcg policies allowed to be registered concurrently.
 diff -ru a/drivers/cpufreq/cpufreq_ondemand.c b/drivers/cpufreq/cpufreq_ondemand.c
 --- a/drivers/cpufreq/cpufreq_ondemand.c	2017-02-05 08:09:52.000000000 +0100
 +++ b/drivers/cpufreq/cpufreq_ondemand.c	2017-02-04 19:56:11.003373951 +0100

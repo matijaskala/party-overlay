@@ -23,7 +23,7 @@ GENTOO_BRANCH="${KV_MAJOR}.${KV_MINOR}-${KV_PATCH}"
 MAGEIA_REPO_URI="svn://svn.mageia.org/svn/packages/cauldron/kernel/releases/${PV}/1.mga6/PATCHES/patches -> mageia/${PV}"
 SUSE_REPO_URI="git://kernel.opensuse.org/kernel-source.git"
 SUSE_BRANCH="stable"
-IUSE="bfq muqss zen-interactive"
+IUSE="bfq muqss wbt zen-interactive"
 REQUIRED_USE="zen-interactive? ( muqss )"
 
 debian_fetch() {
@@ -64,6 +64,7 @@ suse_apply() {
 
 src_unpack() {
 	use muqss && UNIPATCH_LIST+=" ${FILESDIR}/0001-MuQSS-The-Multiple-Queue-Skiplist-Scheduler-v0.144-b.patch"
+	use wbt && UNIPATCH_LIST+=" ${FILESDIR}/0002-Writeback-buf-throttling-patch-v7-by-Jens-Axboe.patch"
 	use bfq && UNIPATCH_LIST+=" ${FILESDIR}/0003-BFQ-version-4.8.0-v8r5-by-Paolo-Valente.patch"
 	use zen-interactive && UNIPATCH_LIST+=" ${FILESDIR}/zen_interactive.patch"
 
