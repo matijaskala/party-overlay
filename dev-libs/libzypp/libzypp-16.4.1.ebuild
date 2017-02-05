@@ -1,6 +1,6 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Id$
 
 EAPI=5
 
@@ -16,6 +16,7 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~ppc ~ppc64 ~x86"
 IUSE="doc libproxy"
+RESTRICT="mirror"
 
 RDEPEND="
 	app-arch/rpm
@@ -23,7 +24,7 @@ RDEPEND="
 	dev-libs/expat
 	dev-libs/libxml2
 	dev-libs/popt
-	>=dev-libs/libsolv-0.6.5
+	dev-libs/libsolv
 	dev-libs/openssl:0
 	net-misc/curl
 	sys-libs/zlib
@@ -41,8 +42,8 @@ RESTRICT="test"
 src_configure() {
 	local mycmakeargs=(
 		"-DUSE_TRANSLATION_SET=zypp"
-		$(cmake-utils_useno doc DISABLE_AUTODOCS)
-		$(cmake-utils_useno libproxy DISABLE_LIBPROXY)
+		$(cmake-utils_use_disable doc AUTODOCS)
+		$(cmake-utils_use_disable libproxy LIBPROXY)
 	)
 
 	cmake-utils_src_configure
