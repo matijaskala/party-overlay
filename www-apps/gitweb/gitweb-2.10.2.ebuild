@@ -1,13 +1,14 @@
-# Copyright 1999-2013 Gentoo Foundation
+# Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
+# $Id$
 
-EAPI=5
+EAPI=6
 
 GENTOO_DEPEND_ON_PERL=no
 
-[[ ${PV} == *9999 ]] && SCM="git-2"
+[[ ${PV} == *9999 ]] && SCM="git-r3"
 EGIT_REPO_URI="git://git.kernel.org/pub/scm/git/git.git"
+EGIT_BRANCH=maint
 
 inherit toolchain-funcs eutils ${SCM}
 
@@ -19,15 +20,10 @@ MY_P="${MY_P/gitweb/git}"
 DESCRIPTION="A web interface to git"
 HOMEPAGE="http://www.git-scm.com/"
 if [[ "$PV" != *9999 ]]; then
-	SRC_URI_SUFFIX="gz"
-	SRC_URI_GOOG="http://git-core.googlecode.com/files"
+	SRC_URI_SUFFIX="xz"
 	SRC_URI_KORG="mirror://kernel/software/scm/git"
-	SRC_URI="${SRC_URI_GOOG}/${MY_P}.tar.${SRC_URI_SUFFIX}
-			${SRC_URI_KORG}/${MY_P}.tar.${SRC_URI_SUFFIX}"
+	SRC_URI="${SRC_URI_KORG}/${MY_P}.tar.${SRC_URI_SUFFIX}"
 	KEYWORDS="~amd64 ~x86"
-else
-	SRC_URI=""
-	KEYWORDS=""
 fi
 
 LICENSE="GPL-2"
@@ -37,9 +33,9 @@ IUSE="highlight"
 COMMONDEPEND="
 	~dev-vcs/git-${PV}
 	sys-libs/zlib
-	dev-lang/perl[-build]
+	dev-lang/perl:=[-build(-)]
 	dev-libs/libpcre
-	dev-lang/tk"
+	dev-lang/tk:="
 
 RDEPEND="${COMMONDEPEND}
 	dev-vcs/git[-cgi]
@@ -48,9 +44,7 @@ RDEPEND="${COMMONDEPEND}
 	dev-perl/Authen-SASL
 	virtual/perl-CGI highlight? ( app-text/highlight )"
 
-DEPEND="${COMMONDEPEND}
-	app-arch/cpio
-	"
+DEPEND="${COMMONDEPEND}"
 
 SITEFILE=50${PN}-gentoo.el
 S="${WORKDIR}/${MY_P}"
@@ -60,13 +54,15 @@ src_unpack() {
 		unpack ${MY_P}.tar.${SRC_URI_SUFFIX}
 		cd "${S}"
 	else
-		git-2_src_unpack
+		git-r3_src_unpack
 		cd "${S}"
 	fi
 
 }
 
 src_prepare() {
+	default
+
 	sed -i \
 		-e 's:^\(CFLAGS =\).*$:\1 $(OPTCFLAGS) -Wall:' \
 		-e 's:^\(LDFLAGS =\).*$:\1 $(OPTLDFLAGS):' \
@@ -145,6 +141,6 @@ pkg_postinst() {
 	echo
 	showpkgdeps git-quiltimport "dev-util/quilt"
 	showpkgdeps git-instaweb \
-		"|| ( www-servers/lighttpd www-servers/apache )"
+		"|| ( www-servers/lighttpd www-servers/apache www-servers/nginx )"
 	echo
 }
