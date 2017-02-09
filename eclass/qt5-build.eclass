@@ -681,6 +681,12 @@ qt5_base_configure() {
 		"${myconf[@]}"
 	)
 
+	if [[ ${CHOST} == *mingw* ]] ; then
+		export PKG_CONFIG_LIBDIR="${SYSROOT}${EPREFIX}"/usr/$(get_libdir)/pkgconfig
+		export PKG_CONFIG_PATH="${SYSROOT}${EPREFIX}"/usr/share/pkgconfig
+		export PKG_CONFIG_SYSROOT_DIR="${SYSROOT}${EPREFIX}"
+	fi
+
 	pushd "${QT5_BUILD_DIR}" >/dev/null || die
 
 	einfo "Configuring with: ${conf[@]}"
@@ -700,7 +706,7 @@ qt5_qmake() {
 	if [[ ${QT5_MODULE} == qtbase ]]; then
 		qmakepath=${QT5_BUILD_DIR}/bin
 	else
-		qmakepath=${QT5_BINDIR}
+		qmakepath=${SYSROOT}${QT5_BINDIR}
 	fi
 
 	local qmakeargs=(
