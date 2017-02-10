@@ -8,13 +8,14 @@ AUTOTOOLS_IN_SOURCE_BUILD=1
 inherit autotools-utils
 
 DESCRIPTION="Link Layer Discovery Protocol Implementation"
-HOMEPAGE="http://www.open-lldp.org/"
-SRC_URI="http://www.open-lldp.org/open-lldp/downloads/${P}.tar.gz/at_download/file -> ${P}.tar.gz"
+HOMEPAGE="https://www.open-lldp.org/"
+SRC_URI="ftp://ftp-osl.osuosl.org/pub/open-lldp/open-lldp-${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE="kernel_linux"
+RESTRICT="mirror"
 
 COMMON_DEPEND="dev-libs/libconfig
 	dev-libs/libnl:1.1
