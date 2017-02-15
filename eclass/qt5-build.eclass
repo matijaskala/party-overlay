@@ -184,13 +184,11 @@ qt5-build_src_prepare() {
 			configure || die "sed failed (skip qmake bootstrap)"
 
 		# Respect CC, CXX, *FLAGS, MAKEOPTS and EXTRA_EMAKE when bootstrapping qmake
-		if [[ ${CHOST} == ${CBUILD} ]] || [[ ${PN} != qtcore ]] ; then
 		sed -i -e "/outpath\/qmake\".*\"\$MAKE\")/ s:): \
-			${MAKEOPTS} ${EXTRA_EMAKE} 'CC=$(tc-getCC)' 'CXX=$(tc-getCXX)' \
-			'QMAKE_CFLAGS=${CFLAGS}' 'QMAKE_CXXFLAGS=${CXXFLAGS}' 'QMAKE_LFLAGS=${LDFLAGS}'&:" \
+			${MAKEOPTS} ${EXTRA_EMAKE} 'CC=$(tc-getBUILD_CC)' 'CXX=$(tc-getBUILD_CXX)' \
+			'QMAKE_CFLAGS=${BUILD_CFLAGS:-${CFLAGS}}' 'QMAKE_CXXFLAGS=${BUILD_CXXFLAGS:-${CXXFLAGS}}' 'QMAKE_LFLAGS=${BUILD_LDFLAGS:-${LDFLAGS}}'&:" \
 			-e '/"$CFG_RELEASE_QMAKE"/,/^\s\+fi$/ d' \
 			configure || die "sed failed (respect env for qmake build)"
-		fi
 		sed -i -e '/^CPPFLAGS\s*=/ s/-g //' \
 			qmake/Makefile.unix || die "sed failed (CPPFLAGS for qmake build)"
 
@@ -505,11 +503,14 @@ qt5_symlink_tools_to_build_dir() {
 # @DESCRIPTION:
 # Runs ./configure for modules belonging to qtbase.
 qt5_base_configure() {
-	if [[ ${CHOST} == ${CBUILD} ]] ; then
 	# setup toolchain variables used by configure
-	tc-export AR CC CXX OBJDUMP RANLIB STRIP
-	export LD="$(tc-getCXX)"
-	fi
+	export AR="$(tc-getBUILD_AR)"
+	export CC="$(tc-getBUILD_CC)"
+	export CXX="$(tc-getBUILD_CXX)"
+	export OBJDUMP="$(tc-getBUILD_OBJDUMP)"
+	export RANLIB="$(tc-getBUILD_RANLIB)"
+	export STRIP="$(tc-getBUILD_STRIP)"
+	export LD="$(tc-getBUILD_CXX)"
 
 	# configure arguments
 	local conf=(
