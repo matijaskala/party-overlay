@@ -115,7 +115,7 @@ provided_by x11-terms/xterm: resize
 provided_by 'sys-apps/net-tools[arp(+)]': arp
 provided_by 'sys-apps/coreutils[hostname(-)]' 'sys-apps/net-tools[hostname(+)]': hostname
 provided_by 'sys-apps/coreutils[kill(-)]' 'sys-apps/util-linux[kill(-)]' 'sys-process/procps[kill(+)]': kill
-provided_by 'sys-apps/util-linux[ncurses]' more
+provided_by 'sys-apps/more' 'sys-apps/util-linux[ncurses]': more
 
 S=${WORKDIR}
 
