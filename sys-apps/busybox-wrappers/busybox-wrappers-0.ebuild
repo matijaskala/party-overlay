@@ -100,7 +100,7 @@ provided_by sys-apps/pciutils: lspci
 provided_by sys-apps/sed: sed
 provided_by sys-apps/shadow: chpasswd groupadd groupdel groups login passwd su useradd userdel
 provided_by sys-apps/usbutils: lsusb
-provided_by sys-apps/util-linux: blkid blockdev cal dmesg findfs flock fsck hexdump hwclock last linux32 linux64 losetup mkswap more mount mountpoint pivot_root script setarch swapoff swapon switch_root umount
+provided_by sys-apps/util-linux: blkid blockdev cal dmesg findfs flock fsck hexdump hwclock last linux32 linux64 losetup mkswap mount mountpoint pivot_root script setarch swapoff swapon switch_root umount
 provided_by sys-apps/which: which
 provided_by sys-devel/patch: patch
 provided_by sys-fs/dosfstools: mkdosfs mkfs.vfat
@@ -115,6 +115,7 @@ provided_by x11-terms/xterm: resize
 provided_by 'sys-apps/net-tools[arp(+)]': arp
 provided_by 'sys-apps/coreutils[hostname(-)]' 'sys-apps/net-tools[hostname(+)]': hostname
 provided_by 'sys-apps/coreutils[kill(-)]' 'sys-apps/util-linux[kill(-)]' 'sys-process/procps[kill(+)]': kill
+provided_by 'sys-apps/util-linux[ncurses]' more
 
 S=${WORKDIR}
 
