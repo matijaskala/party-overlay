@@ -75,6 +75,7 @@ src_prepare() {
 multilib_src_configure() {
 	tc-getCC $(get_abi_CTARGET)
 	just_headers && export CC=true
+	is_crosscompile && export CROSS_COMPILE=${CTARGET}-
 
 	local sysroot
 	is_crosscompile && sysroot=/usr/${CTARGET}
@@ -116,7 +117,7 @@ header_wrapper() {
 EOF
 }
 
-multilib_src_compile() {
+musl_export_abi() {
 	case ${ABI} in
 		x32|o32|n32|n64) MY_ABI=${ABI} ;;
 		amd64|ppc64) MY_ABI=64 ;;
@@ -125,6 +126,10 @@ multilib_src_compile() {
 		*) die ;;
 	esac
 	export MY_ABI
+}
+
+multilib_src_compile() {
+	musl_export_abi
 
 	mkdir -p obj/include/bits || die
 	for i in $(ls -1 "${S}"/arch/*/bits | sort -u) ; do
@@ -135,32 +140,35 @@ multilib_src_compile() {
 	just_headers && return 0
 
 	emake
-	$(tc-getCC) ${CFLAGS} "${DISTDIR}"/getconf.c -o "${T}"/getconf || die
-	$(tc-getCC) ${CFLAGS} "${DISTDIR}"/getent.c -o "${T}"/getent || die
-	$(tc-getCC) ${CFLAGS} "${DISTDIR}"/iconv.c -o "${T}"/iconv || die
+
+	if multilib_is_native_abi && ! is_crosscompile ; then
+		$(tc-getCC) ${CFLAGS} "${DISTDIR}"/getconf.c -o "${T}"/getconf || die
+		$(tc-getCC) ${CFLAGS} "${DISTDIR}"/getent.c -o "${T}"/getent || die
+		$(tc-getCC) ${CFLAGS} "${DISTDIR}"/iconv.c -o "${T}"/iconv || die
+	fi
 }
 
 multilib_src_install() {
+	musl_export_abi
+
 	if just_headers ; then
 		emake DESTDIR="${D}" install-headers
 	else
 		[[ -e "${T}"/ldconfig ]] || head -n 3 "${FILESDIR}"/ldconfig.in > "${T}"/ldconfig || die
 		emake DESTDIR="${D}" install
-		local myroot
-		is_crosscompile && myroot=/usr/${CTARGET}
-		myroot="${D}${myroot}/"
-		local arch=$("${myroot}usr/$(get_libdir)/libc.so" 2>&1 | sed -n '1s/^musl libc (\(.*\))$/\1/p')
-		[[ -e ${myroot}$(get_libdir)/ld-musl-${arch}.so.1 ]] || die
+		local sysroot
+		is_crosscompile && sysroot=/usr/${CTARGET}
+		local arch=$("${D}"${sysroot}/usr/$(get_libdir)/libc.so 2>&1 | sed -n '1s/^musl libc (\(.*\))$/\1/p')
+		rm "${D}"${sysroot}/$(get_libdir)/ld-musl-${arch}.so.1 || die
 		tail -n +4 "${FILESDIR}"/ldconfig.in | sed \
 			-e "s|@@ARCH@@|${arch}|" \
 			-e "s|/lib|/$(get_libdir)|" \
 			-e "s|\(/$(get_libdir)\)\(.*\)/lib|\1\2\1|" \
 			>> "${T}"/ldconfig || die
-		mkdir -p "${myroot}"bin || die
-		mv "${myroot}"usr/$(get_libdir)/libc.so "${myroot}"$(get_libdir)/${MUSL_SONAME} || die
-		ln -sf ../$(get_libdir)/${MUSL_SONAME} "${myroot}"bin/ldd || die
-		ln -sf ${MUSL_SONAME} "${myroot}"$(get_libdir)/libc.so || die
-		ln -sf ${MUSL_SONAME} "${myroot}"$(get_libdir)/ld-musl-${arch}.so.1 || die
+		mv "${D}"${sysroot}/usr/$(get_libdir)/libc.so "${D}"${sysroot}/$(get_libdir)/${MUSL_SONAME} || die
+		multilib_is_native_abi && dosym ../$(get_libdir)/${MUSL_SONAME} ${sysroot}/bin/ldd || die
+		dosym ${MUSL_SONAME} ${sysroot}/$(get_libdir)/libc.so || die
+		dosym ${MUSL_SONAME} ${sysroot}/$(get_libdir)/ld-musl-${arch}.so.1 || die
 	fi
 }
 
