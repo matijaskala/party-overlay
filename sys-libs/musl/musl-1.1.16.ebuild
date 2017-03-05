@@ -166,9 +166,9 @@ multilib_src_install() {
 			-e "s|\(/$(get_libdir)\)\(.*\)/lib|\1\2\1|" \
 			>> "${T}"/ldconfig || die
 		mv "${D}"${sysroot}/usr/$(get_libdir)/libc.so "${D}"${sysroot}/$(get_libdir)/${MUSL_SONAME} || die
-		multilib_is_native_abi && dosym ../$(get_libdir)/${MUSL_SONAME} ${sysroot}/bin/ldd || die
-		dosym ${MUSL_SONAME} ${sysroot}/$(get_libdir)/libc.so || die
-		dosym ${MUSL_SONAME} ${sysroot}/$(get_libdir)/ld-musl-${arch}.so.1 || die
+		multilib_is_native_abi && dosym ../$(get_libdir)/${MUSL_SONAME} ${sysroot}/bin/ldd
+		dosym ${MUSL_SONAME} ${sysroot}/$(get_libdir)/libc.so
+		dosym ${MUSL_SONAME} ${sysroot}/$(get_libdir)/ld-musl-${arch}.so.1
 	fi
 }
 
