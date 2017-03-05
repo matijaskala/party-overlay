@@ -184,10 +184,12 @@ multilib_src_install_all() {
 
 	into ${sysroot:-/}
 	dosbin "${T}"/ldconfig
-	into ${sysroot}/usr
-	dobin "${T}"/getconf
-	dobin "${T}"/getent
-	dobin "${T}"/iconv
+	if ! is_crosscompile ; then
+		into ${sysroot}/usr
+		dobin "${T}"/getconf
+		dobin "${T}"/getent
+		dobin "${T}"/iconv
+	fi
 	echo 'LDPATH="include ld.so.conf.d/*.conf"' > "${T}"/00musl || die
 	insinto ${sysroot}/etc/env.d
 	doins "${T}"/00musl || die
