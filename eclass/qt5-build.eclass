@@ -710,6 +710,9 @@ qt5_qmake() {
 		qmakepath=${SYSROOT}${QT5_BINDIR}
 	fi
 
+	# HACK: some packages write into this file when cross-compiling
+	addwrite ${QT5_ARCHDATADIR}/mkspecs/features/NUL
+
 	local qmakeargs=(
 		CONFIG+=$(usex debug debug release)
 		CONFIG-=$(usex debug release debug)
@@ -749,6 +752,7 @@ qt5_qmake() {
 	if [[ -n ${SYSROOT} ]] ; then
 		find -name "Makefile*" -exec sed \
 			-e "s@-L\(/usr/lib \)@-L${SYSROOT}\1@" \
+			-e "s@-L\(${QT5_LIBDIR} \)@-L${SYSROOT}\1@" \
 			-e "s@-I\(/usr/include/[^ ]* \)@-I${SYSROOT}\1@" \
 			-e "s@-I\(/usr/include/[^ ]* \)@-I${SYSROOT}\1@" \
 			-e "s@-I\(/usr/include/[^ ]* \)@-I${SYSROOT}\1@" \
