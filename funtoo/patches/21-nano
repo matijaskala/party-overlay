@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sed -i /dosym/d app-editors/nano/nano-*.ebuild
