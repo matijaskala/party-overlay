@@ -72,6 +72,7 @@ RDEPEND="${COMMON_DEPEND}
 		sys-apps/util-linux[kill(-)]
 		sys-process/procps[kill(+)]
 		sys-apps/coreutils[kill(-)]
+		sys-apps/busybox-wrappers[kill(-)]
 	) )
 	!sys-auth/nss-myhostname
 	!<sys-kernel/dracut-044
@@ -349,9 +350,9 @@ multilib_src_install_all() {
 
 	if use sysv-utils; then
 		for app in halt poweroff reboot runlevel shutdown telinit; do
-			dosym "../bin/systemctl" ${ROOTPREFIX-/usr}/sbin/${app}
+			dosym ../bin/systemctl "${ROOTPREFIX-/usr}/sbin/${app}"
 		done
-		dosym "../lib/systemd/systemd" ${ROOTPREFIX-/usr}/sbin/init
+		dosym ../lib/systemd/systemd "${ROOTPREFIX-/usr}/sbin/init"
 	else
 		# we just keep sysvinit tools, so no need for the mans
 		rm "${D}"/usr/share/man/man8/{halt,poweroff,reboot,runlevel,shutdown,telinit}.8 \
