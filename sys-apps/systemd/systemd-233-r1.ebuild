@@ -9,10 +9,10 @@ if [[ ${PV} == 9999 ]]; then
 else
 	SRC_URI="https://github.com/systemd/systemd/archive/v${PV}.tar.gz -> ${P}.tar.gz
 		!doc? ( https://dev.gentoo.org/~floppym/dist/${P}-man.tar.gz )"
-	KEYWORDS="alpha amd64 arm ~arm64 ia64 ppc ppc64 sparc x86"
+#	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 fi
 
-PYTHON_COMPAT=( python{2_7,3_4,3_5} )
+PYTHON_COMPAT=( python{3_4,3_5,3_6} )
 
 inherit autotools bash-completion-r1 linux-info multilib-minimal pam python-any-r1 systemd toolchain-funcs udev user
 
@@ -79,7 +79,7 @@ RDEPEND="${COMMON_DEPEND}
 	!sys-fs/udev"
 
 # sys-apps/dbus: the daemon only (+ build-time lib dep for tests)
-PDEPEND=">=sys-apps/dbus-1.8.8:0[systemd]
+PDEPEND=">=sys-apps/dbus-1.9.8[systemd]
 	>=sys-apps/hwids-20150417[udev]
 	>=sys-fs/udev-init-scripts-25
 	policykit? ( sys-auth/polkit )
@@ -94,7 +94,7 @@ DEPEND="${COMMON_DEPEND}
 	>=sys-kernel/linux-headers-${MINKV}
 	virtual/pkgconfig
 	gnuefi? ( >=sys-boot/gnu-efi-3.0.2 )
-	test? ( >=sys-apps/dbus-1.6.8-r1:0 )
+	test? ( sys-apps/dbus )
 	app-text/docbook-xml-dtd:4.2
 	app-text/docbook-xml-dtd:4.5
 	app-text/docbook-xsl-stylesheets
@@ -111,6 +111,7 @@ pkg_pretend() {
 		~CHECKPOINT_RESTORE ~DEVTMPFS ~DMIID ~EPOLL ~FANOTIFY ~FHANDLE
 		~INOTIFY_USER ~IPV6 ~NET ~NET_NS ~PROC_FS ~SIGNALFD ~SYSFS
 		~TIMERFD ~TMPFS_XATTR ~UNIX
+		~CRYPTO_HMAC ~CRYPTO_SHA256 ~CRYPTO_USER_API_HASH
 		~!FW_LOADER_USER_HELPER ~!GRKERNSEC_PROC ~!IDE ~!SYSFS_DEPRECATED
 		~!SYSFS_DEPRECATED_V2"
 
@@ -150,8 +151,7 @@ src_prepare() {
 	sed -i -e 's/GROUP="dialout"/GROUP="uucp"/' rules/*.rules || die
 
 	local PATCHES=(
-		"${FILESDIR}"/232-0001-build-sys-check-for-lz4-in-the-old-and-new-numbering.patch
-		"${FILESDIR}"/232-0002-build-sys-add-check-for-gperf-lookup-function-signat.patch
+		"${FILESDIR}/233-0001-Avoid-strict-DM-interface-version-dependencies-5519.patch"
 		"${FILESDIR}"/0024-add-fallback-parse_printf_format-implementation.patch
 		"${FILESDIR}"/event_child_handler_t.patch
 		"${FILESDIR}"/pager_close.patch
@@ -167,7 +167,7 @@ src_prepare() {
 		PATCHES+=(
 			"${FILESDIR}/218-Dont-enable-audit-by-default.patch"
 			"${FILESDIR}/228-noclean-tmp.patch"
-			"${FILESDIR}/232-systemd-user-pam.patch"
+			"${FILESDIR}/233-systemd-user-pam.patch"
 		)
 	fi
 
