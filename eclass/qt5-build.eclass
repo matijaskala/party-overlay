@@ -504,7 +504,7 @@ qt5_base_configure() {
 	export AR="$(tc-getBUILD_AR)"
 	export CC="$(tc-getBUILD_CC)"
 	export CXX="$(tc-getBUILD_CXX)"
-	export OBJDUMP="$(tc-getBUILD_OBJDUMP)"
+	export OBJDUMP="$(tc-getBUILD_PROG OBJDUMP objdump)"
 	export RANLIB="$(tc-getBUILD_RANLIB)"
 	export STRIP="$(tc-getBUILD_STRIP)"
 	export LD="$(tc-getBUILD_CXX)"
