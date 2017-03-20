@@ -17,7 +17,7 @@ KEYWORDS="~amd64 ~x86"
 DEBIAN_BRANCH="debian/${PV}-1"
 DEBIAN_REPO_URI="git://anonscm.debian.org/kernel/linux.git -> ${DEBIAN_BRANCH}"
 FEDORA_REPO_URI="git://pkgs.fedoraproject.org/kernel.git"
-FEDORA_BRANCH="f23"
+FEDORA_BRANCH="f24"
 GENTOO_REPO_URI="git://anongit.gentoo.org/proj/linux-patches"
 GENTOO_BRANCH="${KV_MAJOR}.${KV_MINOR}-${KV_PATCH}"
 MAGEIA_REPO_URI="svn://svn.mageia.org/svn/packages/cauldron/kernel/releases/${PV}/1.mga6/PATCHES/patches -> mageia/${PV}"
@@ -57,7 +57,7 @@ mageia_apply() {
 }
 
 suse_apply() {
-	geek_apply $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf)
+	geek_apply $(awk '!/(#|^$)/ && !/^(\+(needs|tren|trenn|hare|xen|jbeulich|jeffm|jjolly|agruen|still|philips|disabled|olh))|patches\.(kernel|rpmify|suse|xen).*/{gsub(/[ \t]/,"") ; print $1}' series.conf)
 }
 
 src_unpack() {
