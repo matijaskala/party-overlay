@@ -202,11 +202,20 @@ multilib_src_install() {
 		is_crosscompile && sysroot=/usr/${CTARGET}
 		local arch=$("${D}"${sysroot}/usr/$(get_libdir)/libc.so 2>&1 | sed -n '1s/^musl libc (\(.*\))$/\1/p')
 		rm "${D}"${sysroot}/$(get_libdir)/ld-musl-${arch}.so.1 || die
+		local mytests
+		case ${ABI} in
+			amd64) mytests='test "${d%x32/?.?.?}" = "${d}" \&\& test "${d%/32}" = "${d}" \&\& test "${d%/libx32}" = "${d}" \&\& test "${d%/lib32}" = "${d}" \&\& ' ;;
+			x86) mytests='test "${d%/64}" = "${d}" \&\& test "${d%x32/?.?.?}" = "${d}" \&\& test "${d%/lib64}" = "${d}" \&\& test "${d%/libx32}" = "${d}" \&\& ' ;;
+			x32) mytests='test "${d%/64}" = "${d}" \&\& test "${d%/32}" = "${d}" \&\& test "${d%/lib64}" = "${d}" \&\& test "${d%/lib32}" = "${d}" \&\& ' ;;
+		esac
 		tail -n +4 "${FILESDIR}"/ldconfig.in | sed \
 			-e "s|@@ARCH@@|${arch}|" \
 			-e "s|/lib|/$(get_libdir)|" \
 			-e "s|\(/$(get_libdir)\)\(.*\)/lib|\1\2\1|" \
+			-e "s|@@HACK@@|${mytests}echo \$d >> \$X|" \
 			>> "${T}"/ldconfig || die
+		dodir ${sysroot}/$(get_libdir)
+		dodir ${sysroot}/lib
 		mv "${D}"${sysroot}/usr/$(get_libdir)/libc.so "${D}"${sysroot}/$(get_libdir)/${MUSL_SONAME} || die
 		multilib_is_native_abi && dosym ../$(get_libdir)/${MUSL_SONAME} ${sysroot}/bin/ldd
 		local flags=( ${CFLAGS} ${LDFLAGS} -Wl,--verbose )
