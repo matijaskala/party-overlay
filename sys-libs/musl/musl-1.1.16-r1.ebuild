@@ -78,6 +78,7 @@ PATCHES=(
 	"${FILESDIR}/stdlib.patch"
 	"${FILESDIR}/strdupa.patch"
 	"${FILESDIR}/realpath.patch"
+	"${FILESDIR}/x32-__tls_get_addr.patch"
 )
 
 is_crosscompile() {
