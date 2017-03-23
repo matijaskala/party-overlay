@@ -205,6 +205,7 @@ src_prepare() {
 	for i in rights.intro-point3-unbranded rights.intro-point4a-unbranded rights.intro-point4b-unbranded rights.intro-point4c-unbranded ; do
 		find "${WORKDIR}/${MOZ_P}"*/* -name aboutRights.dtd -exec sed -i "s|\(ENTITY ${i}\).*|\1 \"\">|" {} +
 	done
+	find -name brand.dtd -exec sed -i 's/\(trademarkInfo.part1\s*"\).*\(">\)/\1\2/' {} +
 	sed -i '/helpus\.start/d' "${S}"/browser/base/content/aboutDialog.xul
 	cp "${GEEK_STORE_DIR}"/gnuzilla/data/aboutRights.xhtml "${S}"/toolkit/content/aboutRights.xhtml
 	cp "${GEEK_STORE_DIR}"/gnuzilla/data/aboutRights.xhtml "${S}"/toolkit/content/aboutRights-unbranded.xhtml
