@@ -3,3 +3,4 @@ dev-libs/boost python
 media-libs/harfbuzz icu
 net-im/pidgin -gstreamer
 net-libs/libtorrent-rasterbar python
+sys-auth/polkit -gtk
