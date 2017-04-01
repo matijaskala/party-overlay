@@ -3,7 +3,7 @@
 
 EAPI=6
 
-DESCRIPTION="The streaming build system"
+DESCRIPTION="Utilities for gulp plugins"
 HOMEPAGE="https://gulpjs.com"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
@@ -21,5 +21,4 @@ src_install() {
 	mv package ${PN}
 	insinto /usr/$(get_libdir)/node_modules
 	doins -r ${PN}
-	fperms +x /usr/$(get_libdir)/node_modules/${PN}/bin/gulp.js
 }
