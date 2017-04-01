@@ -21,4 +21,5 @@ src_install() {
 	mv package ${PN}
 	insinto /usr/$(get_libdir)/node_modules
 	doins -r ${PN}
+	fperms +x /usr/$(get_libdir)/node_modules/${PN}/bin/gulp.js
 }
