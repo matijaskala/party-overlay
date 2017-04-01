@@ -4,7 +4,7 @@
 EAPI=6
 
 DESCRIPTION="The semantic version parser used by npm"
-HOMEPAGE="https://github.com/npm/node-npm"
+HOMEPAGE="https://github.com/npm/node-semver"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="ISC"
@@ -19,6 +19,6 @@ RDEPEND="net-libs/nodejs"
 
 src_install() {
 	mv package ${PN}
-	insinto /usr/$(get_libdir)
+	insinto /usr/$(get_libdir)/node_modules
 	doins -r ${PN}
 }
