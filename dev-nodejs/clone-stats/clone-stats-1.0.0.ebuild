@@ -15,7 +15,8 @@ RESTRICT="mirror"
 S=${WORKDIR}
 
 DEPEND=""
-RDEPEND="net-libs/nodejs"
+RDEPEND="net-libs/nodejs
+"
 
 src_install() {
 	mv package ${PN}
