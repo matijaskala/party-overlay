@@ -3,8 +3,8 @@
 
 EAPI=6
 
-DESCRIPTION="Streams3, a user-land copy of the stream library from Node.js"
-HOMEPAGE="https://github.com/nodejs/readable-stream"
+DESCRIPTION="Memoize the results of a call to the RegExp constructor, avoiding repetitious runtime compilation of the same string and options, resulting in suprising performance improvements."
+HOMEPAGE="https://github.com/jonschlinkert/regex-cache"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="MIT"
@@ -16,13 +16,8 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/isarray-1.0.0
-	>=dev-nodejs/inherits-2.0.1
-	>=dev-nodejs/core-util-is-1.0.0
-	>=dev-nodejs/process-nextick-args-1.0.6
-	>=dev-nodejs/string_decoder-0.10
-	>=dev-nodejs/util-deprecate-1.0.1
-	>=dev-nodejs/buffer-shims-1.0.0
+	>=dev-nodejs/is-primitive-2.0.0
+	>=dev-nodejs/is-equal-shallow-0.1.3
 "
 
 src_install() {

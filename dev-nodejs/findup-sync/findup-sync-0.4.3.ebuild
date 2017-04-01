@@ -3,8 +3,8 @@
 
 EAPI=6
 
-DESCRIPTION="Streams3, a user-land copy of the stream library from Node.js"
-HOMEPAGE="https://github.com/nodejs/readable-stream"
+DESCRIPTION="Find the first file matching a given pattern in the current directory or the nearest ancestor directory."
+HOMEPAGE="https://github.com/cowboy/node-findup-sync"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="MIT"
@@ -16,13 +16,10 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/isarray-1.0.0
-	>=dev-nodejs/inherits-2.0.1
-	>=dev-nodejs/core-util-is-1.0.0
-	>=dev-nodejs/process-nextick-args-1.0.6
-	>=dev-nodejs/string_decoder-0.10
-	>=dev-nodejs/util-deprecate-1.0.1
-	>=dev-nodejs/buffer-shims-1.0.0
+	>=dev-nodejs/detect-file-0.1.0
+	>=dev-nodejs/is-glob-2.0.1
+	>=dev-nodejs/micromatch-2.3.7
+	>=dev-nodejs/resolve-dir-0.1.0
 "
 
 src_install() {

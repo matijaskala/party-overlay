@@ -23,16 +23,16 @@ RDEPEND="net-libs/nodejs
 	>=dev-nodejs/dateformat-2.0.0
 	>=dev-nodejs/multipipe-0.1.2
 	>=dev-nodejs/fancy-log-1.1.0
-	>=dev-nodejs/lodash._reescape-3.0.0
-	>=dev-nodejs/replace-ext-.0.1
+	>=dev-nodejs/lodash-_reescape-3.0.0
+	>=dev-nodejs/replace-ext-0.0.1
 	>=dev-nodejs/chalk-1.0.0
 	>=dev-nodejs/vinyl-0.5.0
-	>=dev-nodejs/lodash.template-3.0.0
-	>=dev-nodejs/lodash._reinterpolate-3.0.0
+	>=dev-nodejs/lodash-template-3.0.0
+	>=dev-nodejs/lodash-_reinterpolate-3.0.0
 	>=dev-nodejs/array-differ-1.0.0
 	>=dev-nodejs/has-gulplog-0.1.0
 	>=dev-nodejs/gulplog-1.0.0
-	>=dev-nodejs/lodash._reevaluate-3.0.0
+	>=dev-nodejs/lodash-_reevaluate-3.0.0
 	>=dev-nodejs/beeper-1.0.0
 "
 

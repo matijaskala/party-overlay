@@ -3,8 +3,8 @@
 
 EAPI=6
 
-DESCRIPTION="Streams3, a user-land copy of the stream library from Node.js"
-HOMEPAGE="https://github.com/nodejs/readable-stream"
+DESCRIPTION="Find a file given a declaration of locations"
+HOMEPAGE="https://github.com/js-cli/fined"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="MIT"
@@ -16,13 +16,13 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/isarray-1.0.0
-	>=dev-nodejs/inherits-2.0.1
-	>=dev-nodejs/core-util-is-1.0.0
-	>=dev-nodejs/process-nextick-args-1.0.6
-	>=dev-nodejs/string_decoder-0.10
-	>=dev-nodejs/util-deprecate-1.0.1
-	>=dev-nodejs/buffer-shims-1.0.0
+	>=dev-nodejs/parse-filepath-1.0.1
+	>=dev-nodejs/expand-tilde-1.2.1
+	>=dev-nodejs/lodash-pick-4.2.1
+	>=dev-nodejs/lodash-isempty-4.2.1
+	>=dev-nodejs/lodash-isstring-4.0.1
+	>=dev-nodejs/lodash-isplainobject-4.0.4
+	>=dev-nodejs/lodash-assignwith-4.0.7
 "
 
 src_install() {
