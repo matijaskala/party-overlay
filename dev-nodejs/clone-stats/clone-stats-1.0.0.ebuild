@@ -4,7 +4,7 @@
 EAPI=6
 
 DESCRIPTION="Safely clone node's fs.Stats instances without losing their class methods"
-HOMEPAGE="https://hughsk.io/"
+HOMEPAGE="https://github.com/hughsk/clone-stats"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="MIT"

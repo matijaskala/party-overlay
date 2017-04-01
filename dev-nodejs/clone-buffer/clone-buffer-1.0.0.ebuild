@@ -3,8 +3,8 @@
 
 EAPI=6
 
-DESCRIPTION="Easier Buffer cloning in node"
-HOMEPAGE="https://gulpjs.com/"
+DESCRIPTION="Easier Buffer cloning in node."
+HOMEPAGE="https://github.com/gulpjs/clone-buffer"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="MIT"

@@ -16,6 +16,19 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
+	>=dev-nodejs/pretty-hrtime-1.0.0
+	>=dev-nodejs/semver-4.1.0
+	>=dev-nodejs/orchestrator-0.3.0
+	>=dev-nodejs/minimist-1.1.0
+	>=dev-nodejs/vinyl-fs-0.3.0
+	>=dev-nodejs/deprecated-0.0.1
+	>=dev-nodejs/tildify-1.0.0
+	>=dev-nodejs/chalk-1.0.0
+	>=dev-nodejs/archy-1.0.0
+	>=dev-nodejs/liftoff-2.1.0
+	>=dev-nodejs/gulp-util-3.0.0
+	>=dev-nodejs/interpret-1.0.0
+	>=dev-nodejs/v8flags-2.0.2
 "
 
 src_install() {

@@ -3,7 +3,7 @@
 
 EAPI=6
 
-DESCRIPTION="Tiny wrapper around Node streams2 Transform to avoid explicit subclassing noise"
+DESCRIPTION="A tiny wrapper around Node streams2 Transform to avoid explicit subclassing noise"
 HOMEPAGE="https://github.com/rvagg/through2"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
@@ -16,8 +16,8 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/readable-stream-2.1.5
 	>=dev-nodejs/xtend-4.0.1
+	>=dev-nodejs/readable-stream-2.1.5
 "
 
 src_install() {

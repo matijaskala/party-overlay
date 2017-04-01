@@ -17,8 +17,8 @@ S=${WORKDIR}
 DEPEND=""
 RDEPEND="net-libs/nodejs
 	>=dev-nodejs/inherits-2.0.1
-	>=dev-nodejs/process-nextick-args-1.0.6
 	>=dev-nodejs/through2-2.0.1
+	>=dev-nodejs/process-nextick-args-1.0.6
 "
 
 src_install() {

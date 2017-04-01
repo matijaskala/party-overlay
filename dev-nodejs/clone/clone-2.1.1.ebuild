@@ -3,8 +3,8 @@
 
 EAPI=6
 
-DESCRIPTION="Deeply clone arbitrary objects in JavaScript"
-HOMEPAGE="https://github.com/pvrb/clone"
+DESCRIPTION="deep cloning of objects and arrays"
+HOMEPAGE="https://github.com/pvorb/node-clone"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="MIT"
