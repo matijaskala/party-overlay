@@ -5,7 +5,7 @@ EAPI=6
 
 DESCRIPTION="The lodash method '_.template' exported as a module."
 HOMEPAGE="https://lodash.com/"
-SRC_URI="https://registry.npmjs.org/lodash.template/-/lodash.template-${PV}.tgz"
+SRC_URI="https://registry.npmjs.org/${PN/-/.}/-/${P/-/.}.tgz"
 
 LICENSE="MIT"
 SLOT="0"

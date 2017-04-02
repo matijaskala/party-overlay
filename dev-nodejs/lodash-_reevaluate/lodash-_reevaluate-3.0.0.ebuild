@@ -3,7 +3,7 @@
 
 EAPI=6
 
-DESCRIPTION="The lodash method '_.templateSettings' exported as a module."
+DESCRIPTION="The modern build of lodash's internal 'reEvaluate' as a module."
 HOMEPAGE="https://lodash.com/"
 SRC_URI="https://registry.npmjs.org/${PN/-/.}/-/${P/-/.}.tgz"
 
@@ -16,7 +16,6 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/lodash-_reinterpolate-3.0.0
 "
 
 src_install() {
