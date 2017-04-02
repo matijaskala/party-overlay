@@ -19,7 +19,7 @@ RDEPEND="net-libs/nodejs
 "
 
 src_install() {
-	mv package ${PN}
+	mv package ${PN/-/.}
 	insinto /usr/$(get_libdir)/node_modules
-	doins -r ${PN}
+	doins -r ${PN/-/.}
 }
