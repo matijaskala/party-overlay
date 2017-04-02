@@ -3,11 +3,11 @@
 
 EAPI=6
 
-DESCRIPTION="Like duplexer but using streams3"
-HOMEPAGE="https://github.com/deoxxa/duplexer2"
+DESCRIPTION="process.nextTick but always with args"
+HOMEPAGE="https://github.com/calvinmetcalf/process-nextick-args"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
-LICENSE="BSD-3"
+LICENSE="MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
@@ -16,7 +16,6 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/readable-stream-2.0.2
 "
 
 src_install() {

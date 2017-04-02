@@ -3,8 +3,8 @@
 
 EAPI=6
 
-DESCRIPTION="Like duplexer but using streams3"
-HOMEPAGE="https://github.com/deoxxa/duplexer2"
+DESCRIPTION="Generates and consumes source maps"
+HOMEPAGE="https://github.com/mozilla/source-map"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="BSD-3"
@@ -16,7 +16,6 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/readable-stream-2.0.2
 "
 
 src_install() {
