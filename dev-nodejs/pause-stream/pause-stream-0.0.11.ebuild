@@ -3,11 +3,11 @@
 
 EAPI=6
 
-DESCRIPTION="A module for sequencing and executing tasks and dependencies in maximum concurrency"
-HOMEPAGE="https://github.com/robrich/orchestrator"
+DESCRIPTION="a ThroughStream that strictly buffers all readable events when paused."
+HOMEPAGE="git://github.com/dominictarr/pause-stream.git"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
-LICENSE="MIT"
+LICENSE="MIT Apache2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
@@ -16,10 +16,7 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/end-of-stream-0.1.5
-	>=dev-nodejs/event-stream-3.3.4
-	>=dev-nodejs/stream-consume-0.1.0
-	>=dev-nodejs/sequencify-0.0.7
+	>=dev-nodejs/through-2.3
 "
 
 src_install() {

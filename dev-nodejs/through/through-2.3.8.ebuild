@@ -3,8 +3,8 @@
 
 EAPI=6
 
-DESCRIPTION="A module for sequencing and executing tasks and dependencies in maximum concurrency"
-HOMEPAGE="https://github.com/robrich/orchestrator"
+DESCRIPTION="simplified stream construction"
+HOMEPAGE="https://github.com/dominictarr/through"
 SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
 
 LICENSE="MIT"
@@ -16,10 +16,6 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/end-of-stream-0.1.5
-	>=dev-nodejs/event-stream-3.3.4
-	>=dev-nodejs/stream-consume-0.1.0
-	>=dev-nodejs/sequencify-0.0.7
 "
 
 src_install() {
