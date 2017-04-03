@@ -5,7 +5,7 @@ EAPI=6
 
 DESCRIPTION="Source map support for Gulp.js"
 HOMEPAGE="http://github.com/floridoo/gulp-sourcemaps"
-SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
+SRC_URI="https://registry.npmjs.org/@gulp-sourcemaps/${PN}/-/${P}.tgz"
 
 LICENSE="ISC"
 SLOT="0"
@@ -16,21 +16,12 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/source-map-0
-	>=dev-nodejs/map-sources-1
-	>=dev-nodejs/through2-2
-	>=dev-nodejs/acorn-4
-	>=dev-nodejs/strip-bom-3
-	>=dev-nodejs/graceful-fs-4
-	>=dev-nodejs/detect-newline-2
-	>=dev-nodejs/vinyl-1
-	>=dev-nodejs/convert-source-map-1
-	dev-nodejs/debug-fabulous
-	>=dev-nodejs/css-2
+	>=dev-nodejs/normalize-path-2.0.1
+	>=dev-nodejs/through2-2.0.3
 "
 
 src_install() {
 	mv package ${PN}
-	insinto /usr/$(get_libdir)/node_modules
+	insinto /usr/$(get_libdir)/node_modules/@gulp-sourcemaps
 	doins -r ${PN}
 }
