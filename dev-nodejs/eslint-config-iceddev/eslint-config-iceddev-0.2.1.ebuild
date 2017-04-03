@@ -3,11 +3,11 @@
 
 EAPI=6
 
-DESCRIPTION="Global logging utility"
-HOMEPAGE="https://github.com/undertakerjs/glogg"
-SRC_URI="https://registry.npmjs.org/${PN}/-/${P}.tgz"
+DESCRIPTION="Source map support for Gulp.js"
+HOMEPAGE="https://github.com/iceddev/eslint-config-iceddev"
+SRC_URI="https://registry.npmjs.org/@phated/${PN}/-/${P}.tgz"
 
-LICENSE="MIT"
+LICENSE="ISC"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
@@ -16,12 +16,10 @@ S=${WORKDIR}
 
 DEPEND=""
 RDEPEND="net-libs/nodejs
-	>=dev-nodejs/eslint-config-iceddev-0.2.1
-	>=dev-nodejs/sparkles-1.0.0
 "
 
 src_install() {
 	mv package ${PN}
-	insinto /usr/$(get_libdir)/node_modules
+	insinto /usr/$(get_libdir)/node_modules/@phated
 	doins -r ${PN}
 }
