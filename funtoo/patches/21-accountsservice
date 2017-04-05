@@ -3,6 +3,7 @@
 CATEGORY=sys-apps
 PN=accountsservice
 PATCH=accountsservice-other-display-managers.patch
+mv ${CATEGORY}/${PN}/${PN}-0.6.43{,-r1}.ebuild || exit 1
 mkdir -p ${CATEGORY}/${PN}/files || exit 1
 for i in ${CATEGORY}/${PN}/${PN}-*.ebuild; do
 	cat > ${PATCH} << EOF
@@ -86,7 +87,7 @@ Support setting/reading autologin setings for LightDM, LXDM, SDDM
 +        }
 +        if (!system ("pidof lightdm > /dev/null"))
 +                return DISPLAY_MANAGER_LIGHTDM;
-+        if (!system ("pidof lxdm > /dev/null"))
++        if (!system ("pidof lxdm-binary > /dev/null"))
 +                return DISPLAY_MANAGER_LXDM;
 +        if (!system ("pidof sddm > /dev/null"))
 +                return DISPLAY_MANAGER_SDDM;
