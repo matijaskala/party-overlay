@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sed -i /lxde-icon-theme/d lxde-base/lxde-{meta,common}/*
