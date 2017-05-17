@@ -7,6 +7,7 @@ EXEC 21-mimeinfo
 EXEC 21-mozconfig
 EXEC 21-lxde
 EXEC 21-nano
+EXEC 21-parole
 EXEC 21-plymouth
 EXEC 21-accountsservice
 EXEC 21-sandbox
