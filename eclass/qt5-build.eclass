@@ -57,11 +57,7 @@ else
 	LICENSE="|| ( LGPL-2.1 LGPL-3 ) FDL-1.3"
 fi
 
-if [[ ${QT5_MINOR_VERSION} -ge 6 ]]; then
 SLOT=5/$(get_version_component_range 1-2)
-else
-	SLOT=5
-fi
 
 case ${PV} in
 	5.9999)
@@ -85,12 +81,7 @@ case ${PV} in
 		# official stable release
 		QT5_BUILD_TYPE="release"
 		MY_P=${QT5_MODULE}-opensource-src-${PV}
-		# bug 586646
-		if [[ ${PV} = 5.6.1 ]]; then
-			SRC_URI="https://download.qt.io/official_releases/qt/${PV%.*}/${PV}-1/submodules/${MY_P}-1.tar.xz"
-		else
-			SRC_URI="https://download.qt.io/official_releases/qt/${PV%.*}/${PV}/submodules/${MY_P}.tar.xz"
-		fi
+		SRC_URI="https://download.qt.io/official_releases/qt/${PV%.*}/${PV}/submodules/${MY_P}.tar.xz"
 		S=${WORKDIR}/${MY_P}
 		;;
 esac
@@ -136,16 +127,15 @@ EXPORT_FUNCTIONS src_unpack src_prepare src_configure src_compile src_install sr
 # @DESCRIPTION:
 # Unpacks the sources.
 qt5-build_src_unpack() {
+	if tc-is-gcc; then
 		local min_gcc4_minor_version=5
 		if [[ ${QT5_MINOR_VERSION} -ge 7 || ${PN} == qtwebengine ]]; then
 			min_gcc4_minor_version=7
 		fi
 		if [[ $(gcc-major-version) -lt 4 ]] || \
 		   [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt ${min_gcc4_minor_version} ]]; then
-			if [[ ${QT5_MINOR_VERSION} -ge 6 ]]; then
-				die "GCC version 4.${min_gcc4_minor_version} or later is required to build this package"
-			else
-				ewarn "Using a GCC version lower than 4.${min_gcc4_minor_version} is not supported"
+			eerror "GCC version 4.${min_gcc4_minor_version} or later is required to build this package"
+			die "GCC 4.${min_gcc4_minor_version} or later required"
 		fi
 	fi
 
@@ -274,7 +264,7 @@ qt5-build_src_install() {
 		fi
 
 		local global_docs_install_target=
-		if [[ ${QT5_MINOR_VERSION} -le 6 && ${QT5_PATCH_VERSION} -le 2 || ${QT5_MINOR_VERSION} -lt 6 ]]; then
+		if [[ ${QT5_MINOR_VERSION} -le 6 && ${QT5_PATCH_VERSION} -le 2 ]]; then
 			global_docs_install_target=install_global_docs
 		fi
 
@@ -526,7 +516,7 @@ qt5_base_configure() {
 
 		# no need to forcefully build host tools in optimized mode,
 		# just follow the overall debug/release build type
-		$([[ ${QT5_MINOR_VERSION} -ge 6 ]] && echo -no-optimized-tools)
+		-no-optimized-tools
 
 		# licensing stuff
 		-opensource -confirm-license
@@ -565,8 +555,7 @@ qt5_base_configure() {
 
 		# disable everything to prevent automagic deps (part 1)
 		-no-mtdev
-		-no-journald
-		$([[ ${QT5_MINOR_VERSION} -ge 6 ]] && echo -no-syslog)
+		-no-journald -no-syslog
 		-no-libpng -no-libjpeg
 		-no-freetype -no-harfbuzz
 		-no-openssl -no-libproxy
@@ -607,7 +596,7 @@ qt5_base_configure() {
 		-no-pch
 
 		# link-time code generation is not something we want to enable by default
-		$([[ ${QT5_MINOR_VERSION} -ge 6 ]] && echo -no-ltcg)
+		-no-ltcg
 
 		# reduced relocations cause major breakage on at least arm and ppc, so
 		# don't specify anything and let the configure figure out if they are
@@ -618,10 +607,7 @@ qt5_base_configure() {
 		#-use-gold-linker
 
 		# disable all platform plugins by default, override in qtgui
-		-no-xcb -no-eglfs -no-kms
-		$([[ ${QT5_MINOR_VERSION} -ge 6 ]] && echo -no-gbm)
-		-no-directfb -no-linuxfb
-		$([[ ${QT5_MINOR_VERSION} -ge 6 ]] && echo -no-mirclient)
+		-no-xcb -no-eglfs -no-kms -no-gbm -no-directfb -no-linuxfb -no-mirclient
 
 		# disable undocumented X11-related flags, override in qtgui
 		# (not shown in ./configure -help output)
