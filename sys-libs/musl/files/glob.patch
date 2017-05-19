@@ -1,15 +1,21 @@
 --- a/include/glob.h
 +++ b/include/glob.h
-@@ -16,7 +16,11 @@ typedef struct {
+@@ -16,12 +16,17 @@
+ 
+ #include <bits/alltypes.h>
+ 
++struct stat;
+ typedef struct {
+ 	size_t gl_pathc;
  	char **gl_pathv;
  	size_t gl_offs;
  	int __dummy1;
 -	void *__dummy2[5];
-+	void *(*gl_closedir) (void *);
-+	void *(*gl_readdir) (void *);
++	void (*gl_closedir) (void *);
++	struct dirent *(*gl_readdir) (void *);
 +	void *(*gl_opendir) (const char *);
-+	void *(*__dummy2) (const char *__restrict, void *__restrict);
-+	void *(*gl_stat) (const char *__restrict, void *__restrict);
++	void *gl_lstat;
++	int (*gl_stat) (const char *__restrict, struct stat *__restrict);
  } glob_t;
  
  int  glob(const char *__restrict, int, int (*)(const char *, int), glob_t *__restrict);
