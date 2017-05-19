@@ -73,11 +73,13 @@ IUSE="crosscompile_opts_headers-only"
 MUSL_SONAME="libc.so.20170128"
 
 PATCHES=(
+	"${FILESDIR}/glob.patch"
 	"${FILESDIR}/nftw.patch"
 	"${FILESDIR}/qsort.patch"
 	"${FILESDIR}/stdlib.patch"
 	"${FILESDIR}/strdupa.patch"
 	"${FILESDIR}/realpath.patch"
+	"${FILESDIR}/utmpx.h.patch"
 	"${FILESDIR}/x32-__tls_get_addr.patch"
 )
 
