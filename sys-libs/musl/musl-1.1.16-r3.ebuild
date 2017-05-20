@@ -75,6 +75,8 @@ MUSL_SONAME="libc.so.20170128"
 PATCHES=(
 	"${FILESDIR}/glob.patch"
 	"${FILESDIR}/nftw.patch"
+	"${FILESDIR}/macros.patch"
+	"${FILESDIR}/printf.h.patch"
 	"${FILESDIR}/qsort.patch"
 	"${FILESDIR}/stdlib.patch"
 	"${FILESDIR}/strdupa.patch"
