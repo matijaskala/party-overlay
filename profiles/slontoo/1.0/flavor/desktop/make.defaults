@@ -1,4 +1,4 @@
-USE="xml" 									#core subsystems
+USE="upower xcb xml" 									#core subsystems
 USE="$USE cairo cups gbm gpm lcms ldap libnotify opengl policykit sdl spell startup-notification"
 USE="$USE udev systemd -consolekit"								#systemd
 USE="$USE X dbus"									# desktop gui frameworks
