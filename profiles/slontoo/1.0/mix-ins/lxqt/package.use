@@ -10,6 +10,10 @@ dev-libs/libpcre pcre16
 # Required by dev-qt/qtwebengine and media-video/vlc
 sys-libs/zlib minizip
 
+# Required by kde-frameworks/kwayland
+dev-qt/qtgui:5 egl
+dev-qt/qtwayland:5 egl
+
 # Required by dev-qt/qtwebengine
 media-libs/libvpx svc
 
