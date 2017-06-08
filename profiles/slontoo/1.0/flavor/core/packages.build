@@ -1,6 +1,0 @@
-sys-apps/gentoo-functions
-sys-apps/groff
-sys-apps/texinfo
-sys-apps/which
-virtual/pam
--virtual/shadow
