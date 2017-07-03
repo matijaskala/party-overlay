@@ -1,11 +1,10 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
-EAPI=5
+EAPI=6
 PYTHON_COMPAT=( python2_7 )
 
-inherit base check-reqs cmake-utils python-single-r1
+inherit check-reqs cmake-utils python-single-r1
 
 DESCRIPTION="Web browser engine library for Qt"
 HOMEPAGE="https://launchpad.net/oxide"
@@ -13,7 +12,7 @@ SRC_URI="https://launchpad.net/ubuntu/+archive/primary/+files/${PN}_${PV}.orig.t
 
 LICENSE="GPL-3 LGPL-3"
 SLOT="0"
-KEYWORDS="x86 amd64"
+KEYWORDS="amd64 x86"
 IUSE="debug +plugins"
 RESTRICT="mirror"
 
@@ -21,10 +20,11 @@ DEPEND="dev-libs/expat
 	dev-libs/glib
 	dev-libs/nspr
 	dev-libs/nss
-	dev-qt/qtcore:5[debug?]
+	dev-qt/qtcore:5=[debug?]
 	dev-qt/qtgui:5[debug?]
 	dev-qt/qtdbus:5[debug?]
 	dev-qt/qtdeclarative:5[debug?]
+	dev-qt/qtfeedback:5
 	dev-qt/qtpositioning:5[debug?]
 	dev-qt/qtnetwork:5[debug?]
 	dev-qt/qttest:5[debug?]
@@ -34,14 +34,15 @@ DEPEND="dev-libs/expat
 	media-libs/freetype
 	media-libs/harfbuzz
 	sys-apps/dbus
-	>=sys-devel/gcc-4.8
 	sys-libs/libcap
 	virtual/libudev
 	x11-libs/cairo
 	x11-libs/libX11
 	x11-libs/pango"
 
-export PATH="/usr/$(get_libdir)/qt5/bin:${PATH}"	# Need to see QT5's qmake
+export QT_SELECT=5
+# Source expects build directory be located within source directory for relative paths to work correctly #
+BUILD_DIR="${S}/${MY_P}_build"
 
 pkg_pretend() {
 	if use debug; then
@@ -49,33 +50,19 @@ pkg_pretend() {
 	else
 		CHECKREQS_DISK_BUILD="3G"
 	fi
-
 	check-reqs_pkg_setup
 }
 
-pkg_setup() {
-	python-single-r1_pkg_setup
-	if [[ $(gcc-major-version) -lt 4 ]] || \
-		( [[ $(gcc-major-version) -eq 4 && $(gcc-minor-version) -lt 8 ]] ); then
-			die "${P} requires an active >=gcc-4.8, please consult the output of 'gcc-config -l'"
-        fi
-}
-
 src_configure() {
-	local mycmakeargs="${mycmakeargs}
-		-DENABLE_PROPRIETARY_CODECS=1"
-
-	if use plugins; then
-		mycmakeargs="${mycmakeargs}
-		    -DENABLE_PLUGINS=1"
-	fi
-
+	mycmakeargs+=( 	-DUSE_GN=1
+			-DBOOTSTRAP_GN=1
+			-DENABLE_PROPRIETARY_CODECS=1)
 	if use debug; then
 		CMAKE_BUILD_TYPE="Debug"
 	else
 		# prevent generate and dump debug symbols to save diskspace
 		CMAKE_BUILD_TYPE="Release"
 	fi
-
+	use plugins && mycmakeargs+=(-DENABLE_PLUGINS=1)
 	cmake-utils_src_configure
 }
