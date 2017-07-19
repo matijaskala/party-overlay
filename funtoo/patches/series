@@ -7,6 +7,8 @@ EXEC 21-mimeinfo
 EXEC 21-mozconfig
 EXEC 21-lxde
 EXEC 21-nano
+EXEC 21-perl
+EXEC 21-python
 EXEC 21-parole
 EXEC 21-plymouth
 EXEC 21-accountsservice

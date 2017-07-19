@@ -1,0 +1,19 @@
+#!/bin/sh
+
+for i in dev-lang/perl/perl-*.ebuild ; do
+	cat > perl-gnu.patch << EOF
+--- a/${i}
++++ b/${i}
+@@ -117,6 +117,8 @@
+ 		*-interix*)   osname="interix" ;;
+ 		*-aix*)       osname="aix" ;;
+ 		*-cygwin*)    osname="cygwin" ;;
++		*-linux*)     osname="linux" ;;
++		*-gnu*)       osname="gnu" ;;
+ 		*)            osname="linux" ;;
+ 	esac
+ 
+EOF
+	git apply perl-gnu.patch || exit 1
+	rm -f perl-gnu.patch || exit 1
+done

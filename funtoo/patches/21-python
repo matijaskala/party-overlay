@@ -1,0 +1,3 @@
+#!/bin/sh
+
+sed -i '/SEMAPHORES/s@if@if ! [[ \${CHOST} == i?86-gnu || \${CHOST} == i?86-pc-gnu || \${CHOST} == i?86-hurd-gnu ]] \&\&@' dev-lang/python/python-*.ebuild || exit 1
