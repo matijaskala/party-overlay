@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo kernel_hurd >> profiles/base/use.mask
+sed -i 's@HPUX linux@HPUX hurd linux@' profiles/{base,embedded}/make.defaults
