@@ -6,6 +6,7 @@ EXEC 21-shadow
 EXEC 21-wxGTK
 EXEC 21-mimeinfo
 EXEC 21-mozconfig
+EXEC 21-libarchive
 EXEC 21-lxde
 EXEC 21-nano
 EXEC 21-perl
