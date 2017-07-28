@@ -5,14 +5,14 @@ for i in app-arch/libarchive/libarchive-*.ebuild ; do
 --- a/${i}
 +++ b/${i}
 @@ -99,7 +99,7 @@ multilib_src_install() {
- 		emake DESTDIR="${D}" install
+ 		emake DESTDIR="\${D}" install
  
  		# Create symlinks for FreeBSD
--		if ! use prefix && [[ ${CHOST} == *-freebsd* ]]; then
+-		if ! use prefix && [[ \${CHOST} == *-freebsd* ]]; then
 +		if ! use userland_GNU ; then
  			# Exclude cat for the time being #589876
  			for bin in cpio tar; do
- 				dosym bsd${bin} /usr/bin/${bin}
+ 				dosym bsd\${bin} /usr/bin/\${bin}
 EOF
 	git apply bsd.patch || exit 1
 	rm -f bsd.patch || exit 1
