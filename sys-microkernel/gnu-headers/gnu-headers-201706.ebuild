@@ -3,13 +3,13 @@
 
 EAPI=6
 
-MACH=gnumach-1.8
-HURD=hurd-0.9
+MACH=gnumach-1.8+git20170609
+HURD=hurd-0.9.git20170507
 
 DESCRIPTION="GNU system headers"
 HOMEPAGE="https://www.gnu.org/software/hurd/"
-SRC_URI="mirror://gnu/gnumach/${MACH}.tar.gz
-	mirror://gnu/hurd/${HURD}.tar.gz"
+SRC_URI="mirror://debian/pool/main/${MACH:0:1}/${MACH%%-*}/${MACH/-/_}.orig.tar.bz2
+	mirror://debian/pool/main/${HURD:0:1}/${HURD%%-*}/${HURD/-/_}.orig.tar.bz2"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -47,7 +47,7 @@ src_install() {
 	fi
 
 	emake -C "${MACH}" install-data DESTDIR="${ED}"${ddir}
-	rm "${ED}"${ddir}/share/info/dir || die
+	rm -f "${ED}"${ddir}/share/info/dir
 
 	emake -C "${HURD}" install-headers \
 		INSTALL_DATA="/bin/sh \"${WORKDIR}/${HURD}/install-sh\" -c -C -m 644" \
