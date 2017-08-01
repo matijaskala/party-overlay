@@ -1,8 +1,0 @@
-#!/bin/sh
-
-for p in sys-kernel/debian* ; do
-    sed -i \
-	-e 's/KEYWORDS="\*"/KEYWORDS="amd64 x86"/' \
-	-e 's/KEYWORDS="~\*"/KEYWORDS="~amd64 ~x86"/' \
-	$p/*.ebuild
-done
