@@ -88,8 +88,17 @@ if [[ ${CATEGORY} == cross-* ]] ; then
 		>=${CATEGORY}/gcc-4.7
 	)"
 	[[ ${CATEGORY} == *-linux* ]] && DEPEND+=" ${CATEGORY}/linux-headers"
+	[[ ${CATEGORY} == cross-i?86-gnu || ${CATEGORY} == cross-i?86-pc-gnu || ${CATEGORY} == cross-i?86-hurd-gnu ]] && DEPEND+="
+		crosscompile_opts_headers-only? ( || (
+			sys-microkernel/mig
+			${CATEGORY}/mig
+		) )
+		!crosscompile_opts_headers-only? (
+			${CATEGORY}/mig
+		)"
 else
 	DEPEND+="
+		kernel_hurd? ( sys-microkernel/mig )
 		>=sys-devel/binutils-2.24
 		>=sys-devel/gcc-4.7
 		virtual/os-headers"
