@@ -1,0 +1,21 @@
+#!/bin/sh
+
+PATCH="rsync-hurd.patch"
+for i in net-misc/rsync/rsync-*.ebuild ; do
+	cat > ${PATCH} << EOF
+--- a/${i}
++++ b/${i}
+@@ -28,6 +28,9 @@
+ S=\${WORKDIR}/\${P/_/}
+ 
+ src_prepare() {
++	sed -i 's/\*linux\*|\*netbsd\*/&|*gnu*/' configure.ac || die
++	sed -i 's/\*linux\*|\*netbsd\*/&|*gnu*/' configure.sh || die
++	touch config.h.in || die
+ 	epatch_user
+ }
+ 
+EOF
+	git apply ${PATCH} || exit 1
+	rm ${PATCH}
+done
