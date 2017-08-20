@@ -26,7 +26,12 @@ diff -u a/MAKEDEV b/MAKEDEV
  lose() {
    local line
    for line; do
-@@ -114,9 +131,9 @@
+@@ -111,12 +128,14 @@
+ 	   ${DEVDIR}/vcs/`echo $I | sed -e s/tty//`/console;;
+       lpr[0-9])
+         st $I root 660 /hurd/streamio "$I";;
++      random)
++	st $I root 644 /hurd/random --seed-file /var/lib/random-seed;;
        urandom)
  	st $I root 644 /hurd/random --fast --seed-file /var/lib/random-seed;;
        null)
