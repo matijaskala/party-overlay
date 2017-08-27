@@ -37,6 +37,15 @@ RDEPEND="${DEPEND}
 	sys-block/thin-provisioning-tools
 	sys-fs/lvm2"
 
+append_config_from_file() {
+	for i in $(grep -v "#" "${1}") ; do
+		sed -i "/# ${i%=*} is not set/d" "${S}"/arch/*/kernel-config || die
+	done
+	for i in "${S}"/arch/*/kernel-config ; do
+		cat "${1}" >> "${i}" || die
+	done
+}
+
 src_prepare() {
 	default
 	sed -i "/^GK_V=/ s:GK_V=.*:GK_V=${PV}:g" "${S}/genkernel" || \
@@ -64,6 +73,7 @@ CONFIG_ATH10K_PCI=m
 CONFIG_SQUASHFS_XZ=y
 EOF
 	done
+	append_config_from_file "${FILESDIR}"/ethernet.config
 }
 
 src_install() {
