@@ -10,7 +10,8 @@ SLOT="0"
 KEYWORDS="amd64 x86"
 
 DEPEND=""
-RDEPEND="app-portage/portage-utils
+RDEPEND="!app-admin/eselect-vala
+	app-portage/portage-utils
 	dev-lang/vala"
 
 S=${WORKDIR}
