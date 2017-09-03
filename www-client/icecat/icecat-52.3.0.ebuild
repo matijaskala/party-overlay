@@ -24,7 +24,7 @@ if [[ ${MOZ_ESR} == 1 ]]; then
 fi
 
 # Patch version
-PATCH="firefox-52.0-patches-08"
+PATCH="firefox-52.2-patches-03"
 MOZ_HTTP_URI="https://archive.mozilla.org/pub/firefox/releases"
 
 MOZCONFIG_OPTIONAL_GTK3=1
@@ -34,7 +34,7 @@ MOZ_PN="firefox"
 MOZ_P="firefox-${MOZ_PV}"
 MOZEXTENSION_TARGET=browser/extensions
 
-inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils mozconfig-v6.52 pax-utils fdo-mime autotools virtualx mozlinguas-v2 geek
+inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils mozconfig-v6.52 pax-utils xdg-utils autotools virtualx mozlinguas-v2 geek
 
 DESCRIPTION="IceCat Web Browser"
 HOMEPAGE="https://www.gnu.org/software/gnuzilla"
@@ -62,7 +62,7 @@ RDEPEND="
 
 DEPEND="${RDEPEND}
 	pgo? ( >=sys-devel/gcc-4.5 )
-	rust? ( dev-lang/rust )
+	rust? ( virtual/rust )
 	amd64? ( ${ASM_DEPEND} virtual/opengl )
 	x86? ( ${ASM_DEPEND} virtual/opengl )"
 
@@ -125,7 +125,6 @@ src_unpack() {
 src_prepare() {
 	# Apply our patches
 	eapply "${WORKDIR}/firefox"
-	eapply "${FILESDIR}"/musl_drop_hunspell_alloc_hooks.patch
 	eapply "${GEEK_STORE_DIR}/gnuzilla/data/patches"/*
 	eapply "${FILESDIR}"/reorder-addon-sdk-moz.build.patch
 	eapply "${FILESDIR}"/52-unity-menubar.patch
@@ -543,7 +542,7 @@ pkg_preinst() {
 
 pkg_postinst() {
 	# Update mimedb for the new .desktop file
-	fdo-mime_desktop_database_update
+	xdg_desktop_database_update
 	gnome2_icon_cache_update
 
 	if ! use gmp-autoupdate ; then
