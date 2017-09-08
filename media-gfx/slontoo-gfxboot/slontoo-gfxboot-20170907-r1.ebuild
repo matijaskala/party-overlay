@@ -19,6 +19,8 @@ DEPEND="media-gfx/gfxboot"
 
 S=${WORKDIR}/${PN}
 
+PATCHES=( "${FILESDIR}"/display-langs.patch )
+
 src_unpack() {
 	default
 	mv ${PN}-${COMMIT_ID} ${PN} || die
@@ -37,7 +39,7 @@ src_install() {
 pkg_postinst() {
 	einfo "These isolinux modules are required:"
 	for i in chain gfxboot ldlinux libcom32 mboot whichsys ; do
-		einfo "  ${module}.c32"
+		einfo "  ${i}.c32"
 	done
 	einfo
 
