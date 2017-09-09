@@ -1,18 +1,16 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
 inherit qmake-utils
 DESCRIPTION="Lumina desktop environment"
-HOMEPAGE="http://lumina-desktop.org/"
-I18N="161211"
-SRC_URI="https://github.com/trueos/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+HOMEPAGE="https://lumina-desktop.org/"
+SRC_URI="https://github.com/trueos/${PN}/archive/v${PV/_/-}.tar.gz -> ${P}.tar.gz"
+
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-
-IUSE=""
 
 COMMON_DEPEND="dev-qt/qtcore:5
 	dev-qt/qtconcurrent:5
@@ -32,24 +30,29 @@ DEPEND="$COMMON_DEPEND
 	dev-qt/linguist-tools:5"
 
 RDEPEND="$COMMON_DEPEND
-	|| ( virtual/freedesktop-icon-theme
-	x11-themes/hicolor-icon-theme )
 	sys-fs/inotify-tools
 	x11-misc/numlockx
 	x11-wm/fluxbox
-	x11-apps/xbacklight
+	|| ( x11-apps/xbacklight
+	sys-power/acpilight )
 	media-sound/alsa-utils
 	sys-power/acpi
 	app-admin/sysstat"
 
+S="${WORKDIR}/${P/_/-}"
+
+PATCHES=(
+	"${FILESDIR}/1.2.0-desktop-files.patch"
+	"${FILESDIR}/1.3.0-OS-detect.patch"
+)
+
 src_configure(){
-	eqmake5 PREFIX="${EPREFIX}/usr" L_BINDIR="${EPREFIX}/usr/bin" \
-		L_ETCDIR="${EPREFIX}/etc" L_LIBDIR="${EPREFIX}/usr/$(get_libdir)" \
-		LIBPREFIX="${EPREFIX}/usr/$(get_libdir)" DESTDIR="${D}" CONFIG+=WITH_I18N
+	eqmake5 PREFIX="${EPREFIX}/usr" LIBPREFIX="${EPREFIX}/usr/$(get_libdir)" \
+		DESTDIR="${D}" CONFIG+=WITH_I18N QMAKE_CFLAGS_ISYSTEM=
 }
 
 src_install(){
 	default
 	mv "${ED%/}"/etc/luminaDesktop.conf{.dist,} || die
-	rm "${ED%/}"/${PN}-* "${ED%/}"/start-${PN}-desktop || die
+	mv "${ED%/}"/{${PN}-*,start-${PN}-desktop} "${ED%/}"/usr/bin || die
 }
