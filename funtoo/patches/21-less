@@ -1,5 +1,5 @@
---- sys-apps/less/files/lesspipe.sh
-+++ sys-apps/less/files/lesspipe.sh
+--- a/sys-apps/less/files/lesspipe.sh
++++ b/sys-apps/less/files/lesspipe.sh
 @@ -16,6 +16,7 @@
  		*.lz)       echo "lzip -dc" ;;
  		*.lzma)     echo "unlzma -c" ;;
