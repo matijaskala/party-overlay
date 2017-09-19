@@ -22,7 +22,7 @@ for i in ${CATEGORY}/${PN}/${PN}-6.*.ebuild; do
 +
  src_configure() {
  	use static && append-ldflags -static
- 	econf \\
+ 	$([[ ${i} == *-6.5*.ebuild ]] && echo "local myeconfargs=(" || echo "econf \\")
 EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
