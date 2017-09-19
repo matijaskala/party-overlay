@@ -19,3 +19,4 @@ EXEC 21-rsync
 EXEC 21-accountsservice
 EXEC 21-sandbox
 EXEC 21-util-linux
+EXEC 21-texinfo
