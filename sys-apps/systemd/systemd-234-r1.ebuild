@@ -153,6 +153,7 @@ src_prepare() {
 		"${FILESDIR}"/234-0001-path-lookup-look-for-generators-in-usr-lib-systemd-s.patch
 		"${FILESDIR}"/234-0002-cryptsetup-fix-infinite-timeout-6486.patch
 		"${FILESDIR}"/234-0003-resolved-make-sure-idn2-conversions-are-roundtrippab.patch
+		"${FILESDIR}"/234-0004-logind-make-sure-we-don-t-process-the-same-method-ca.patch
 		"${FILESDIR}"/issetugid.patch
 	)
 
@@ -271,7 +272,6 @@ multilib_src_configure() {
 		-Dtimesyncd=$(meson_multilib)
 		-Dtmpfiles=$(meson_multilib)
 		-Dvconsole=$(meson_multilib)
-
 	)
 
 	if multilib_is_native_abi && use idn; then
@@ -310,9 +310,9 @@ multilib_src_install_all() {
 
 	if use sysv-utils; then
 		for app in halt poweroff reboot runlevel shutdown telinit; do
-			dosym ../bin/systemctl "${ROOTPREFIX-/usr}/sbin/${app}"
+			dosym "${EPREFIX}${ROOTPREFIX%/}/bin/systemctl" /sbin/${app}
 		done
-		dosym ../lib/systemd/systemd "${ROOTPREFIX-/usr}/sbin/init"
+		dosym "${EPREFIX}${ROOTPREFIX%/}/lib/systemd/systemd" /sbin/init
 	else
 		# we just keep sysvinit tools, so no need for the mans
 		rm "${ED%/}"/usr/share/man/man8/{halt,poweroff,reboot,runlevel,shutdown,telinit}.8 \
@@ -414,6 +414,8 @@ pkg_postinst() {
 	# Bug 465468, make sure locales are respect, and ensure consistency
 	# between OpenRC & systemd
 	migrate_locale
+
+	systemd_reenable systemd-networkd.service systemd-resolved.service
 
 	if [[ ${FAIL} ]]; then
 		eerror "One of the postinst commands failed. Please check the postinst output"
