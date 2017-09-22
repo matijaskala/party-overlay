@@ -12,12 +12,14 @@ for i in ${CATEGORY}/${PN}/${PN}-6.*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}
 +++ b/${i}
-@@ -30,6 +30,10 @@
+@@ -30,6 +30,12 @@
  	app-arch/xz-utils
  	nls? ( >=sys-devel/gettext-0.19.6 )"
  
 +src_prepare() {
 +	epatch "\${FILESDIR}/\${PN}-brotli.patch"
++	touch man/install-info.1 || die
++$([[ ${i} == *-6.5*.ebuild ]] && echo "	default")
 +}
 +
  src_configure() {
