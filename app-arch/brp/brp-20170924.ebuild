@@ -18,6 +18,7 @@ RESTRICT="mirror"
 
 RDEPEND="
 	app-arch/brotli:=
+	dev-libs/xxhash
 	dev-libs/glib:2"
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
