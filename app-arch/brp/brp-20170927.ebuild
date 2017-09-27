@@ -5,7 +5,7 @@ EAPI=6
 
 inherit vala
 
-COMMIT_ID="8dfc9df858996f06c50e369e8604f191280a02c2"
+COMMIT_ID="16ff3e83d51f763513458a3a14fe0abe0cab2afa"
 DESCRIPTION="Brotli packer"
 HOMEPAGE="https://github.com/matijaskala/brp"
 SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
