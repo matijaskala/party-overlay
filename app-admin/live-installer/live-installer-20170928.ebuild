@@ -1,27 +1,24 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2017 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI=5
+EAPI=6
 
-inherit git-r3
-
+COMMIT_ID="0d80bebb95ce12122f6382506fa2c9fb387f988b"
 DESCRIPTION="Linux Mint Live Installer"
 HOMEPAGE="https://github.com/matijaskala/live-installer"
-EGIT_REPO_URI="git://github.com/matijaskala/${PN}"
+SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-2.1 LGPL-3"
 SLOT="0"
 KEYWORDS="amd64 x86"
 IUSE=""
-#S=${WORKDIR}/${PN}
+S=${WORKDIR}/${PN}-${COMMIT_ID}
 RESTRICT="mirror"
 
 DEPEND=""
 RDEPEND="${DEPEND}
 	dev-python/pillow
 	dev-python/pyparted
-	dev-python/pywebkitgtk
 	x11-apps/setxkbmap"
 
 src_install() {
