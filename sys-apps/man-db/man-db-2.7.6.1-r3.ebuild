@@ -44,7 +44,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/brp.patch
+	epatch "${FILESDIR}"/brzip.patch
 }
 
 src_configure() {

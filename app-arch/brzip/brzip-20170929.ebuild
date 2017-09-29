@@ -5,9 +5,9 @@ EAPI=6
 
 inherit vala
 
-COMMIT_ID="16ff3e83d51f763513458a3a14fe0abe0cab2afa"
-DESCRIPTION="Brotli packer"
-HOMEPAGE="https://github.com/matijaskala/brp"
+COMMIT_ID="f459b47e1da0e2e2808da24dfa193a2c221b0255"
+DESCRIPTION=".br compression utility"
+HOMEPAGE="https://github.com/matijaskala/brzip"
 SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="GPL-3"
@@ -36,10 +36,12 @@ src_compile() {
 		echo "$@"
 		"$@"
 	}
-	showcmd ${VALAC} brp.gs libbrotlienc.vapi libbrotlidec.vapi xxhash.vapi --pkg=posix --ccode || die
-	showcmd $(tc-getCC) ${CFLAGS} $(pkg-config --cflags --libs glib-2.0 libbrotlienc libbrotlidec) -lxxhash -lpthread -o ${PN}$(get_exeext) ${PN}.c crc32c.c || die
+	showcmd ${VALAC} brzip.gs libbrotlienc.vapi libbrotlidec.vapi xxhash.vapi --pkg=posix --ccode || die
+	showcmd $(tc-getCC) ${CFLAGS} $(pkg-config --cflags --libs glib-2.0 libbrotlienc libbrotlidec) -lxxhash -lpthread -o brzip$(get_exeext) brzip.c crc32c.c || die
 }
 
 src_install() {
-	dobin ${PN}$(get_exeext)
+	dobin brzip$(get_exeext)
+	dosym brzip$(get_exeext) /usr/bin/brcat$(get_exeext)
+	dosym brzip$(get_exeext) /usr/bin/brunzip$(get_exeext)
 }

@@ -36,11 +36,11 @@ cat > ${CATEGORY}/${PN}/files/${PATCH} << EOF
  #if STRIP_DOT_EXE
    { ".gz", "gunzip" },
    { ".lz", "lunzip" },
-+  { ".br", "brpdec" },
++  { ".br", "brunzip" },
  #else
    { ".gz", "gzip -d" },
    { ".lz", "lzip -d" },
-+  { ".br", "brp -d" },
++  { ".br", "brzip -d" },
  #endif
    { ".xz", "unxz" },
    { ".bz2", "bunzip2" },
@@ -80,9 +80,9 @@ cat > ${CATEGORY}/${PN}/files/${PATCH} << EOF
 +           || data[0] == '\xce' && data[1] == '\xb2'
 +           && data[2] == '\xcf' && data[3] == '\x81')
 +#ifndef STRIP_DOT_EXE
-+    *compression_program = "brp.exe";
++    *compression_program = "brzip.exe";
 +#else
-+    *compression_program = "brp";
++    *compression_program = "brzip";
 +#endif
 +
      /* We (try to) match against old lzma format (which lacks proper

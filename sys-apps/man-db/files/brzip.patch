@@ -4,7 +4,7 @@
  /* Add your decompressor(s) and extension(s) below here */
  /*------------------------------------------------------*/
  
-+	{"brp -d -c", "br", NULL},
++	{"brcat", "br", NULL},
  
  
  /*----------------*/
