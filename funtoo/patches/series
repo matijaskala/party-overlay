@@ -9,6 +9,7 @@ EXEC 21-wxGTK
 EXEC 21-mimeinfo
 EXEC 21-mozconfig
 EXEC 21-libarchive
+EXEC 21-libressl
 EXEC 21-libbsd
 EXEC 21-lxde
 EXEC 21-nano
