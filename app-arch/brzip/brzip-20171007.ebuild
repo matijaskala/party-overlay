@@ -5,7 +5,7 @@ EAPI=6
 
 inherit vala
 
-COMMIT_ID="f459b47e1da0e2e2808da24dfa193a2c221b0255"
+COMMIT_ID="206928b4aaaa52ee16ca1797efcfbd6ef71d9b77"
 DESCRIPTION=".br compression utility"
 HOMEPAGE="https://github.com/matijaskala/brzip"
 SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
@@ -44,4 +44,5 @@ src_install() {
 	dobin brzip$(get_exeext)
 	dosym brzip$(get_exeext) /usr/bin/brcat$(get_exeext)
 	dosym brzip$(get_exeext) /usr/bin/brunzip$(get_exeext)
+	doman brzip.1
 }
