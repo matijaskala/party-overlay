@@ -5,7 +5,7 @@ EAPI=6
 
 inherit vala
 
-COMMIT_ID="206928b4aaaa52ee16ca1797efcfbd6ef71d9b77"
+COMMIT_ID="506064c5faa309f17537b25b7039e8099d517549"
 DESCRIPTION=".br compression utility"
 HOMEPAGE="https://github.com/matijaskala/brzip"
 SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
@@ -17,9 +17,10 @@ IUSE=""
 RESTRICT="mirror"
 
 RDEPEND="
+	dev-libs/glib:2=
 	app-arch/brotli:=
-	dev-libs/xxhash
-	dev-libs/glib:2"
+	dev-libs/xxhash:=
+	sys-fs/btrfs-progs:="
 DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	$(vala_depend)"
@@ -37,7 +38,7 @@ src_compile() {
 		"$@"
 	}
 	showcmd ${VALAC} brzip.gs libbrotlienc.vapi libbrotlidec.vapi xxhash.vapi --pkg=posix --ccode || die
-	showcmd $(tc-getCC) ${CFLAGS} $(pkg-config --cflags --libs glib-2.0 libbrotlienc libbrotlidec) -lxxhash -lpthread -o brzip$(get_exeext) brzip.c crc32c.c || die
+	showcmd $(tc-getCC) ${CFLAGS} $(pkg-config --cflags --libs glib-2.0 libbrotlienc libbrotlidec) -lxxhash -lbtrfs -o brzip$(get_exeext) brzip.c || die
 }
 
 src_install() {
