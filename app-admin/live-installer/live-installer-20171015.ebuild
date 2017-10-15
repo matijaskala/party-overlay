@@ -3,7 +3,7 @@
 
 EAPI=6
 
-COMMIT_ID="18d6df579c6e58af35641721a66e3b8eefb90629"
+COMMIT_ID="cd5e43336987d487928378d096bca94d89946fc2"
 DESCRIPTION="Linux Mint Live Installer"
 HOMEPAGE="https://github.com/matijaskala/live-installer"
 SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
