@@ -82,7 +82,6 @@ PATCHES=(
 	"${FILESDIR}/strdupa.patch"
 	"${FILESDIR}/realpath.patch"
 	"${FILESDIR}/utmpx.h.patch"
-	"${FILESDIR}/x32-__tls_get_addr.patch"
 	"${FILESDIR}/logwtmp.patch"
 )
 
