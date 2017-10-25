@@ -10,7 +10,7 @@ PYTHON_COMPAT=(
 )
 PYTHON_REQ_USE='bzip2(+),threads(+)'
 
-inherit distutils-r1 multilib
+inherit distutils-r1
 
 DESCRIPTION="Portage is the package management and distribution system for Gentoo"
 HOMEPAGE="https://wiki.gentoo.org/wiki/Project:Portage"
@@ -61,12 +61,12 @@ PDEPEND="
 # NOTE: FEATURES=installsources requires debugedit and rsync
 
 PATCHES=(
-        "${FILESDIR}"/filesystem-layout-symlinks.patch
+	"${FILESDIR}"/filesystem-layout-symlinks.patch
 )
 
 REQUIRED_USE="epydoc? ( $(python_gen_useflags 'python2*') )"
 
-SRC_ARCHIVES="https://dev.gentoo.org/~dolsen/releases/portage"
+SRC_ARCHIVES="https://dev.gentoo.org/~zmedico/portage/archives"
 
 prefix_src_archives() {
 	local x y
@@ -234,36 +234,6 @@ pkg_preinst() {
 	else
 		SYNC_DEPTH_UPGRADE=false
 	fi
-}
-
-get_ownership() {
-	case ${USERLAND} in
-		BSD)
-			stat -f '%Su:%Sg' "${1}"
-			;;
-		*)
-			stat -c '%U:%G' "${1}"
-			;;
-	esac
-}
-
-new_config_protect() {
-	# Generate a ._cfg file even if the target file
-	# does not exist, ensuring that the user will
-	# notice the config change.
-	local basename=${1##*/}
-	local dirname=${1%/*}
-	local i=0
-	while true ; do
-		local filename=$(
-			echo -n "${dirname}/._cfg"
-			printf "%04d" ${i}
-			echo -n "_${basename}"
-		)
-		[[ -e ${filename} ]] || break
-		(( i++ ))
-	done
-	echo "${filename}"
 }
 
 pkg_postinst() {
