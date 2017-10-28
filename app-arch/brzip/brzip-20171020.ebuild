@@ -5,7 +5,7 @@ EAPI=6
 
 inherit vala
 
-COMMIT_ID="506064c5faa309f17537b25b7039e8099d517549"
+COMMIT_ID="ad16c9df0d500cd63af1cdedf98dba5018494a9c"
 DESCRIPTION=".br compression utility"
 HOMEPAGE="https://github.com/matijaskala/brzip"
 SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
