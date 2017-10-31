@@ -3,7 +3,6 @@
 CATEGORY=sys-apps
 PN=accountsservice
 PATCH=accountsservice-other-display-managers.patch
-rm ${CATEGORY}/${PN}/${PN}-0.6.43.ebuild || exit 1
 mv ${CATEGORY}/${PN}/${PN}-0.6.43-r{1,4}.ebuild || exit 1
 mkdir -p ${CATEGORY}/${PN}/files || exit 1
 for i in ${CATEGORY}/${PN}/${PN}-0.6.43*.ebuild; do
