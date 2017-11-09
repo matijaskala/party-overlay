@@ -55,7 +55,7 @@ DEPEND="${RDEPEND}
 	>=dev-util/intltool-0.35
 	virtual/pkgconfig
 	>=app-text/scrollkeeper-0.1.4
-	>=app-text/gnome-doc-utils-0.3.2"
+	app-text/yelp-tools"
 
 DOCS="AUTHORS ChangeLog NEWS README TODO"
 
