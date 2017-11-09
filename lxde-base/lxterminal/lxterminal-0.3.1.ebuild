@@ -8,7 +8,7 @@ HOMEPAGE="http://lxde.sf.net/"
 SRC_URI="mirror://sourceforge/lxde/${P}.tar.xz"
 
 LICENSE="GPL-2"
-#KEYWORDS="~alpha ~amd64 ~arm ~mips ~ppc ~x86 ~amd64-linux ~arm-linux ~x86-linux"
+KEYWORDS="~alpha ~amd64 ~arm ~mips ~ppc ~x86 ~amd64-linux ~arm-linux ~x86-linux"
 SLOT="0"
 IUSE="gtk3"
 
@@ -20,7 +20,7 @@ DEPEND="${RDEPEND}
 	sys-devel/gettext
 	>=dev-util/intltool-0.40.0"
 
-DOCS=( AUTHORS README )
+DOCS=( AUTHORS NEWS )
 
 src_configure() {
 	econf $(use_enable gtk3)
