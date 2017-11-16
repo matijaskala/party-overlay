@@ -15,21 +15,22 @@ IUSE="eds"
 KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sh ~sparc x86 ~x86-fbsd ~x86-interix ~amd64-linux ~x86-linux ~x86-solaris"
 RESTRICT="mirror"
 
-RDEPEND="!<gnome-base/gnome-session-3.8
+RDEPEND="
 	>=dev-libs/glib-2.46.0:2
 	>=dev-libs/libgweather-3.20:2=
 	dev-libs/libxml2:2
 	gnome-base/dconf
 	gnome-base/gconf:2
+	gnome-base/gdm
 	>=gnome-base/gnome-desktop-3.20:3=
 	>=gnome-base/gnome-menus-3.13:3
 	gnome-base/gsettings-desktop-schemas
 	gnome-base/librsvg:2
 	net-libs/telepathy-glib
 	sys-auth/polkit
-	x11-libs/cairo[X]
+	x11-libs/cairo[X,glib]
 	x11-libs/gdk-pixbuf:2
-	>=x11-libs/gtk+-3.20:3
+	>=x11-libs/gtk+-3.22:3
 	x11-libs/libXau
 	x11-libs/libICE
 	x11-libs/libSM
