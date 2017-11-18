@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo 'dev-libs/xmlsec nss' >> profiles/targets/desktop/package.use
