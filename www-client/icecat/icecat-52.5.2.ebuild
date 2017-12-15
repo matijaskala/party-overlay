@@ -24,7 +24,7 @@ if [[ ${MOZ_ESR} == 1 ]]; then
 fi
 
 # Patch version
-PATCH="firefox-52.4-patches-02"
+PATCH="firefox-52.5-patches-02"
 MOZ_HTTP_URI="https://archive.mozilla.org/pub/firefox/releases"
 
 MOZCONFIG_OPTIONAL_GTK3=1
