@@ -7,7 +7,7 @@ inherit eutils flag-o-matic toolchain-funcs multilib multilib-minimal
 
 MY_P=${P/_/-}
 DESCRIPTION="full-strength general purpose cryptography library (including SSL and TLS)"
-HOMEPAGE="http://www.openssl.org/"
+HOMEPAGE="https://www.openssl.org/"
 SRC_URI="mirror://openssl/source/${MY_P}.tar.gz"
 
 LICENSE="openssl"
