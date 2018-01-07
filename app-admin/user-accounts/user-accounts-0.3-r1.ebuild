@@ -32,6 +32,7 @@ DEPEND="${COMMON_DEPEND}
 	virtual/pkgconfig"
 
 src_prepare() {
+	eapply "${FILESDIR}"/gdk_cursor_unref.patch
 	eapply_user
 	eautoreconf -i
 }
