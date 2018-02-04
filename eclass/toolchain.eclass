@@ -1,4 +1,4 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 # Maintainer: Toolchain Ninjas <toolchain@gentoo.org>
@@ -23,14 +23,13 @@ fi
 
 FEATURES=${FEATURES/multilib-strict/}
 
-EXPORTED_FUNCTIONS="pkg_setup src_unpack src_compile src_test src_install pkg_postinst pkg_postrm"
 case ${EAPI:-0} in
-	0|1)    die "Need to upgrade to at least EAPI=2";;
-	2|3)    EXPORTED_FUNCTIONS+=" src_prepare src_configure" ;;
-	4*|5*)  EXPORTED_FUNCTIONS+=" pkg_pretend src_prepare src_configure" ;;
-	*)      die "I don't speak EAPI ${EAPI}."
+	0|1|2|3|4*) die "Need to upgrade to at least EAPI=5" ;;
+	5*)   ;;
+	*)       die "I don't speak EAPI ${EAPI}." ;;
 esac
-EXPORT_FUNCTIONS ${EXPORTED_FUNCTIONS}
+EXPORT_FUNCTIONS pkg_pretend pkg_setup src_unpack src_prepare src_configure \
+	src_compile src_test src_install pkg_postinst pkg_postrm
 
 #---->> globals <<----
 
@@ -169,9 +168,9 @@ tc_version_is_at_least 3 && RDEPEND+=" virtual/libiconv"
 if tc_version_is_at_least 4 ; then
 	GMP_MPFR_DEPS=""
 	[[ -z ${GMP_VER} ]] && \
-		GMP_MPFR_DEPS="${GMP_MPFR_DEPS} >=dev-libs/gmp-4.3.2:0"
+		GMP_MPFR_DEPS="${GMP_MPFR_DEPS} >=dev-libs/gmp-4.3.2:0="
 	[[ -z ${MPFR_VER} ]] && \
-		GMP_MPFR_DEPS="${GMP_MPFR_DEPS} >=dev-libs/mpfr-2.4.2:0"
+		GMP_MPFR_DEPS="${GMP_MPFR_DEPS} >=dev-libs/mpfr-2.4.2:0="
 	if tc_version_is_at_least 4.3 ; then
 		RDEPEND+=" ${GMP_MPFR_DEPS}"
 	elif in_iuse fortran ; then
@@ -180,7 +179,7 @@ if tc_version_is_at_least 4 ; then
 fi
 
 [[ -z ${MPC_VER} ]] && \
-tc_version_is_at_least 4.5 && RDEPEND+=" >=dev-libs/mpc-0.8.1:0"
+tc_version_is_at_least 4.5 && RDEPEND+=" >=dev-libs/mpc-0.8.1:0="
 
 if in_iuse objc-gc ; then
 	if tc_version_is_at_least 7 ; then
@@ -194,8 +193,8 @@ if in_iuse graphite ; then
 	elif tc_version_is_at_least 4.8 ; then
 		RDEPEND+="
 			graphite? (
-				>=dev-libs/cloog-0.18.0
-				>=dev-libs/isl-0.11.1
+				>=dev-libs/cloog-0.18.0:0=
+				>=dev-libs/isl-0.11.1:0=
 			)"
 	fi
 fi
@@ -322,7 +321,11 @@ get_gcc_src_uri() {
 	elif [[ -n ${PRERELEASE} ]] ; then
 		GCC_SRC_URI="ftp://gcc.gnu.org/pub/gcc/prerelease-${PRERELEASE}/gcc-${PRERELEASE}.tar.bz2"
 	elif [[ -n ${SNAPSHOT} ]] ; then
-		GCC_SRC_URI="ftp://gcc.gnu.org/pub/gcc/snapshots/${SNAPSHOT}/gcc-${SNAPSHOT}.tar.bz2"
+		if tc_version_is_between 5.5 6 || tc_version_is_between 6.4 7 || tc_version_is_at_least 7.2 ; then
+			GCC_SRC_URI="ftp://gcc.gnu.org/pub/gcc/snapshots/${SNAPSHOT}/gcc-${SNAPSHOT}.tar.xz"
+		else
+			GCC_SRC_URI="ftp://gcc.gnu.org/pub/gcc/snapshots/${SNAPSHOT}/gcc-${SNAPSHOT}.tar.bz2"
+		fi
 	else
 		if tc_version_is_between 5.5 6 || tc_version_is_between 6.4 7 || tc_version_is_at_least 7.2 ; then
 			GCC_SRC_URI="mirror://gnu/gcc/gcc-${GCC_PV}/gcc-${GCC_RELEASE_VER}.tar.xz"
@@ -404,10 +407,6 @@ toolchain_pkg_pretend() {
 #---->> pkg_setup <<----
 
 toolchain_pkg_setup() {
-	case ${EAPI} in
-	2|3) toolchain_pkg_pretend ;;
-	esac
-
 	# we dont want to use the installed compiler's specs to build gcc
 	unset GCC_SPECS
 	unset LANGUAGES #265283
@@ -436,7 +435,11 @@ gcc_quick_unpack() {
 	elif [[ -n ${PRERELEASE} ]] ; then
 		unpack gcc-${PRERELEASE}.tar.bz2
 	elif [[ -n ${SNAPSHOT} ]] ; then
-		unpack gcc-${SNAPSHOT}.tar.bz2
+		if tc_version_is_between 5.5 6 || tc_version_is_between 6.4 7 || tc_version_is_at_least 7.2 ; then
+			unpack gcc-${SNAPSHOT}.tar.xz
+		else
+			unpack gcc-${SNAPSHOT}.tar.bz2
+		fi
 	elif [[ ${PV} != *9999* ]] ; then
 		if tc_version_is_between 5.5 6 || tc_version_is_between 6.4 7 || tc_version_is_at_least 7.2 ; then
 			unpack gcc-${GCC_RELEASE_VER}.tar.xz
@@ -662,6 +665,14 @@ do_gcc_PIE_patches() {
 make_gcc_hard() {
 
 	local gcc_hard_flags=""
+
+	# If we use gcc-6 or newer with pie enable to compile older gcc we need to pass -no-pie
+	# to stage1; bug 618908
+	if ! tc_version_is_at_least 6.0 && [[ $(gcc-major-version) -ge 6 ]] ; then
+		einfo "Disabling PIE in stage1 (only) ..."
+		sed -i -e "/^STAGE1_LDFLAGS/ s/$/ -no-pie/" "${S}"/Makefile.in || die
+	fi
+
 	# Gcc >= 6.X we can use configuration options to turn pie/ssp on as default
 	if tc_version_is_at_least 6.0 ; then
 		if use pie ; then
