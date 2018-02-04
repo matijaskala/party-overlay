@@ -1,9 +1,9 @@
-# Copyright 1999-2016 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="5"
+EAPI=6
 
-inherit eutils flag-o-matic toolchain-funcs multilib prefix
+inherit flag-o-matic toolchain-funcs multilib prefix
 
 # Official patchlevel
 # See ftp://ftp.cwru.edu/pub/bash/bash-4.4-patches/
@@ -46,19 +46,23 @@ fi
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~sparc-fbsd ~x86-fbsd"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd"
 IUSE="afs bashlogger examples mem-scramble +net nls plugins +readline"
 
-DEPEND=">=sys-libs/ncurses-5.2-r2:0=
+DEPEND="
+	>=sys-libs/ncurses-5.2-r2:0=
 	readline? ( >=sys-libs/readline-${READLINE_VER}:0= )
-	nls? ( virtual/libintl )"
-RDEPEND="${DEPEND}
+	nls? ( virtual/libintl )
+"
+RDEPEND="
+	${DEPEND}
 	!<sys-apps/portage-2.1.6.7_p1
-	!<sys-apps/paludis-0.26.0_alpha5"
+	!<sys-apps/paludis-0.26.0_alpha5
+"
 # we only need yacc when the .y files get patched (bash42-005)
 #DEPEND+=" virtual/yacc"
 
-S=${WORKDIR}/${MY_P}
+S="${WORKDIR}/${MY_P}"
 
 pkg_setup() {
 	if is-flag -malign-double ; then #7332
@@ -78,8 +82,9 @@ src_unpack() {
 
 src_prepare() {
 	# Include official patches
-	[[ ${PLEVEL} -gt 0 ]] && epatch $(patches -s)
-	epatch "${FILESDIR}"/${PN}-4.4-popd-offset-overflow.patch #600174
+	[[ ${PLEVEL} -gt 0 ]] && eapply -p0 $(patches -s)
+
+	eapply "${FILESDIR}/${PN}-4.4-jobs_overflow.patch" #644720
 
 	# Clean out local libs so we know we use system ones w/releases.
 	if is_release ; then
@@ -95,12 +100,24 @@ src_prepare() {
 	sed -i -r '/^(HS|RL)USER/s:=.*:=:' doc/Makefile.in || die
 	touch -r . doc/*
 
-	epatch_user
-	epatch "${FILESDIR}"/crosscompile.patch
+	eapply_user
+	eapply "${FILESDIR}"/crosscompile.patch
 }
 
 src_configure() {
-	local myconf=()
+	local myconf=(
+		--disable-profiling
+		--docdir='$(datarootdir)'/doc/${PF}
+		--htmldir='$(docdir)/html'
+		--with-curses
+		$(use_enable mem-scramble)
+		$(use_enable net net-redirections)
+		$(use_enable readline)
+		$(use_enable readline bang-history)
+		$(use_enable readline history)
+		$(use_with afs)
+		$(use_with mem-scramble bash-malloc)
+	)
 
 	# For descriptions of these, see config-top.h
 	# bashrc/#26952 bash_logout/#90488 ssh/#24762 mktemp/#574426
@@ -150,19 +167,7 @@ src_configure() {
 			configure || die
 	fi
 	tc-export AR #444070
-	econf \
-		--docdir='$(datarootdir)'/doc/${PF} \
-		--htmldir='$(docdir)/html' \
-		--with-curses \
-		$(use_with afs) \
-		$(use_enable net net-redirections) \
-		--disable-profiling \
-		$(use_enable mem-scramble) \
-		$(use_with mem-scramble bash-malloc) \
-		$(use_enable readline) \
-		$(use_enable readline history) \
-		$(use_enable readline bang-history) \
-		"${myconf[@]}"
+	econf "${myconf[@]}"
 }
 
 src_compile() {
@@ -179,7 +184,7 @@ src_install() {
 	default
 
 	dodir /bin
-	mv "${ED}"/usr/bin/bash "${ED}"/bin/ || die
+	mv "${ED%/}"/usr/bin/bash "${ED%/}"/bin/ || die
 	dosym bash /bin/rbash
 
 	insinto /etc/bash
@@ -203,8 +208,8 @@ src_install() {
 	fi
 	sed -i \
 		"${sed_args[@]}" \
-		"${ED}"/etc/skel/.bashrc \
-		"${ED}"/etc/bash/bashrc || die
+		"${ED%/}"/etc/skel/.bashrc \
+		"${ED%/}"/etc/bash/bashrc || die
 
 	if use plugins ; then
 		exeinto /usr/$(get_libdir)/bash
