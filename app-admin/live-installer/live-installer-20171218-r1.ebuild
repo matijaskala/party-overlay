@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -22,6 +22,9 @@ RDEPEND="${DEPEND}
 	x11-apps/setxkbmap"
 
 src_install() {
-	mv ${S}/etc ${ED}
-	mv ${S}/usr ${ED}
+	mv ${S}/etc "${ED}" || die
+	mv ${S}/usr "${ED}" || die
+
+	rm "${ED}"/usr/share/icons/live-installer.xpm || die
+	mv "${ED}"/usr/share/icons "${ED}"/usr/share/pixmaps || die
 }
