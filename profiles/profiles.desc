@@ -150,10 +150,6 @@ mips            default/linux/mips/13.0/mipsel/multilib/o32     exp
 mips            default/linux/mips/13.0/mipsel/multilib/n32     exp
 mips            default/linux/mips/13.0/mipsel/multilib/n64     exp
 
-# Nios II Profiles
-nios2           default/linux/nios2/13.0                        exp
-nios2           default/linux/nios2/17.0                        exp
-
 # PPC32 Profiles
 # @MAINTAINER: ppc@gentoo.org
 ppc             default/linux/powerpc/ppc32/13.0                       stable
@@ -193,10 +189,6 @@ ppc64           default/linux/powerpc/ppc64/17.0/64bit-userland/desktop/gnome/sy
 ppc64           default/linux/powerpc/ppc64/17.0/64bit-userland/developer               stable
 ppc64		default/linux/powerpc/ppc64/17.0/64bit-userland/little-endian		exp
 ppc64		default/linux/powerpc/ppc64/17.0/64bit-userland/little-endian/systemd	exp
-
-# RISC-V Profiles
-riscv           default/linux/riscv/13.0                        exp
-riscv           default/linux/riscv/17.0                        exp
 
 # S390 Profiles
 # @MAINTAINER: s390@gentoo.org
@@ -266,17 +258,10 @@ x86		default/linux/x86/17.0/systemd			stable
 # Gentoo/FreeBSD Profiles
 # @MAINTAINER: bsd@gentoo.org
 amd64-fbsd	default/bsd/fbsd/amd64/9.1			exp
-amd64-fbsd	default/bsd/fbsd/amd64/10.3			dev
-amd64-fbsd	default/bsd/fbsd/amd64/11.0			dev
 amd64-fbsd	default/bsd/fbsd/amd64/11.1			dev
 amd64-fbsd	default/bsd/fbsd/amd64/9.1/clang		exp
-amd64-fbsd	default/bsd/fbsd/amd64/10.3/clang		exp
-amd64-fbsd	default/bsd/fbsd/amd64/11.0/clang		exp
 amd64-fbsd	default/bsd/fbsd/amd64/11.1/clang		exp
-sparc-fbsd      default/bsd/fbsd/sparc/8.2                      exp
 x86-fbsd	default/bsd/fbsd/x86/9.1			exp
-x86-fbsd	default/bsd/fbsd/x86/10.3			dev
-x86-fbsd	default/bsd/fbsd/x86/11.0			dev
 x86-fbsd	default/bsd/fbsd/x86/11.1			exp
 
 # Hardened Profiles
@@ -337,33 +322,12 @@ ppc		hardened/linux/uclibc/ppc				exp
 x86		default/linux/uclibc/x86				exp
 x86		hardened/linux/uclibc/x86				exp
 
-# uclibc/embedded multiarch profiles
-#amd64		uclibc/amd64					dev
-#arm		uclibc/arm					dev
-#arm		uclibc/arm/2.4					dev
-#mips		uclibc/mips					dev
-#mips		uclibc/mips/hardened				dev
-#ppc		uclibc/ppc					dev
-#ppc		uclibc/ppc/2.4					dev
-#ppc		uclibc/ppc/hardened				dev
-#ppc		uclibc/ppc/hardened/2.4				dev
-#sh		uclibc/sh					dev
-#sh		uclibc/sh/2.4					dev
-#x86		uclibc/x86					dev
-#x86		uclibc/x86/2.4					dev
-#x86		uclibc/x86/2005.1				dev
-#x86		uclibc/x86/2005.1/2.4				dev
-#x86		uclibc/x86/hardened				dev
-#x86		uclibc/x86/hardened/2.4				dev
-
-
 # These are Gentoo Prefix profiles, maintained by the Prefix team
 # @MAINTAINER: prefix@gentoo.org
 
 # Linux Profiles
 amd64-linux		prefix/linux/amd64				exp
 arm-linux		prefix/linux/arm				exp
-ia64-linux		prefix/linux/ia64				exp
 ppc64-linux		prefix/linux/ppc64				exp
 x86-linux		prefix/linux/x86				exp
 
@@ -417,12 +381,6 @@ ppc-aix			prefix/aix/6.1.0.0/ppc				exp
 ppc-aix			prefix/aix/7.1.0.0/ppc				exp
 ppc-aix			prefix/aix/7.2.0.0/ppc				exp
 
-# Interix Profiles
-x86-interix		prefix/windows/interix/3.5/x86			exp
-x86-interix		prefix/windows/interix/5.2/x86			exp
-x86-interix		prefix/windows/interix/6.0/x86			exp
-x86-interix		prefix/windows/interix/6.1/x86			exp
-
 # Windows Profiles
 x86-winnt		prefix/windows/winnt/3.5/x86			exp
 x86-winnt		prefix/windows/winnt/5.2/x86			exp
@@ -432,37 +390,6 @@ x86-winnt		prefix/windows/winnt/6.1/x86			exp
 # Cygwin Profiles
 x86-cygwin		prefix/windows/cygwin/x86			exp
 x64-cygwin		prefix/windows/cygwin/x64			exp
-
-# HP-UX Profiles
-ia64-hpux		prefix/hpux/B.11.23/ia64			exp
-hppa-hpux		prefix/hpux/B.11.31/hppa2.0			exp
-ia64-hpux		prefix/hpux/B.11.31/ia64			exp
-
-# FreeBSD Profiles
-x86-freebsd		prefix/bsd/freebsd/7.1/x86			exp
-x64-freebsd		prefix/bsd/freebsd/7.1/x64			exp
-x86-freebsd		prefix/bsd/freebsd/7.2/x86			exp
-x64-freebsd		prefix/bsd/freebsd/7.2/x64			exp
-x86-freebsd		prefix/bsd/freebsd/8.0/x86			exp
-x64-freebsd		prefix/bsd/freebsd/8.0/x64			exp
-x86-freebsd		prefix/bsd/freebsd/8.1/x86			exp
-x64-freebsd		prefix/bsd/freebsd/8.1/x64			exp
-sparc64-freebsd		prefix/bsd/freebsd/8.1/sparc64			exp
-x86-freebsd		prefix/bsd/freebsd/8.2/x86			exp
-x64-freebsd		prefix/bsd/freebsd/8.2/x64			exp
-x86-freebsd		prefix/bsd/freebsd/9.0/x86			exp
-x64-freebsd		prefix/bsd/freebsd/9.0/x64			exp
-x86-freebsd		prefix/bsd/freebsd/9.1/x86			exp
-x64-freebsd		prefix/bsd/freebsd/9.1/x64			exp
-
-
-# OpenBSD Profiles
-ppc-openbsd		prefix/bsd/openbsd/4.2/ppc			exp
-x86-openbsd		prefix/bsd/openbsd/4.2/x86			exp
-x64-openbsd		prefix/bsd/openbsd/4.2/x64			exp
-
-# NetBSD Profiles
-x86-netbsd		prefix/bsd/netbsd/4.0/x86			exp
 
 # FreeMiNT
 m68k-mint		prefix/mint/m68k				exp
