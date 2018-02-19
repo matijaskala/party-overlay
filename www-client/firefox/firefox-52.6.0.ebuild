@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -124,6 +124,7 @@ src_unpack() {
 
 src_prepare() {
 	# Apply our patches
+	rm -f "${WORKDIR}"/firefox/2007_fix_nvidia_latest.patch
 	eapply "${WORKDIR}/firefox"
 	eapply "${FILESDIR}"/52-unity-menubar.patch
 
