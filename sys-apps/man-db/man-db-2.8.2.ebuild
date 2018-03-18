@@ -1,34 +1,45 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
-inherit eutils user versionator
+inherit ltprune user versionator
 
 DESCRIPTION="a man replacement that utilizes berkdb instead of flat files"
 HOMEPAGE="http://www.nongnu.org/man-db/"
-SRC_URI="mirror://nongnu/${PN}/${P}.tar.xz"
+if [[ "${PV}" = 9999* ]] ; then
+	inherit git-r3
+	EGIT_REPO_URI="https://git.savannah.gnu.org/git/man-db.git"
+else
+	SRC_URI="mirror://nongnu/${PN}/${P}.tar.xz"
+	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-linux ~arm-linux ~x86-linux"
+fi
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="alpha amd64 arm arm64 hppa ia64 m68k ~mips ppc ppc64 s390 sh sparc x86 ~amd64-linux ~arm-linux ~x86-linux"
-IUSE="berkdb +gdbm +manpager nls selinux static-libs zlib"
+IUSE="berkdb +gdbm +manpager nls seccomp selinux static-libs zlib"
 
-CDEPEND=">=dev-libs/libpipeline-1.4.0
+CDEPEND="
+	!sys-apps/man
+	>=dev-libs/libpipeline-1.5.0
+	sys-apps/groff
 	berkdb? ( sys-libs/db:= )
 	gdbm? ( sys-libs/gdbm:= )
 	!berkdb? ( !gdbm? ( sys-libs/gdbm:= ) )
-	sys-apps/groff
+	seccomp? ( sys-libs/libseccomp )
 	zlib? ( sys-libs/zlib )
-	!sys-apps/man"
-DEPEND="${CDEPEND}
+"
+DEPEND="
+	${CDEPEND}
 	app-arch/xz-utils
 	virtual/pkgconfig
 	nls? (
 		>=app-text/po4a-0.45
 		sys-devel/gettext
-	)"
-RDEPEND="${CDEPEND}
+	)
+"
+RDEPEND="
+	${CDEPEND}
 	selinux? ( sec-policy/selinux-mandb )
 "
 PDEPEND="manpager? ( app-text/manpager )"
@@ -57,6 +68,7 @@ src_configure() {
 		--with-sections="1 1p 8 2 3 3p 4 5 6 7 9 0p tcl n l p o 1x 2x 3x 4x 5x 6x 7x 8x"
 		$(use_enable nls)
 		$(use_enable static-libs static)
+		$(use_with seccomp libseccomp)
 		--with-db=$(usex gdbm gdbm $(usex berkdb db gdbm))
 	)
 	econf "${myeconfargs[@]}"
