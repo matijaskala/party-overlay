@@ -7,8 +7,9 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/systemd/systemd.git"
 	inherit git-r3
 else
-	SRC_URI="https://github.com/systemd/systemd/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-#	KEYWORDS="alpha amd64 arm arm64 ia64 ppc ppc64 sparc x86"
+	SRC_URI="https://github.com/systemd/systemd/archive/v${PV}.tar.gz -> ${P}.tar.gz
+		https://dev.gentoo.org/~floppym/dist/${P}-patches-2.tar.gz"
+	KEYWORDS="alpha amd64 ~arm ~arm64 ia64 ppc ppc64 x86"
 fi
 
 PYTHON_COMPAT=( python{3_4,3_5,3_6} )
@@ -149,9 +150,10 @@ src_unpack() {
 
 src_prepare() {
 	local PATCHES=(
-		"${FILESDIR}/236-0001-cryptsetup-generator-Don-t-mistake-NULL-input-as-OOM.patch"
 		"${FILESDIR}/236-musl.patch"
 	)
+
+	[[ -d "${WORKDIR}"/patches ]] && PATCHES+=( "${WORKDIR}"/patches )
 
 	if ! use vanilla; then
 		PATCHES+=(
@@ -162,8 +164,6 @@ src_prepare() {
 			"${FILESDIR}/gentoo-generator-path.patch"
 		)
 	fi
-
-	[[ -d "${WORKDIR}"/patches ]] && PATCHES+=( "${WORKDIR}"/patches )
 
 	default
 
@@ -213,6 +213,8 @@ multilib_src_configure() {
 		-Drootprefix="$(usex usrmerge "${EPREFIX}/usr" "${EPREFIX:-/}")"
 		-Dsysvinit-path=
 		-Dsysvrcnd-path=
+		# Avoid infinite exec recursion, bug 642724
+		-Dtelinit-path="${EPREFIX}/lib/sysvinit/telinit"
 		# no deps
 		-Defi=$(meson_multilib)
 		-Dima=true
@@ -322,6 +324,7 @@ multilib_src_install_all() {
 	# Preserve empty dirs in /etc & /var, bug #437008
 	keepdir /etc/{binfmt.d,modules-load.d,tmpfiles.d}
 	keepdir /etc/systemd/{ntp-units.d,user} /var/lib/systemd
+	keepdir /etc/udev/{hwdb.d,rules.d}
 	keepdir /var/log/journal/remote
 
 	# Symlink /etc/sysctl.conf for easy migration.
@@ -341,6 +344,12 @@ multilib_src_install_all() {
 	use usrmerge && udevdir=/usr/lib/udev
 
 	rm -r "${ED%/}${udevdir}/hwdb.d" || die
+
+	if ! use usrmerge; then
+		# Avoid breaking boot/reboot
+		dosym ../../../lib/systemd/systemd /usr/lib/systemd/systemd
+		dosym ../../../lib/systemd/systemd-shutdown /usr/lib/systemd/systemd-shutdown
+	fi
 }
 
 migrate_locale() {
@@ -395,6 +404,7 @@ pkg_postinst() {
 
 	enewgroup input
 	enewgroup kvm 78
+	enewgroup render
 	enewgroup systemd-journal
 	newusergroup systemd-bus-proxy
 	newusergroup systemd-coredump
