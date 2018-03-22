@@ -108,9 +108,10 @@ python_prepare_all() {
 			|| die "failed to append to make.globals"
 	fi
 
-	sed	-e "s|^\(sync-type = \).*|\\1git|" \
-		-e "s|^\(sync-uri = \).*|\\1https://github.com/matijaskala/ports-2013.git|" \
-		-i cnf/repos.conf || die "sed failed"
+		sed -e '/^sync-rsync-verify-metamanifest/s|yes|no|' \
+			-e "s|^\(sync-type = \).*|\\1git|" \
+			-e "s|^\(sync-uri = \).*|\\1https://github.com/matijaskala/ports-2013.git|" \
+			-i cnf/repos.conf || die "sed failed"
 
 	if [[ -n ${EPREFIX} ]] ; then
 		einfo "Setting portage.const.EPREFIX ..."
@@ -139,6 +140,7 @@ python_prepare_all() {
 
 		einfo "Adjusting repos.conf ..."
 		sed -e "s|^\(location = \)\(/usr/portage\)|\\1${EPREFIX}\\2|" \
+			-e "s|^\(sync-openpgp-key-path = \)\(.*\)|\\1${EPREFIX}\\2|" \
 			-i cnf/repos.conf || die "sed failed"
 
 		einfo "Adding FEATURES=force-prefix to make.globals ..."
