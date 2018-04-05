@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="5"
@@ -9,29 +9,36 @@ MY_PN="Linux-PAM"
 MY_P="${MY_PN}-${PV}"
 
 DESCRIPTION="Linux-PAM (Pluggable Authentication Modules)"
-HOMEPAGE="http://www.linux-pam.org/ https://fedorahosted.org/linux-pam/"
+HOMEPAGE="http://www.linux-pam.org/"
 SRC_URI="http://www.linux-pam.org/library/${MY_P}.tar.bz2
 	http://www.linux-pam.org/library/${MY_P}-docs.tar.bz2"
 
 LICENSE="|| ( BSD GPL-2 )"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-linux ~x86-linux"
-IUSE="audit berkdb cracklib debug nis nls +pie selinux test vim-syntax"
+IUSE="audit berkdb +cracklib debug nis nls +pie selinux test vim-syntax"
 
-RDEPEND="nls? ( >=virtual/libintl-0-r1[${MULTILIB_USEDEP}] )
+RDEPEND="
+	nls? ( >=virtual/libintl-0-r1[${MULTILIB_USEDEP}] )
 	cracklib? ( >=sys-libs/cracklib-2.9.1-r1[${MULTILIB_USEDEP}] )
 	audit? ( >=sys-process/audit-2.2.2[${MULTILIB_USEDEP}] )
 	selinux? ( >=sys-libs/libselinux-2.2.2-r4[${MULTILIB_USEDEP}] )
 	berkdb? ( >=sys-libs/db-4.8.30-r1:=[${MULTILIB_USEDEP}] )
 	nis? ( >=net-libs/libtirpc-0.2.4-r2[${MULTILIB_USEDEP}] )"
-DEPEND="${RDEPEND}
+
+DEPEND="
+	${RDEPEND}
 	>=sys-devel/libtool-2
 	>=sys-devel/flex-2.5.39-r1[${MULTILIB_USEDEP}]
 	nls? ( sys-devel/gettext )
 	nis? ( >=virtual/pkgconfig-0-r1[${MULTILIB_USEDEP}] )"
-PDEPEND="sys-auth/pambase
-	vim-syntax? ( app-vim/pam-syntax )"
-RDEPEND="${RDEPEND}
+
+PDEPEND="
+	sys-auth/pambase
+	vim-syntax? ( app-editors/vim )"
+
+RDEPEND="
+	${RDEPEND}
 	!<sys-apps/openrc-0.11.8
 	!sys-auth/openpam
 	!sys-auth/pam_userdb"
