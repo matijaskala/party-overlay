@@ -7,7 +7,8 @@ if [[ ${PV} == 9999 ]]; then
 	EGIT_REPO_URI="https://github.com/systemd/systemd.git"
 	inherit git-r3
 else
-	SRC_URI="https://github.com/systemd/systemd/archive/v${PV}/${P}.tar.gz"
+	SRC_URI="https://github.com/systemd/systemd/archive/v${PV}/${P}.tar.gz
+		https://dev.gentoo.org/~floppym/dist/${P}-patches-1.tar.gz"
 	KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86"
 fi
 
@@ -58,9 +59,7 @@ COMMON_DEPEND=">=sys-apps/util-linux-2.30:0=[${MULTILIB_USEDEP}]
 	qrcode? ( media-gfx/qrencode:0= )
 	seccomp? ( >=sys-libs/libseccomp-2.3.3:0= )
 	selinux? ( sys-libs/libselinux:0= )
-	xkb? ( >=x11-libs/libxkbcommon-0.4.1:0= )
-	abi_x86_32? ( !<=app-emulation/emul-linux-x86-baselibs-20130224-r9
-		!app-emulation/emul-linux-x86-baselibs[-abi_x86_32(-)] )"
+	xkb? ( >=x11-libs/libxkbcommon-0.4.1:0= )"
 
 # baselayout-2.2 has /run
 RDEPEND="${COMMON_DEPEND}
@@ -151,13 +150,15 @@ src_unpack() {
 src_prepare() {
 	local PATCHES=(
 		"${FILESDIR}/238-musl.patch"
-		"${FILESDIR}/238-0001-sd-bus-do-not-try-to-close-already-closed-fd-8392.patch"
-		"${FILESDIR}/238-0002-core-do-not-free-heap-allocated-strings-8391.patch"
-		"${FILESDIR}/238-libmount-include.patch"
-		"${FILESDIR}/238-0003-udev-net-id-Fix-check-for-address-to-keep-interface-8458.patch"
 	)
 
 	[[ -d "${WORKDIR}"/patches ]] && PATCHES+=( "${WORKDIR}"/patches )
+
+	PATCHES+=(
+		"${FILESDIR}/238-initctl.patch"
+		"${FILESDIR}/238-nspawn-wait.patch"
+		"${FILESDIR}/238-timesync-connection.patch"
+	)
 
 	if ! use vanilla; then
 		PATCHES+=(
