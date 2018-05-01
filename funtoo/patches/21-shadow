@@ -22,4 +22,4 @@ EOF
 	rm ${PATCH}
 done
 
-sed -i /dosym/d sys-apps/shadow/shadow-4.5-*.ebuild
+sed -i /dosym/d sys-apps/shadow/shadow-*.ebuild
