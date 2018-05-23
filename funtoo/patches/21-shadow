@@ -1,25 +1,3 @@
-#!/bin/bash
-
-PATCH="shadow-usr-merge.patch"
-for i in sys-apps/shadow/shadow-4.5.ebuild; do
-	cat > ${PATCH} << EOF
---- a/${i}	2013-09-15 21:31:32.000000000 +0200
-+++ b/${i}	2013-10-19 14:23:26.000000000 +0200
-@@ -99,11 +99,7 @@
- 	insopts -m0600
- 	doins "\${FILESDIR}"/default/useradd
--
--	# move passwd to / to help recover broke systems #64441
--	mv "\${ED}"/usr/bin/passwd "\${ED}"/bin/ || die
--	dosym /bin/passwd /usr/bin/passwd
- 
- 	cd "\${S}"
- 	insinto /etc
- 	insopts -m0644
- 	newins etc/login.defs login.defs
-EOF
-	git apply ${PATCH} || exit 1
-	rm ${PATCH}
-done
+#!/bin/sh
 
 sed -i /dosym/d sys-apps/shadow/shadow-*.ebuild
