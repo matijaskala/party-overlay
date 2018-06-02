@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PATCH="coreutils-usr-merge.patch"
-for i in sys-apps/coreutils/coreutils-*.ebuild; do
+for i in sys-apps/coreutils/coreutils-8.28-r1.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-04-28 03:31:29.000000000 +0200
 +++ b/${i}	2013-10-14 15:02:15.851549730 +0200
