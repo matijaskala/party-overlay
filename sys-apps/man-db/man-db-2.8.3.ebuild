@@ -44,6 +44,8 @@ RDEPEND="
 "
 PDEPEND="manpager? ( app-text/manpager )"
 
+PATCHES=( "${FILESDIR}"/brzip.patch )
+
 pkg_setup() {
 	# Create user now as Makefile in src_install does setuid/chown
 	enewgroup man 15
@@ -52,10 +54,6 @@ pkg_setup() {
 	if (use gdbm && use berkdb) || (use !gdbm && use !berkdb) ; then #496150
 		ewarn "Defaulting to USE=gdbm due to ambiguous berkdb/gdbm USE flag settings"
 	fi
-}
-
-src_prepare() {
-	epatch "${FILESDIR}"/brzip.patch
 }
 
 src_configure() {
