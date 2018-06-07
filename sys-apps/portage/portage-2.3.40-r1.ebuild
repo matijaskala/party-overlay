@@ -16,7 +16,7 @@ DESCRIPTION="Portage is the package management and distribution system for Gento
 HOMEPAGE="https://wiki.gentoo.org/wiki/Project:Portage"
 
 LICENSE="GPL-2"
-KEYWORDS="~alpha amd64 ~arm arm64 hppa ia64 ~mips ~ppc ~ppc64 s390 ~sparc ~x86 ~amd64-fbsd"
+KEYWORDS="~alpha amd64 ~arm arm64 hppa ia64 ~mips ~ppc ~ppc64 s390 ~sparc x86 ~amd64-fbsd"
 SLOT="0"
 IUSE="build doc epydoc gentoo-dev +ipc +native-extensions selinux xattr"
 
@@ -83,7 +83,8 @@ prefix_src_archives() {
 TARBALL_PV=${PV}
 SRC_URI="mirror://gentoo/${PN}-${TARBALL_PV}.tar.bz2
 	$(prefix_src_archives ${PN}-${TARBALL_PV}.tar.bz2)
-	https://github.com/gentoo/portage/commit/345256c2d439c5ab580e4226f227db2819883d40.patch -> ${P}-bug-657360-345256c2d439.patch"
+	https://github.com/gentoo/portage/compare/b7f94fccf4163364ab7b4c4f0dcd42b8847f03e0...937d0156aa060bdba9095313dedbb62e0a993aea.patch -> ${P}-bug-656942-bug-657436-937d0156aa06.patch
+	https://github.com/gentoo/portage/compare/937d0156aa060bdba9095313dedbb62e0a993aea...1fc628eead43fa5da4b142479aa004ded8acceab.patch -> ${P}-bug-657436-937d0156aa06-1fc628eead43.patch"
 
 pkg_setup() {
 	use epydoc && DISTUTILS_ALL_SUBPHASE_IMPLS=( python2.7 )
@@ -92,11 +93,8 @@ pkg_setup() {
 python_prepare_all() {
 	distutils-r1_python_prepare_all
 
-	epatch "${DISTDIR}/${P}-bug-657360-345256c2d439.patch"
-
-	# apply d07a47ff3c06
-	sed -i 's:("--dynamic-deps", "y") != "n"$:\0 and "--nodeps" not in myopts:' \
-		pym/_emerge/create_depgraph_params.py || die
+	epatch "${DISTDIR}/${P}-bug-656942-bug-657436-937d0156aa06.patch" \
+		"${DISTDIR}/${P}-bug-657436-937d0156aa06-1fc628eead43.patch"
 
 	# apply 4fb5ef2ce2cb
 	sed -i "s:\\((self._poll_obj, 'close'\\)):\\1, None):" \
