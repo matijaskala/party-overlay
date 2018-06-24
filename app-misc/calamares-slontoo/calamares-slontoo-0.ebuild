@@ -55,6 +55,7 @@ src_install() {
 		geoipStyle: "xml"
 		EOF
 	newins - packages.conf <<- EOF
+		---
 		backend: portage
 		skip_if_no_internet: false
 		update_db: true
@@ -62,7 +63,10 @@ src_install() {
 		  - remove:
 		    - app-admin/calamares
 		    - app-misc/calamares-slontoo
+		EOF
+	newins - removeuser.conf <<- EOF
 		---
+		username: liveuser
 		EOF
 	newins - unpackfs.conf <<- EOF
 		---
@@ -70,5 +74,22 @@ src_install() {
 		    -   source: /mnt/cdrom/image.squashfs
 		        sourcefs: squashfs
 		        destication: ""
+		EOF
+	newins - users.conf <<- EOF
+		---
+		defaultGroups:
+		    - adm
+		    - audio
+		    - cdrom
+		    - floppy
+		    - lpadmin
+		    - plugdev
+		    - sudo
+		    - tape
+		    - users
+		    - video
+		    - wheel
+		doAutoLogin: false
+		setRootPassword: false
 		EOF
 }
