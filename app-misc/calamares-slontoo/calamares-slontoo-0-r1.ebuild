@@ -37,18 +37,59 @@ src_install() {
 		  - locale
 		  - keyboard
 		  - localecfg
+		  - removeuser
 		  - users
 		  - displaymanager
 		  - networkcfg
 		  - hwclock
 		  - bootloader
+		  - packages
 		  - umount
 		- show:
 		  - finished
-		branding: default
+		branding: slontoo
 		prompt-install: true
 		EOF
+	insinto /etc/calamares/branding/slontoo
+	newins - branding.desc <<- EOF
+		---
+		componentName:  default
+		welcomeStyleCalamares:   true
+		strings:
+		    productName:         Slontoo Linux
+		    shortproductName:    Slontoo
+		    version:             18.7
+		    shortversion:        18.7
+		    versionedName:       Slontoo Linux 18.7
+		    shortVersionedName:  Slontoo 18.7
+		    bootloaderEntryName: Slontoo
+		    productUrl:          https://slontoo.sourceforge.io
+		    supportUrl:          https://sourceforge.net/p/slontoo/tickets
+		    knownIssuesUrl:      https://sourceforge.net/p/slontoo/tickets
+		    releaseNotesUrl:     https://sourceforge.net/p/slontoo
+		slideshow:               "show.qml"
+		style:
+		   sidebarBackground:    "#4c4c4c"
+		   sidebarText:          "#f6f6f6"
+		   sidebarTextSelect:    "#f6f6f6"
+		   sidebarTextHighlight: "#1692d0"
+		EOF
+	newins - show.qml <<- EOF
+		---
+		import QtQuick 2.0;
+		import calamares.slideshow 1.0;
+		
+		Presentation
+		{
+		    id: presentation
+		}
+		EOF
 	insinto /etc/calamares/modules
+	newins - finished.conf <<- EOF
+		---
+		restartNowEnabled: true
+		restartNowChecked: false
+		EOF
 	newins - locale.conf <<- EOF
 		---
 		geoipUrl: "geoip.ubuntu.com/lookup"
@@ -91,5 +132,24 @@ src_install() {
 		    - wheel
 		doAutoLogin: false
 		setRootPassword: false
+		EOF
+	newins - welcome.conf <<- EOF
+		---
+		requirements:
+		    requiredStorage:    6.0
+		    requiredRam:        1.0
+		    internetCheckUrl:   http://github.com
+		    check:
+		        - storage
+		        - ram
+		        - power
+		        - internet
+		        - root
+		        - screen
+		    required:
+		        - storage
+		        - ram
+		        - internet
+		        - root
 		EOF
 }
