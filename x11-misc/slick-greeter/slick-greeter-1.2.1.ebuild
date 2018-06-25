@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -19,7 +19,7 @@ RESTRICT="mirror"
 RDEPEND="media-libs/freetype:2
 	media-libs/libcanberra
 	x11-libs/cairo
-	x11-libs/gtk+:3
+	x11-libs/gtk+:3[X]
 	x11-libs/pixman
 	x11-misc/lightdm[vala(-)]
 	$(vala_depend)"
