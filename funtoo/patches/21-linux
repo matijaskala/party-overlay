@@ -1,0 +1,17 @@
+#!/bin/bash
+
+PATCH="linux-virtual.patch"
+for i in virtual/linux-sources/linux-sources-*.ebuild ; do
+	cat > ${PATCH} << EOF
+--- a/${i}
++++ b/${i}
+@@ -25,4 +25,5 @@ RDEPEND="
+ 		sys-kernel/zen-sources
+ 		sys-kernel/aufs-sources
+ 		sys-kernel/raspberrypi-sources
++		sys-kernel/geek-sources
+ 	)"
+EOF
+	git apply ${PATCH} || exit 1
+	rm ${PATCH}
+done
