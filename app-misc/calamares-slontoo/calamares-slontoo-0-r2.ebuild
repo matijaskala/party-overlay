@@ -53,7 +53,7 @@ src_install() {
 	insinto /etc/calamares/branding/slontoo
 	newins - branding.desc <<- EOF
 		---
-		componentName:  default
+		componentName:  slontoo
 		welcomeStyleCalamares:   true
 		strings:
 		    productName:         Slontoo Linux
@@ -67,6 +67,10 @@ src_install() {
 		    supportUrl:          https://sourceforge.net/p/slontoo/tickets
 		    knownIssuesUrl:      https://sourceforge.net/p/slontoo/tickets
 		    releaseNotesUrl:     https://sourceforge.net/p/slontoo
+		images:
+		    productLogo:         "logo.png"
+		    productIcon:         "logo.png"
+		    productWelcome:      "languages.png"
 		slideshow:               "show.qml"
 		style:
 		   sidebarBackground:    "#4c4c4c"
@@ -84,6 +88,8 @@ src_install() {
 		    id: presentation
 		}
 		EOF
+	doins "${FILESDIR}"/languages.png
+	doins "${FILESDIR}"/logo.png
 	insinto /etc/calamares/modules
 	newins - finished.conf <<- EOF
 		---
