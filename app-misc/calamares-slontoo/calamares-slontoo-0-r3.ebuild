@@ -100,6 +100,12 @@ src_install() {
 		geoipUrl: "geoip.ubuntu.com/lookup"
 		geoipStyle: "xml"
 		EOF
+	newins - machineid.conf <<- EOF
+		---
+		systemd: false
+		dbus: true
+		symlink: true
+		EOF
 	newins - packages.conf <<- EOF
 		---
 		backend: portage
