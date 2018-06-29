@@ -79,7 +79,6 @@ src_install() {
 		   sidebarTextHighlight: "#1692d0"
 		EOF
 	newins - show.qml <<- EOF
-		---
 		import QtQuick 2.0;
 		import calamares.slideshow 1.0;
 		
@@ -120,7 +119,7 @@ src_install() {
 		unpack:
 		    -   source: /mnt/cdrom/image.squashfs
 		        sourcefs: squashfs
-		        destication: ""
+		        destination: ""
 		EOF
 	newins - users.conf <<- EOF
 		---
