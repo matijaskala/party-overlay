@@ -1,3 +1,0 @@
-#!/bin/sh
-
-sed -i /libressl/d profiles/base/use.stable.mask || exit 1
