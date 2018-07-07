@@ -1,3 +1,3 @@
 #!/bin/sh
 
-sed -i 's@gnome2_src_install\( -j1\)@emake install DESTDIR="${D}"\1@' /usr/portage/x11-misc/colord/colord-*.ebuild
+sed -i 's@gnome2_src_install\( -j1\)@emake install DESTDIR="${D}"\1@' x11-misc/colord/colord-*.ebuild
