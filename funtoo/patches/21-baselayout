@@ -1,8 +1,7 @@
 #!/bin/bash
 
 PATCH="baselayout-usr-merge.patch"
-rm -f sys-apps/baselayout/baselayout-2.{5-r1,6}.ebuild || exit 1
-for i in sys-apps/baselayout/baselayout-2*.ebuild; do
+for i in sys-apps/baselayout/baselayout-2.4*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}	2013-07-28 01:01:32.000000000 +0200
 +++ b/${i}	2013-10-03 19:18:09.076757264 +0200
@@ -69,4 +68,7 @@ EOF
 	git apply ${PATCH} || exit 1
 	sed -i 's|,\(usr/,usr/local/\)|\1|' $i
 	rm ${PATCH}
+done
+for i in sys-apps/baselayout/baselayout-{2.6,9}*.ebuild; do
+	sed -i "/insinto/i\	sed -i '/snf bin/d' Makefile || die" $i || exit 1
 done
