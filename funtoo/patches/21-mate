@@ -1,0 +1,5 @@
+#!/bin/sh
+
+sed -i "/mate_src_prepare/a\\\n\tsed -i 's/MATE;$/&LXDE;/' data/mate-power-*.desktop.in || die" mate-extra/mate-power-manager/*.ebuild || exit 1
+sed -i "/src_configure/isrc_prepare() {\n\tmate_src_prepare\n\n\tsed -i 's/MATE;$/&LXDE;/' data/mate-power-*.desktop.in || die\n}\n" mate-extra/mate-power-manager/*-1.18*.ebuild || exit 1
+sed -i "/src_configure/isrc_prepare() {\n\tmate_src_prepare\n\n\tsed -i 's/MATE;$/&LXDE;/' src/capplet/mate-*.desktop.in || die\n}\n" x11-misc/mate-notification-daemon/*.ebuild || exit 1

@@ -10,6 +10,7 @@ EXEC 21-libarchive
 EXEC 21-libbsd
 EXEC 21-linux
 EXEC 21-lxde
+EXEC 21-mate
 EXEC 21-nano
 EXEC 21-perl
 EXEC 21-python
