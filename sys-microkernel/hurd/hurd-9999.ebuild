@@ -1,22 +1,26 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-inherit autotools
-
-HURD=${P/_p/.git}
+inherit autotools git-r3
 
 DESCRIPTION="GNU Hurd"
 HOMEPAGE="https://www.gnu.org/software/hurd/"
-SRC_URI="mirror://debian/pool/main/${PN:0:1}/${PN}/${HURD/-/_}.orig.tar.bz2"
+EGIT_REPO_URI="git://git.savannah.gnu.org/hurd/hurd.git"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~x86"
-IUSE="bzip2 ncurses parted zlib"
+KEYWORDS=""
+IUSE="bzip2 headers-only ncurses parted zlib"
 RESTRICT="mirror"
-S=${WORKDIR}/${HURD}
+
+export CTARGET=${CTARGET:-${CHOST}}
+if [[ ${CTARGET} == ${CHOST} ]] && [[ ${CATEGORY} == cross-* ]] ; then
+	export CTARGET=${CATEGORY#cross-}
+else
+	export CTARGET=${CTARGET/x86_64/i686}
+fi
 
 COMMON_DEPEND="
 	dev-libs/libgcrypt:=[static-libs(-)]
@@ -28,17 +32,29 @@ DEPEND="${COMMON_DEPEND}"
 RDEPEND="${COMMON_DEPEND}
 	app-shells/bash"
 
+if [[ ${CHOST} != ${CTARGET} ]] ; then
+	DEPEND="!headers-only? ( ${DEPEND} )"
+	RDEPEND="!headers-only? ( ${RDEPEND} )"
+fi
+
+just_headers() {
+	[[ ${CHOST} != ${CTARGET} ]] && use headers-only
+}
+
+alt_prefix() {
+	[[ ${CHOST} != ${CTARGET} ]] && echo /usr/${CTARGET}
+}
+
 src_prepare() {
 	eapply "${FILESDIR}"/lhurduser.diff
-	eapply "${FILESDIR}"/git-26e774bab06eab72847a7ca052a90d5319ad658a
 	eapply "${FILESDIR}"/MAKEDEV_null.diff
 	default
 	eautoreconf
 }
 
 src_configure() {
-	./configure \
-		--prefix="${ED}" \
+	just_headers || ./configure \
+		--prefix="${D}$(alt_prefix)${EPREFIX}/usr" \
 		--host=${CHOST} \
 		--enable-static-progs=iso9660fs,ext2fs,ufs \
 		--disable-profile \
@@ -49,7 +65,20 @@ src_configure() {
 		|| die
 }
 
+src_compile() {
+	just_headers || default
+}
+
 src_install() {
+	if just_headers ; then
+		mkdir -p "${D}$(alt_prefix)${EPREFIX}/usr/include" || die
+		emake \
+			INSTALL_DATA="/bin/sh \"${S}\"/install-sh -c -C -m 644" DESTDIR="${D}$(alt_prefix)" \
+			includedir=${EPREFIX}/usr/include infodir=${EPREFIX}/usr/share/info \
+			install-headers
+		return
+	fi
+
 	emake install
 
 	rm -r "${ED}"/include || die
