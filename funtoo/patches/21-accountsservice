@@ -4,7 +4,7 @@ CATEGORY=sys-apps
 PN=accountsservice
 PATCH=accountsservice-other-display-managers.patch
 mkdir -p ${CATEGORY}/${PN}/files || exit 1
-for i in ${CATEGORY}/${PN}/${PN}-0.6.45*.ebuild; do
+for i in ${CATEGORY}/${PN}/${PN}-0.6.*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}
 +++ b/${i}
