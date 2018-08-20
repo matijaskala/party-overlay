@@ -4,7 +4,7 @@ CATEGORY=sys-apps
 PN=accountsservice
 PATCH=accountsservice-other-display-managers.patch
 mkdir -p ${CATEGORY}/${PN}/files || exit 1
-for i in ${CATEGORY}/${PN}/${PN}-0.6.*.ebuild; do
+for i in ${CATEGORY}/${PN}/${PN}-0.6.45*.ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}
 +++ b/${i}
@@ -13,6 +13,22 @@ for i in ${CATEGORY}/${PN}/${PN}-0.6.*.ebuild; do
  PATCHES=(
  	"\${FILESDIR}"/\${PN}-0.6.35-gentoo-system-users.patch
  	"\${FILESDIR}"/\${PN}-0.6.43-elogind.patch
++	"\${FILESDIR}"/\${PN}-other-display-managers.patch
+ )
+ 
+ src_configure() {
+EOF
+	git apply ${PATCH} || exit 1
+	rm ${PATCH}
+done
+for i in ${CATEGORY}/${PN}/${PN}-0.6.5*.ebuild; do
+	cat > ${PATCH} << EOF
+--- a/${i}
++++ b/${i}
+@@ -40,6 +40,7 @@
+ 
+ PATCHES=(
+ 	"\${FILESDIR}"/\${PN}-0.6.35-gentoo-system-users.patch
 +	"\${FILESDIR}"/\${PN}-other-display-managers.patch
  )
  
