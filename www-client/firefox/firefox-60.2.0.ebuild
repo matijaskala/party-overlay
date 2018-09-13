@@ -24,7 +24,7 @@ if [[ ${MOZ_ESR} == 1 ]]; then
 fi
 
 # Patch version
-PATCH="${PN}-60.0-patches-02"
+PATCH="${PN}-60.0-patches-03"
 MOZ_HTTP_URI="https://archive.mozilla.org/pub/${PN}/releases"
 
 MOZCONFIG_OPTIONAL_WIFI=1
@@ -35,7 +35,7 @@ inherit check-reqs flag-o-matic toolchain-funcs eutils gnome2-utils llvm \
 DESCRIPTION="Firefox Web Browser"
 HOMEPAGE="http://www.mozilla.com/firefox"
 
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 
 SLOT="0"
 LICENSE="MPL-2.0 GPL-2 LGPL-2.1"
@@ -46,7 +46,7 @@ SRCHASH=239e434d6d2b8e1e2b697c3416d1e96d48fe98e5
 SDIR="release"
 [[ ${PV} == *_beta* ]] && SDIR="beta"
 
-PATCH_URIS=( https://dev.gentoo.org/~{anarchy,axs,polynomial-c}/mozilla/patchsets/${PATCH}.tar.xz )
+PATCH_URIS=( https://dev.gentoo.org/~whissi/dist/firefox/${PATCH}.tar.xz https://dev.gentoo.org/~{anarchy,axs,polynomial-c}/mozilla/patchsets/${PATCH}.tar.xz )
 SRC_URI="${SRC_URI}
 	${MOZ_HTTP_URI}/${MOZ_PV}/source/firefox-${MOZ_PV}.source.tar.xz
 	${PATCH_URIS[@]}"
@@ -125,7 +125,8 @@ src_prepare() {
 	rm "${WORKDIR}/firefox/2005_ffmpeg4.patch"
 	eapply "${WORKDIR}/firefox"
 
-	eapply "${FILESDIR}/bug_1461221.patch"
+	eapply "${FILESDIR}"/bug_1461221.patch
+	eapply "${FILESDIR}"/${PN}-60.0-blessings-TERM.patch # 654316
 	use ubuntu && eapply "${FILESDIR}"/60-unity-menubar.patch
 
 	# Enable gnomebreakpad
@@ -215,6 +216,13 @@ src_configure() {
 
 	# Only available on mozilla-overlay for experimentation -- Removed in Gentoo repo per bug 571180
 	#use egl && mozconfig_annotate 'Enable EGL as GL provider' --with-gl-provider=EGL
+
+	# Disable built-in ccache support to avoid sandbox violation, #665420
+	# Use FEATURES=ccache instead!
+	mozconfig_annotate '' --without-ccache
+	sed -i -e 's/ccache_stats = None/return None/' \
+		python/mozbuild/mozbuild/controller/building.py || \
+		die "Failed to disable ccache stats call"
 
 	# Setup api key for location services
 	echo -n "${_google_api_key}" > "${S}"/google-api-key
