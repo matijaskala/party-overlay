@@ -21,22 +21,7 @@ EOF
 	git apply ${PATCH} || exit 1
 	rm ${PATCH}
 done
-for i in ${CATEGORY}/${PN}/${PN}-0.6.5*.ebuild; do
-	cat > ${PATCH} << EOF
---- a/${i}
-+++ b/${i}
-@@ -40,6 +40,7 @@
- 
- PATCHES=(
- 	"\${FILESDIR}"/\${PN}-0.6.35-gentoo-system-users.patch
-+	"\${FILESDIR}"/\${PN}-other-display-managers.patch
- )
- 
- src_configure() {
-EOF
-	git apply ${PATCH} || exit 1
-	rm ${PATCH}
-done
+sed -i '/PATCHES/a\\t"\${FILESDIR}"/\${PN}-other-display-managers.patch' ${CATEGORY}/${PN}/${PN}-0.6.5*.ebuild || exit 1
 cat > ${CATEGORY}/${PN}/files/${PN}-lang.patch << EOF
 --- accountsservice-0.6.40/src/user.c
 +++ accountsservice-0.6.40/src/user.c
