@@ -16,6 +16,8 @@ for i in sys-boot/plymouth/plymouth-*.ebuild; do
 -
  	readme.gentoo_create_doc
 EOF
-	git apply ${PATCH} || exit 1
+	git apply ${PATCH}
 	rm ${PATCH}
 done
+
+sed -i /dosym/d sys-boot/plymouth/plymouth-*.ebuild
