@@ -1,5 +1,5 @@
---- a/app-editors/gedit/gedit-3.22.1.ebuild
-+++ b/app-editors/gedit/gedit-3.22.1.ebuild
+--- a/app-editors/gedit/gedit-3.28.1.ebuild
++++ b/app-editors/gedit/gedit-3.28.1.ebuild
 @@ -67,6 +67,9 @@ src_prepare() {
  src_configure() {
  	DOCS="AUTHORS ChangeLog MAINTAINERS NEWS README"
