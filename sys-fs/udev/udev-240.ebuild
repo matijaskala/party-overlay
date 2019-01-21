@@ -1,15 +1,16 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
-inherit bash-completion-r1 linux-info meson ninja-utils multilib-minimal toolchain-funcs udev user versionator
+inherit bash-completion-r1 linux-info meson ninja-utils multilib-minimal toolchain-funcs udev user
 
 if [[ ${PV} = 9999* ]]; then
 	EGIT_REPO_URI="https://github.com/systemd/systemd.git"
 	inherit git-r3
 else
-	SRC_URI="https://github.com/systemd/systemd/archive/v${PV}.tar.gz -> systemd-${PV}.tar.gz"
+	SRC_URI="https://github.com/systemd/systemd/archive/v${PV}.tar.gz -> systemd-${PV}.tar.gz
+		https://dev.gentoo.org/~floppym/dist/systemd-${PV}-patches-1.tar.gz"
 	KEYWORDS="alpha amd64 ~arm arm64 ~hppa ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh sparc x86"
 fi
 
@@ -80,9 +81,11 @@ src_prepare() {
 	ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", GROUP="usb"
 	EOF
 
+	eapply "${WORKDIR}/patches"
+
 	local PATCHES=(
 		"${FILESDIR}/236-uucp-group.patch"
-		"${FILESDIR}/238-musl.patch"
+		"${FILESDIR}/240-musl.patch"
 	)
 
 	sed -i "/secure_getenv/s/.$/, 'issetugid'&/" meson.build || die
@@ -139,7 +142,6 @@ multilib_src_compile() {
 			udevadm
 			src/udev/ata_id
 			src/udev/cdrom_id
-			src/udev/collect
 			src/udev/mtd_probe
 			src/udev/scsi_id
 			src/udev/v4l_id
@@ -171,7 +173,7 @@ multilib_src_install() {
 		doexe systemd-udevd
 
 		exeinto /lib/udev
-		doexe src/udev/{ata_id,cdrom_id,collect,mtd_probe,scsi_id,v4l_id}
+		doexe src/udev/{ata_id,cdrom_id,mtd_probe,scsi_id,v4l_id}
 
 		rm rules/99-systemd.rules || die
 		insinto /lib/udev/rules.d

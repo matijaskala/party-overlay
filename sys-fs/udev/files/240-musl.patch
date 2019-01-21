@@ -1,6 +1,6 @@
---- a/src/basic/missing.h
-+++ b/src/basic/missing.h
-@@ -528,7 +528,9 @@
+--- a/src/basic/missing_stdlib.h
++++ b/src/basic/missing_stdlib.h
+@@ -8,7 +8,9 @@
  #if ! HAVE_SECURE_GETENV
  #  if HAVE___SECURE_GETENV
  #    define secure_getenv __secure_getenv
@@ -36,16 +36,3 @@
                                  /* OOM? Let's try again later */
                                  cached_pid = CACHED_PID_UNSET;
                                  return new_pid;
---- a/src/sysusers/sysusers.c
-+++ b/src/sysusers/sysusers.c
-@@ -21,8 +21,10 @@
- ***/
- 
- #include <getopt.h>
- #include <grp.h>
-+#if ENABLE_GSHADOW
- #include <gshadow.h>
-+#endif
- #include <pwd.h>
- #include <shadow.h>
- #include <utmp.h>
