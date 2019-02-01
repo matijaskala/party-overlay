@@ -8,7 +8,7 @@ mkdir -p ${CATEGORY}/${PN}/files || exit 1
 for i in ${CATEGORY}/${PN}/${PN}-6.{1,3}*.ebuild; do
 	mv ${i} ${i%.ebuild}-r1.ebuild || exit 1
 done
-for i in ${CATEGORY}/${PN}/${PN}-6.{1,3,4,5.}*.ebuild; do
+for i in ${CATEGORY}/${PN}/${PN}-6.{1,3,4,5.}*ebuild; do
 	cat > ${PATCH} << EOF
 --- a/${i}
 +++ b/${i}
