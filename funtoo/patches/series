@@ -19,5 +19,4 @@ EXEC 21-accountsservice
 EXEC 21-sandbox
 EXEC 21-texinfo
 EXEC 21-colord
-21-gedit
 21-glibc
