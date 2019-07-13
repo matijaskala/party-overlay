@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
@@ -13,7 +13,7 @@ SRC_URI="mirror://openssl/source/${MY_P}.tar.gz"
 LICENSE="openssl"
 SLOT="0/1.1" # .so version of libssl/libcrypto
 [[ "${PV}" = *_pre* ]] || \
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~arm-linux ~x86-linux"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~x86-linux"
 IUSE="+asm bindist elibc_musl rfc3779 sctp cpu_flags_x86_sse2 sslv3 static-libs test tls-heartbeat vanilla zlib"
 RESTRICT="!bindist? ( bindist )"
 
@@ -28,17 +28,62 @@ DEPEND="${RDEPEND}
 	)"
 PDEPEND="app-misc/ca-certificates"
 
+PATCHES=(
+	"${FILESDIR}"/${PN}-1.1.0j-parallel_install_fix.patch #671602
+	"${FILESDIR}"/${P}-CVE-2019-1543.patch
+)
+
+# This does not copy the entire Fedora patchset, but JUST the parts that
+# are needed to make it safe to use EC with RESTRICT=bindist.
+# See openssl.spec for the matching numbering of SourceNNN, PatchNNN
+SOURCE1=hobble-openssl
+SOURCE12=ec_curve.c
+SOURCE13=ectest.c
+PATCH37=openssl-1.1.1-ec-curves.patch
+FEDORA_GIT_BASE='https://src.fedoraproject.org/cgit/rpms/openssl.git/plain/'
+FEDORA_GIT_BRANCH='f29'
+FEDORA_SRC_URI=()
+FEDORA_SOURCE=( ${SOURCE1} ${SOURCE12} ${SOURCE13} )
+FEDORA_PATCH=( ${PATCH37} )
+for i in "${FEDORA_SOURCE[@]}" ; do
+	FEDORA_SRC_URI+=( "${FEDORA_GIT_BASE}/${i}?h=${FEDORA_GIT_BRANCH} -> ${P}_${i}" )
+done
+for i in "${FEDORA_PATCH[@]}" ; do # Already have a version prefix
+	FEDORA_SRC_URI+=( "${FEDORA_GIT_BASE}/${i}?h=${FEDORA_GIT_BRANCH} -> ${i}" )
+done
+SRC_URI+=" bindist? ( ${FEDORA_SRC_URI[@]} )"
+
 S="${WORKDIR}/${MY_P}"
 
 MULTILIB_WRAPPED_HEADERS=(
 	usr/include/openssl/opensslconf.h
 )
 
-PATCHES=(
-	"${FILESDIR}"/${PN}-1.0.2a-x32-asm.patch #542618
-)
-
 src_prepare() {
+	if use bindist; then
+		# This just removes the prefix, and puts it into WORKDIR like the RPM.
+		for i in "${FEDORA_SOURCE[@]}" ; do
+			cp -f "${DISTDIR}"/"${P}_${i}" "${WORKDIR}"/"${i}" || die
+		done
+
+		# .spec %prep
+		bash "${WORKDIR}"/"${SOURCE1}" || die
+		cp -f "${WORKDIR}"/"${SOURCE12}" "${S}"/crypto/ec/ || die
+		cp -f "${WORKDIR}"/"${SOURCE13}" "${S}"/test/ || die
+		for i in "${FEDORA_PATCH[@]}" ; do
+			if [[ "${i}" == "${PATCH37}" ]] ; then
+				# apply our own for OpenSSL 1.1.1b adjusted version of this patch
+				eapply "${FILESDIR}"/openssl-1.1.1b-ec-curves-patch.patch
+			else
+				eapply "${DISTDIR}"/"${i}"
+			fi
+		done
+		# Also see the configure parts below:
+		# enable-ec \
+		# $(use_ssl !bindist ec2m) \
+
+	fi
+
 	# keep this in sync with app-misc/c_rehash
 	SSL_CNF_DIR="/etc/ssl"
 
@@ -47,7 +92,9 @@ src_prepare() {
 	rm -f Makefile
 
 	if ! use vanilla ; then
-		eapply "${PATCHES[@]}"
+		if [[ $(declare -p PATCHES 2>/dev/null) == "declare -a"* ]] ; then
+			[[ ${#PATCHES[@]} -gt 0 ]] && eapply "${PATCHES[@]}"
+		fi
 	fi
 
 	eapply_user #332661
@@ -60,8 +107,8 @@ src_prepare() {
 		-e '/^MAKEDEPPROG/s:=.*:=$(CC):' \
 		-e $(has noman FEATURES \
 			&& echo '/^install:/s:install_docs::' \
-			|| echo '/^MANDIR=/s:=.*:='${EPREFIX}'/usr/share/man:') \
-		-e "/^DOCDIR/s@\$(BASENAME)@&-${PF}@" \
+			|| echo '/^MANDIR=/s:=.*:='${EPREFIX%/}'/usr/share/man:') \
+		-e "/^DOCDIR/s@\$(BASENAME)@&-${PVR}@" \
 		Configurations/unix-Makefile.tmpl \
 		|| die
 
@@ -80,7 +127,7 @@ src_prepare() {
 
 	# Prefixify Configure shebang (#141906)
 	sed \
-		-e "1s,/usr/bin/env,${EPREFIX}&," \
+		-e "1s,/usr/bin/env,${EPREFIX%/}&," \
 		-i Configure || die
 	# Remove test target when FEATURES=test isn't set
 	if ! use test ; then
@@ -130,6 +177,7 @@ multilib_src_configure() {
 	local config="Configure"
 	[[ -z ${sslout} ]] && config="config"
 
+	# Fedora hobbled-EC needs 'no-ec2m'
 	# 'srp' was restricted until early 2017 as well.
 	# "disable-deprecated" option breaks too many consumers.
 	# Don't set it without thorough revdeps testing.
@@ -138,8 +186,9 @@ multilib_src_configure() {
 		${sslout} \
 		$(use cpu_flags_x86_sse2 || echo "no-sse2") \
 		enable-camellia \
-		$(use_ssl !bindist ec) \
-		$(use_ssl !bindist srp) \
+		enable-ec \
+		$(use_ssl !bindist ec2m) \
+		enable-srp \
 		$(use elibc_musl && echo "no-async") \
 		${ec_nistp_64_gcc_128} \
 		enable-idea \
@@ -152,8 +201,8 @@ multilib_src_configure() {
 		$(use_ssl sctp) \
 		$(use_ssl tls-heartbeat heartbeats) \
 		$(use_ssl zlib) \
-		--prefix="${EPREFIX}"/usr \
-		--openssldir="${EPREFIX}"${SSL_CNF_DIR} \
+		--prefix="${EPREFIX%/}"/usr \
+		--openssldir="${EPREFIX%/}"${SSL_CNF_DIR} \
 		--libdir=$(get_libdir) \
 		shared threads \
 		|| die
@@ -187,7 +236,13 @@ multilib_src_test() {
 }
 
 multilib_src_install() {
-	emake DESTDIR="${D}" install
+	# We need to create $ED/usr on our own to avoid a race condition #665130
+	if [[ ! -d "${ED%/}/usr" ]]; then
+		# We can only create this directory once
+		mkdir "${ED%/}"/usr || die
+	fi
+
+	emake DESTDIR="${D%/}" install
 }
 
 multilib_src_install_all() {
