@@ -10,7 +10,6 @@ HOMEPAGE="https://minbrowser.github.io/min/"
 SRC_URI_BASE="https://github.com/minbrowser/min/releases/download/v${PV}"
 SRC_URI="
 	amd64? ( ${SRC_URI_BASE}/min_${PV}_amd64.deb )
-	x86? ( ${SRC_URI_BASE}/min_${PV}_i386.deb )
 "
 
 LICENSE="Apache-2.0"
