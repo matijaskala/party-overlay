@@ -3,17 +3,14 @@ EXEC 21-baselayout
 EXEC 21-brotli
 EXEC 21-openrc
 EXEC 21-hurd
-EXEC 21-shadow
 EXEC 21-mozconfig
 EXEC 21-libarchive
 EXEC 21-libbsd
 EXEC 21-linux
 EXEC 21-lxde
 EXEC 21-mate
-EXEC 21-nano
 EXEC 21-perl
 EXEC 21-python
-EXEC 21-plymouth
 EXEC 21-rsync
 EXEC 21-accountsservice
 EXEC 21-sandbox
