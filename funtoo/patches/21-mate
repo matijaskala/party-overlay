@@ -1,3 +1,0 @@
-#!/bin/sh
-
-sed -i "/^src_configure/isrc_prepare() {\n\tmate_src_prepare\n\n\tsed -i 's/MATE;$/&LXDE;/' src/capplet/mate-*.desktop.in || die\n}\n" x11-misc/mate-notification-daemon/*.ebuild || exit 1
