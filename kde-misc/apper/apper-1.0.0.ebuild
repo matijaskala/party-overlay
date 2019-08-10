@@ -1,10 +1,8 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
-# $Id$
 
-EAPI=6
+EAPI=7
 
-KDEBASE="${PN}"
 inherit kde5
 
 DESCRIPTION="KDE Plasma PackageKit frontend"
@@ -13,7 +11,10 @@ HOMEPAGE="https://projects.kde.org/projects/extragear/sysadmin/apper"
 LICENSE="GPL-2"
 IUSE=""
 RESTRICT="mirror"
-[[ ${KDE_BUILD_TYPE} = release ]] && KEYWORDS="~amd64 ~arm ~x86"
+if [[ ${KDE_BUILD_TYPE} = release ]] ; then
+	KEYWORDS="~amd64 ~arm ~x86"
+	SRC_URI="mirror://kde/stable/${PN}/${PV}/${P}.tar.xz"
+fi
 
 DEPEND="
 	$(add_frameworks_dep kcmutils)
@@ -47,7 +48,7 @@ RDEPEND="${DEPEND}
 	!kde-misc/apper:4
 "
 
-PATCHES=( "${FILESDIR}/${PF}.patch" )
+PATCHES=( "${FILESDIR}/${P}.patch" )
 
 src_configure() {
 	local mycmakeargs=(
