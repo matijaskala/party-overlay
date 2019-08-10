@@ -1,18 +1,19 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-inherit gnome2-utils
+inherit xdg-utils vala
 
 DESCRIPTION="Unified widget and session management libs for Xfce"
 HOMEPAGE="https://wiki.gentoo.org/wiki/No_homepage"
-SRC_URI="mirror://xfce/src/xfce/${PN}/${PV%.*}/${P}.tar.bz2"
+SRC_URI="https://archive.xfce.org/src/xfce/${PN}/${PV%.*}/${P}.tar.bz2"
 
-LICENSE="LGPL-2"
+LICENSE="LGPL-2+ GPL-2+"
 SLOT="0"
-KEYWORDS="alpha amd64 arm ~arm64 hppa ia64 ~mips ppc ppc64 ~sh sparc x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~x86-solaris"
-IUSE="debug glade introspection startup-notification"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~x86-solaris"
+IUSE="debug glade introspection startup-notification vala"
+REQUIRED_USE="vala? ( introspection )"
 
 RDEPEND=">=dev-libs/glib-2.42:2=
 	>=x11-libs/gtk+-2.24:2=
@@ -30,14 +31,21 @@ DEPEND="${RDEPEND}
 	dev-lang/perl
 	dev-util/intltool
 	sys-devel/gettext
-	virtual/pkgconfig"
+	virtual/pkgconfig
+	vala? ( $(vala_depend) )"
 
 PATCHES=( "${FILESDIR}"/print_screen.patch )
+
+src_prepare() {
+	# stupid vala.eclass...
+	default
+}
 
 src_configure() {
 	local myconf=(
 		$(use_enable introspection)
 		$(use_enable startup-notification)
+		$(use_enable vala)
 		# TODO: check revdeps and make it optional one day
 		--enable-gtk2
 		# requires deprecated glade:3 (gladeui-1.0), bug #551296
@@ -47,6 +55,7 @@ src_configure() {
 		--with-vendor-info=Gentoo
 	)
 
+	use vala && vala_src_prepare
 	econf "${myconf[@]}"
 }
 
@@ -57,9 +66,9 @@ src_install() {
 }
 
 pkg_postinst() {
-	gnome2_icon_cache_update
+	xdg_icon_cache_update
 }
 
 pkg_postrm() {
-	gnome2_icon_cache_update
+	xdg_icon_cache_update
 }
