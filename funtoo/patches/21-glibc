@@ -1,7 +1,7 @@
 --- a/sys-libs/glibc/glibc-9999.ebuild
 +++ b/sys-libs/glibc/glibc-9999.ebuild
 @@ -1139,6 +1139,57 @@ glibc_do_src_install() {
- 		mv "${ED}"$(alt_usrlibdir)/libm-${upstream_pv}.a "${ED}"$(alt_usrlibdir)/${P}/libm-${upstream_pv}.a || die
+ 		mv "${ED}"/$(alt_usrlibdir)/libm-${upstream_pv}.a "${ED}"/$(alt_usrlibdir)/${P}/libm-${upstream_pv}.a || die
  	fi
  
 +	# Fix symbolic links that cross /usr boundary
