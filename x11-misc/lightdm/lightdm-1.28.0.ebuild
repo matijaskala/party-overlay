@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -6,13 +6,13 @@ EAPI=6
 inherit autotools flag-o-matic pam qmake-utils readme.gentoo-r1 systemd vala xdg-utils
 
 DESCRIPTION="A lightweight display manager"
-HOMEPAGE="https://www.freedesktop.org/wiki/Software/LightDM"
+HOMEPAGE="https://github.com/CanonicalLtd/lightdm"
 SRC_URI="https://github.com/CanonicalLtd/lightdm/releases/download/${PV}/${P}.tar.xz
 	mirror://gentoo/introspection-20110205.m4.tar.bz2"
 
 LICENSE="GPL-3 LGPL-3"
 SLOT="0"
-KEYWORDS="amd64 ~arm ~arm64 ~ppc ~ppc64 x86"
+KEYWORDS="amd64 arm arm64 ppc ppc64 x86"
 IUSE="audit +gnome +introspection qt5 +vala"
 
 COMMON_DEPEND="
@@ -28,7 +28,8 @@ COMMON_DEPEND="
 		dev-qt/qtcore:5
 		dev-qt/qtdbus:5
 		dev-qt/qtgui:5
-	)"
+	)
+"
 RDEPEND="${COMMON_DEPEND}
 	>=sys-auth/pambase-20101024-r2"
 DEPEND="${COMMON_DEPEND}
@@ -36,10 +37,13 @@ DEPEND="${COMMON_DEPEND}
 	dev-util/intltool
 	sys-devel/gettext
 	virtual/pkgconfig
-	gnome? ( gnome-base/gnome-common )"
+	gnome? ( gnome-base/gnome-common )
+	vala? ( $(vala_depend) )
+"
 
 DOCS=( NEWS )
 RESTRICT="test"
+REQUIRED_USE="vala? ( introspection )"
 
 src_prepare() {
 	xdg_environment_reset
@@ -66,7 +70,8 @@ src_prepare() {
 	else
 		AT_M4DIR=${WORKDIR} eautoreconf
 	fi
-	vala_src_prepare
+
+	use vala && vala_src_prepare
 }
 
 src_configure() {
@@ -130,6 +135,7 @@ src_install() {
 	readme.gentoo_create_doc
 
 	systemd_dounit "${FILESDIR}/${PN}.service"
+	keepdir /var/lib/${PN}-data
 }
 
 pkg_postinst() {
