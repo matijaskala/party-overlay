@@ -20,7 +20,7 @@ REQUIRED_USE="
 
 KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86 ~amd64-fbsd ~x86-fbsd ~amd64-linux ~x86-linux ~ppc-macos ~x86-macos ~sparc-solaris ~sparc64-solaris ~x64-solaris ~x86-solaris"
 SRC_URI="${SRC_URI}
-	ubuntu? ( https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_3.24.4-1ubuntu1.debian.tar.xz )"
+	ubuntu? ( https://launchpad.net/ubuntu/+archive/primary/+files/gtk+3.0_3.24.8-1ubuntu1.debian.tar.xz )"
 
 # Upstream wants us to do their job:
 # https://bugzilla.gnome.org/show_bug.cgi?id=768662#c1
@@ -30,6 +30,7 @@ RESTRICT="test"
 # bug #????
 COMMON_DEPEND="
 	>=dev-libs/atk-2.15[introspection?,${MULTILIB_USEDEP}]
+	>=dev-libs/fribidi-0.19.7[${MULTILIB_USEDEP}]
 	>=dev-libs/glib-2.53.4:2[${MULTILIB_USEDEP}]
 	media-libs/fontconfig[${MULTILIB_USEDEP}]
 	>=media-libs/libepoxy-1.4[X(+)?,${MULTILIB_USEDEP}]
@@ -43,7 +44,7 @@ COMMON_DEPEND="
 		>=net-libs/rest-0.7[${MULTILIB_USEDEP}]
 		>=dev-libs/json-glib-1.0[${MULTILIB_USEDEP}] )
 	colord? ( >=x11-misc/colord-0.1.9:0=[${MULTILIB_USEDEP}] )
-	cups? ( >=net-print/cups-1.2[${MULTILIB_USEDEP}] )
+	cups? ( >=net-print/cups-2.0[${MULTILIB_USEDEP}] )
 	introspection? ( >=dev-libs/gobject-introspection-1.39:= )
 	wayland? (
 		>=dev-libs/wayland-1.9.91[${MULTILIB_USEDEP}]
@@ -132,7 +133,7 @@ src_prepare() {
 	fi
 
 	# gtk-update-icon-cache is installed by dev-util/gtk-update-icon-cache
-	eapply "${FILESDIR}"/${PN}-3.22.2-update-icon-cache.patch
+	eapply "${FILESDIR}"/${PN}-3.24.8-update-icon-cache.patch
 
 	# Fix broken autotools logic
 	eapply "${FILESDIR}"/${PN}-3.22.20-libcloudproviders-automagic.patch
@@ -141,33 +142,47 @@ src_prepare() {
 }
 
 multilib_src_configure() {
-	# need libdir here to avoid a double slash in a path that libtool doesn't
-	# grok so well during install (// between $EPREFIX and usr ...)
-	# cloudprovider is not packaged in Gentoo
-	ECONF_SOURCE=${S} \
-	gnome2_src_configure \
-		$(use_enable aqua quartz-backend) \
-		$(use_enable broadway broadway-backend) \
-		$(use_enable cloudprint) \
-		$(use_enable colord) \
-		$(use_enable cups cups auto) \
-		$(multilib_native_use_enable gtk-doc) \
-		$(multilib_native_use_enable introspection) \
-		$(use_enable wayland wayland-backend) \
-		$(use_enable X x11-backend) \
-		$(use_enable X xcomposite) \
-		$(use_enable X xdamage) \
-		$(use_enable X xfixes) \
-		$(use_enable X xkb) \
-		$(use_enable X xrandr) \
-		$(use_enable xinerama) \
-		--disable-cloudproviders \
-		--disable-mir-backend \
-		--disable-papi \
-		--enable-man \
-		--with-xml-catalog="${EPREFIX}"/etc/xml/catalog \
-		--libdir="${EPREFIX}"/usr/$(get_libdir) \
+	local myconf=(
+		$(use_enable aqua quartz-backend)
+		$(use_enable broadway broadway-backend)
+		$(use_enable cloudprint)
+		$(use_enable colord)
+		$(use_enable cups cups auto)
+		$(multilib_native_use_enable gtk-doc)
+		$(multilib_native_use_enable introspection)
+		$(use_enable wayland wayland-backend)
+		$(use_enable X x11-backend)
+		$(use_enable X xcomposite)
+		$(use_enable X xdamage)
+		$(use_enable X xfixes)
+		$(use_enable X xkb)
+		$(use_enable X xrandr)
+		$(use_enable xinerama)
+		# cloudprovider is not packaged in Gentoo yet
+		--disable-cloudproviders
+		--disable-mir-backend
+		--disable-papi
+		# sysprof integration needs >=sysprof-3.33.2
+		--disable-profiler
+		--enable-man
+		--with-xml-catalog="${EPREFIX}"/etc/xml/catalog
+		# need libdir here to avoid a double slash in a path that libtool doesn't
+		# grok so well during install (// between $EPREFIX and usr ...)
+		# TODO: Is this still the case?
+		--libdir="${EPREFIX}"/usr/$(get_libdir)
 		CUPS_CONFIG="${EPREFIX}/usr/bin/${CHOST}-cups-config"
+	)
+
+	if use wayland; then
+		myconf+=(
+			# Include wayland immodule into gtk itself, to avoid problems like
+			# https://gitlab.gnome.org/GNOME/gnome-shell/issues/109 from a
+			# user overridden GTK_IM_MODULE envvar
+			--with-included-immodules=wayland
+		)
+	fi;
+
+	ECONF_SOURCE=${S} gnome2_src_configure "${myconf[@]}"
 
 	# work-around gtk-doc out-of-source brokedness
 	if multilib_is_native_abi; then
