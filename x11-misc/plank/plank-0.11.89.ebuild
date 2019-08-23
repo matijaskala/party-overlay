@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -21,6 +21,7 @@ RDEPEND="
 	dev-libs/glib:2
 	dev-libs/libdbusmenu[gtk3]
 	dev-libs/libgee:0.8
+	gnome-base/gnome-menus
 	x11-libs/bamf
 	x11-libs/gtk+:3[X]"
 DEPEND="${RDEPEND}
