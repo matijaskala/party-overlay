@@ -16,7 +16,7 @@ DESCRIPTION="Portage is the package management and distribution system for Gento
 HOMEPAGE="https://wiki.gentoo.org/wiki/Project:Portage"
 
 LICENSE="GPL-2"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sh ~sparc ~x86 ~amd64-fbsd"
+KEYWORDS="~alpha amd64 ~arm ~arm64 ~hppa ia64 ~m68k ~mips ppc ppc64 ~riscv ~s390 ~sh sparc ~x86 ~amd64-fbsd"
 SLOT="0"
 IUSE="build doc epydoc gentoo-dev +ipc +native-extensions selinux xattr"
 
@@ -56,6 +56,7 @@ RDEPEND="
 			python2_7 pypy)
 	) )
 	!<app-admin/logrotate-3.8.0
+	!<app-portage/gentoolkit-0.4.6
 	!<app-portage/repoman-2.3.10"
 PDEPEND="
 	!build? (
@@ -106,7 +107,7 @@ python_prepare_all() {
 			die "failed to patch create_depgraph_params.py"
 
 		einfo "Enabling additional FEATURES for gentoo-dev..."
-		echo 'FEATURES="${FEATURES} ipc-sandbox network-sandbox strict-keepdir"' \
+		echo 'FEATURES="${FEATURES} strict-keepdir"' \
 			>> cnf/make.globals || die
 	fi
 
