@@ -26,6 +26,7 @@ src_install() {
 	kde5_src_install
 
 	if use minimal ; then
-		rm -r "${ED}"usr/share/wallpapers/Autumn || die
+		rm -r "${ED}"/usr/share/wallpapers/Autumn || die
+		rm -r "${ED}"/usr/share/wallpapers/Elarun || die
 	fi
 }
