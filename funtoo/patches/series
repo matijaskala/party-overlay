@@ -1,7 +1,6 @@
 21-less
 EXEC 21-baselayout
 EXEC 21-brotli
-EXEC 21-openrc
 EXEC 21-hurd
 EXEC 21-libarchive
 EXEC 21-libbsd
