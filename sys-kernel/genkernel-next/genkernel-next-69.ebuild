@@ -1,21 +1,21 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
 
 SRC_URI="https://github.com/Sabayon/genkernel-next/archive/v${PV}.tar.gz -> ${P}.tar.gz"
-KEYWORDS="~alpha amd64 ~arm ia64 ppc ppc64 x86"
+KEYWORDS="~alpha amd64 ~arm ~hppa ia64 ppc ppc64 x86"
 inherit bash-completion-r1
 
 DESCRIPTION="Gentoo automatic kernel building scripts, reloaded"
-HOMEPAGE="http://www.gentoo.org"
+HOMEPAGE="https://github.com/Sabayon/genkernel-next/"
 
 LICENSE="GPL-2"
 SLOT="0"
 
 IUSE="cryptsetup dmraid gpg iscsi mdadm plymouth selinux"
 DOCS=( AUTHORS )
-PATCHES=( "${FILESDIR}/multilive.patch" )
+PATCHES=( "${FILESDIR}/slontoo.patch" )
 
 DEPEND="app-text/asciidoc
 	sys-fs/e2fsprogs
@@ -71,6 +71,7 @@ CONFIG_WIL6210=m
 CONFIG_ATH10K=m
 CONFIG_ATH10K_PCI=m
 CONFIG_SQUASHFS_XZ=y
+CONFIG_SQUASHFS_ZSTD=y
 EOF
 	done
 	append_config_from_file "${FILESDIR}"/ethernet.config
