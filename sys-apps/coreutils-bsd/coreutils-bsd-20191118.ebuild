@@ -16,6 +16,9 @@ RESTRICT="mirror"
 
 DEPEND="dev-libs/libbsd"
 RDEPEND="${DEPEND}
-	!sys-apps/coreutils"
+	!sys-apps/coreutils
+	!sys-apps/util-linux[kill]
+	!sys-apps/which
+	!sys-process/procps[kill]"
 
 S=${WORKDIR}/${PN}-${COMMIT_ID}
