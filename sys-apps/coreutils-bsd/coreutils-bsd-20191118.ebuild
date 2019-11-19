@@ -22,3 +22,10 @@ RDEPEND="${DEPEND}
 	!sys-process/procps[kill]"
 
 S=${WORKDIR}/${PN}-${COMMIT_ID}
+
+src_install() {
+	default
+
+	rm -f "${D}"/usr/bin/groups || die
+	rm -f "${D}"/usr/share/man/man1/groups.1 || die
+}
