@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sed -i /lxde-icon-theme/d lxde-base/lxde-{meta,common}/*.ebuild

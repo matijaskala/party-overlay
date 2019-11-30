@@ -5,7 +5,6 @@ EXEC 21-hurd
 EXEC 21-libarchive
 EXEC 21-libbsd
 EXEC 21-linux
-EXEC 21-lxde
 EXEC 21-perl
 EXEC 21-python
 EXEC 21-rsync
