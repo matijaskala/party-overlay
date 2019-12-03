@@ -1,7 +1,7 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit unpacker xdg
 
@@ -18,20 +18,20 @@ KEYWORDS="-* ~amd64 ~x86"
 RESTRICT="strip mirror"
 
 RDEPEND="
+	app-accessibility/at-spi2-atk
+	app-accessibility/at-spi2-core
 	dev-libs/atk
 	dev-libs/glib
 	dev-libs/expat
 	dev-libs/nspr
 	dev-libs/nss
-	gnome-base/gconf
 	media-libs/alsa-lib
-	media-libs/fontconfig
-	media-libs/freetype
 	net-print/cups
 	sys-apps/dbus
+	sys-apps/util-linux
 	x11-libs/cairo
 	x11-libs/gdk-pixbuf
-	x11-libs/gtk+:2
+	x11-libs/gtk+:3
 	x11-libs/libX11
 	x11-libs/libXcomposite
 	x11-libs/libXcursor
@@ -43,11 +43,13 @@ RDEPEND="
 	x11-libs/libXrender
 	x11-libs/libXtst
 	x11-libs/libXScrnSaver
+	x11-libs/libxcb
 	x11-libs/pango
 "
 QA_PREBUILT="usr/lib/min/min"
 S=${WORKDIR}
 
 src_install() {
-	mv * "${D}" || die
+	cp -r * "${D}" || die
+	mv "${D}"/usr/share/doc/${PN} "${D}"/usr/share/doc/${P} || die
 }
