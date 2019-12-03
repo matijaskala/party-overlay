@@ -62,6 +62,9 @@ src_install () {
 	meson_src_install
 
 	use systemd || rm -f "${D}$(systemd_get_systemunitdir)"
+
+	insinto /etc/profile.d
+	doins ${FILESDIR}/vala-panel-appmenu.sh
 }
 
 pkg_postinst() {
