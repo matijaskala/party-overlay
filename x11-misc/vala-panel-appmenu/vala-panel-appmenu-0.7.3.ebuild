@@ -11,7 +11,7 @@ HOMEPAGE="http://github.com/rilian-la-te/vala-panel-appmenu"
 SRC_URI="https://github.com/rilian-la-te/${PN}/archive/${PV}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="LGPL-3"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="amd64 x86"
 SLOT="0"
 IUSE="mate systemd valapanel +wnck xfce"
 RESTRICT="mirror"
@@ -54,7 +54,6 @@ src_configure() {
 		$(meson_feature wnck)
 		$(meson_feature xfce)
 	)
-
 	meson_src_configure
 }
 
