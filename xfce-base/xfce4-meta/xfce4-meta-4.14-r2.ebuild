@@ -9,7 +9,7 @@ SRC_URI=""
 
 LICENSE="metapackage"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-linux ~x86-linux"
+KEYWORDS="alpha amd64 arm ~arm64 ~hppa ~ia64 ~mips ppc ppc64 ~sparc x86 ~amd64-linux ~x86-linux"
 IUSE="upower"
 
 RDEPEND="x11-themes/hicolor-icon-theme
@@ -22,6 +22,7 @@ RDEPEND="x11-themes/hicolor-icon-theme
 	>=xfce-base/xfce4-panel-4.14.0
 	>=xfce-base/xfce4-session-4.14.0
 	>=xfce-base/xfce4-settings-4.14.0
+	x11-terms/xfce4-terminal
 	>=xfce-base/xfconf-4.14.1
 	>=xfce-base/xfdesktop-4.14.1
 	>=xfce-base/xfwm4-4.14.0
