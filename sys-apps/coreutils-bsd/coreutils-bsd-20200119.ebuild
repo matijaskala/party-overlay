@@ -1,11 +1,11 @@
-# Copyright 2019 Gentoo Authors
+# Copyright 2019-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
 DESCRIPTION="Standard BSD utilities"
 HOMEPAGE="https://wiki.gentoo.org/wiki/No_homepage"
-COMMIT_ID="07e54b9f0a48e96df861a7b76271741be5888243"
+COMMIT_ID="5420b1f90f54c5e4ea2cfa0b534c102453dcbd2d"
 SRC_URI="https://github.com/matijaskala/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
@@ -14,7 +14,8 @@ KEYWORDS="amd64 x86"
 IUSE=""
 RESTRICT="mirror"
 
-DEPEND="dev-libs/libbsd"
+DEPEND="dev-libs/libbsd
+	sys-apps/acl"
 RDEPEND="${DEPEND}
 	!sys-apps/coreutils
 	!sys-apps/net-tools[hostname]
