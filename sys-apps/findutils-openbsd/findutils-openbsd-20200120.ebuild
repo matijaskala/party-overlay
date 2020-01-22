@@ -5,7 +5,7 @@ EAPI=7
 
 DESCRIPTION="OpenBSD utilities for finding files"
 HOMEPAGE="https://www.openbsd.org"
-COMMIT_ID="4d17e8493e4b48365e719d2ed8fb0fdc98734dba"
+COMMIT_ID="1066214bd4a9c0d9e9dd8b1b13cd1db0c34fe971"
 SRC_URI="https://github.com/matijaskala/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"

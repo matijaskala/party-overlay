@@ -5,7 +5,7 @@ EAPI=7
 
 DESCRIPTION="Standard BSD utilities"
 HOMEPAGE="https://wiki.gentoo.org/wiki/No_homepage"
-COMMIT_ID="5420b1f90f54c5e4ea2cfa0b534c102453dcbd2d"
+COMMIT_ID="3151e9581918cd3ec6255284bc7d68103c83e6dc"
 SRC_URI="https://github.com/matijaskala/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
