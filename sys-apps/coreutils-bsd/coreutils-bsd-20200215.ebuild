@@ -3,9 +3,11 @@
 
 EAPI=7
 
+inherit toolchain-funcs
+
 DESCRIPTION="Standard BSD utilities"
 HOMEPAGE="https://wiki.gentoo.org/wiki/No_homepage"
-COMMIT_ID="3151e9581918cd3ec6255284bc7d68103c83e6dc"
+COMMIT_ID="bd85ead48af3598029fdedad07fe869b41879669"
 SRC_URI="https://github.com/matijaskala/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
@@ -14,8 +16,7 @@ KEYWORDS="amd64 x86"
 IUSE=""
 RESTRICT="mirror"
 
-DEPEND="dev-libs/libbsd
-	sys-apps/acl"
+DEPEND="dev-libs/libbsd"
 RDEPEND="${DEPEND}
 	!sys-apps/coreutils
 	!sys-apps/net-tools[hostname]
@@ -24,6 +25,12 @@ RDEPEND="${DEPEND}
 	!sys-process/procps[kill]"
 
 S=${WORKDIR}/${PN}-${COMMIT_ID}
+
+src_prepare() {
+	default
+
+	tc-export CC
+}
 
 src_install() {
 	default
