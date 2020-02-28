@@ -1,16 +1,15 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2020 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: $
 
-EAPI=5
+EAPI=6
 
-EGIT_REPO_URI="git://git.fedorahosted.org/python-meh.git"
+EGIT_REPO_URI="https://github.com/rhinstaller/python-meh"
 EGIT_COMMIT="r${PV}-1"
 PYTHON_COMPAT=( python2_7 )
-inherit distutils-r1 git-2 eutils
+inherit distutils-r1 git-r3
 
 DESCRIPTION="Python exception handling library"
-HOMEPAGE="http://git.fedoraproject.org/git/python-meh.git?p=python-meh.git;a=summary"
+HOMEPAGE="https://github.com/rhinstaller/python-meh"
 SRC_URI=""
 
 LICENSE="GPL-2"
@@ -33,9 +32,3 @@ RDEPEND="${COMMON_DEPEND}
 	)
 	>=dev-libs/libreport-2.0.18
 	net-misc/openssh"
-
-src_prepare() {
-	cd "${S}"
-	epatch "${FILESDIR}/${PN}-keep_exc_win_above.patch"
-	distutils-r1_src_prepare
-}
