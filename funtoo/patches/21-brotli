@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sed -i '/KEYWORDS/s/~\<//g' app-arch/brotli/brotli-*.ebuild dev-libs/xxhash/xxhash-*.ebuild
