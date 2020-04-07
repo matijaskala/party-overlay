@@ -7,7 +7,6 @@ EXEC 21-libbsd
 EXEC 21-perl
 EXEC 21-python
 EXEC 21-rsync
-EXEC 21-accountsservice
 EXEC 21-sandbox
 EXEC 21-colord
 21-glibc
