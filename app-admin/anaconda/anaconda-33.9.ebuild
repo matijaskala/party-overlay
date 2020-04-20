@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=5
-PYTHON_COMPAT=( python2_7 )
+PYTHON_COMPAT=( python3_{6,7} )
 
 inherit flag-o-matic python-r1 libtool autotools eutils
 
@@ -20,6 +20,7 @@ if [[ ${PV} == 9999 ]]; then
 else
 	KEYWORDS="amd64"
 	SRC_URI="mirror://sabayon/${CATEGORY}/${PN}-${PV}.tar.bz2 ${SRC_URI}"
+	SRC_URI="https://github.com/rhinstaller/${PN}/archive/${P}-1.tar.gz"
 fi
 
 LICENSE="GPL-2 public-domain"
@@ -42,10 +43,8 @@ LSELINUX_RDEPEND="=sys-libs/libsepol-${SEPOL_VER}*
 
 COMMON_DEPEND="
 	>=app-arch/libarchive-3.0.4
-	dev-python/dbus-python
-	dev-python/nose
-	dev-python/pygobject
-	dev-util/glade:3.10
+	dev-libs/gobject-introspection
+	dev-util/glade:3.10=
 	dev-util/intltool
 	gnome-base/libgnomekbd
 	>=net-misc/networkmanager-0.9.8.0
@@ -55,14 +54,14 @@ COMMON_DEPEND="
 	>=sys-block/parted-1.8.1
 	sys-devel/gettext
 	>=x11-libs/libxklavier-5.4
-	x11-libs/pango
-	virtual/pkgconfig
-	"
+	x11-libs/pango"
+BDEPEND="sys-apps/sed
+	virtual/pkgconfig"
 DEPEND="${COMMON_DEPEND} ${AUDIT_DEPEND} ${LSELINUX_DEPEND}
 	app-arch/rpm
+	dev-python/nose[${PYTHON_USEDEP}]
 	dev-util/gtk-doc
-	dev-util/gtk-doc-am
-	sys-apps/sed"
+	dev-util/gtk-doc-am"
 RDEPEND="${COMMON_DEPEND} ${AUDIT_RDEPEND}
 	${LSELINUX_RDEPEND}
 	app-admin/authconfig
@@ -70,15 +69,16 @@ RDEPEND="${COMMON_DEPEND} ${AUDIT_RDEPEND}
 	app-cdr/isomd5sum
 	app-emulation/spice-vdagent
 	app-i18n/langtable
-	dev-libs/gobject-introspection
 	>=dev-libs/keybinder-0.3.0-r300
 	dev-libs/libpwquality[python]
 	>=dev-libs/libreport-2.0.20
 	dev-libs/libtimezonemap
 	dev-libs/newt
 	dev-python/ipy
+	dev-python/dbus-python[${PYTHON_USEDEP}]
+	dev-python/pygobject:3[${PYTHON_USEDEP}]
 	>=dev-python/pyparted-2.5
-	=dev-python/python-blivet-1.0*
+	=dev-python/python-blivet-1.0*[${PYTHON_USEDEP}]
 	dev-python/python-bugzilla
 	>=dev-python/python-meh-0.30-r1
 	dev-python/python-nss
@@ -108,6 +108,8 @@ RDEPEND="${COMMON_DEPEND} ${AUDIT_RDEPEND}
 	x11-themes/gnome-themes-standard
 	gtk? ( x11-libs/gtk+:3 )"
 
+S=${WORKDIR}/${PN}-${P}-1
+
 src_unpack() {
 	if [[ ${PV} == 9999 ]]; then
 		git-r3_src_unpack
@@ -117,9 +119,9 @@ src_unpack() {
 
 src_prepare() {
 	default
-	epatch "${FILESDIR}"/0018-remove-libsepol-libsemanage-policycoreutils.patch
-	epatch "${FILESDIR}"/0019-add-some-other-packages-to-the-delete-list.patch
-	epatch "${FILESDIR}"/0020-Start-hubs-with-the-buttons-insensitive.patch
+	#epatch "${FILESDIR}"/0018-remove-libsepol-libsemanage-policycoreutils.patch
+	#epatch "${FILESDIR}"/0019-add-some-other-packages-to-the-delete-list.patch
+	#epatch "${FILESDIR}"/0020-Start-hubs-with-the-buttons-insensitive.patch
 	# Setup CFLAGS, LDFLAGS
 	append-cppflags "-I${D}/usr/include/anaconda-runtime"
 	append-ldflags "-L${D}/usr/$(get_libdir)/anaconda-runtime"
