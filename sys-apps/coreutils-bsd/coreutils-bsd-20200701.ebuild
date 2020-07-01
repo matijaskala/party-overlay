@@ -7,7 +7,7 @@ inherit toolchain-funcs
 
 DESCRIPTION="Standard BSD utilities"
 HOMEPAGE="https://wiki.gentoo.org/wiki/No_homepage"
-COMMIT_ID="bd85ead48af3598029fdedad07fe869b41879669"
+COMMIT_ID="5e36d80810133d0debe93f6d1125419b40e4e222"
 SRC_URI="https://github.com/matijaskala/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
