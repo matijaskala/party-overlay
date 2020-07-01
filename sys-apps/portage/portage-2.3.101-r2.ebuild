@@ -1,60 +1,57 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=5
 
-PYTHON_COMPAT=(
-	pypy
-	python3_4 python3_5 python3_6
-	python2_7
-)
+DISTUTILS_USE_SETUPTOOLS=no
+PYTHON_COMPAT=( pypy3 python3_{6..9} )
 PYTHON_REQ_USE='bzip2(+),threads(+)'
 
-inherit distutils-r1 systemd
+inherit distutils-r1 epatch linux-info systemd prefix
 
 DESCRIPTION="Portage is the package management and distribution system for Gentoo"
 HOMEPAGE="https://wiki.gentoo.org/wiki/Project:Portage"
 
 LICENSE="GPL-2"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~mips ~ppc ~ppc64 ~s390 ~sparc ~x86 ~amd64-fbsd"
+KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~riscv ~s390 ~sparc ~x86"
 SLOT="0"
-IUSE="build doc epydoc gentoo-dev +ipc +native-extensions selinux xattr"
+IUSE="apidoc build doc gentoo-dev +ipc +native-extensions selinux xattr"
 
 DEPEND="!build? ( $(python_gen_impl_dep 'ssl(+)') )
 	>=app-arch/tar-1.27
 	dev-lang/python-exec:2
 	>=sys-apps/sed-4.0.5 sys-devel/patch
 	doc? ( app-text/xmlto ~app-text/docbook-xml-dtd-4.4 )
-	epydoc? ( >=dev-python/epydoc-2.0[$(python_gen_usedep 'python2*')] )"
+	apidoc? (
+		dev-python/sphinx
+		dev-python/sphinx-epytext
+	)"
 # Require sandbox-2.2 for bug #288863.
-# For xattr, we can spawn getfattr and setfattr from sys-apps/attr, but that's
-# quite slow, so it's not considered in the dependencies as an alternative to
-# to python-3.3 / pyxattr. Also, xattr support is only tested with Linux, so
-# for now, don't pull in xattr deps for other kernels.
 # For whirlpool hash, require python[ssl] (bug #425046).
 # For compgen, require bash[readline] (bug #445576).
+# app-portage/gemato goes without PYTHON_USEDEP since we're calling
+# the executable.
 RDEPEND="
+	app-arch/zstd
 	>=app-arch/tar-1.27
 	dev-lang/python-exec:2
 	!build? (
 		>=sys-apps/sed-4.0.5
 		app-shells/bash:0[readline]
 		>=app-admin/eselect-1.2
-		$(python_gen_cond_dep 'dev-python/pyblake2[${PYTHON_USEDEP}]' \
-			python{2_7,3_4,3_5} pypy)
 	)
-	elibc_FreeBSD? ( sys-freebsd/freebsd-bin )
 	elibc_glibc? ( >=sys-apps/sandbox-2.2 )
 	elibc_musl? ( >=sys-apps/sandbox-2.2 )
 	elibc_uclibc? ( >=sys-apps/sandbox-2.2 )
+	kernel_linux? ( sys-apps/util-linux )
 	>=app-misc/pax-utils-0.1.17
 	selinux? ( >=sys-libs/libselinux-2.0.94[python,${PYTHON_USEDEP}] )
 	xattr? ( kernel_linux? (
 		>=sys-apps/install-xattr-0.3
-		$(python_gen_cond_dep 'dev-python/pyxattr[${PYTHON_USEDEP}]' \
-			python2_7 pypy)
 	) )
-	!<app-admin/logrotate-3.8.0"
+	!<app-admin/logrotate-3.8.0
+	!<app-portage/gentoolkit-0.4.6
+	!<app-portage/repoman-2.3.10"
 PDEPEND="
 	!build? (
 		>=net-misc/rsync-2.6.4
@@ -64,10 +61,8 @@ PDEPEND="
 # NOTE: FEATURES=installsources requires debugedit and rsync
 
 PATCHES=(
-	"${FILESDIR}"/filesystem-layout-symlinks.patch
+	"${FILESDIR}"/filesystem-layout-symlinks-r1.patch
 )
-
-REQUIRED_USE="epydoc? ( $(python_gen_useflags 'python2*') )"
 
 SRC_ARCHIVES="https://dev.gentoo.org/~zmedico/portage/archives"
 
@@ -82,23 +77,30 @@ prefix_src_archives() {
 
 TARBALL_PV=${PV}
 SRC_URI="mirror://gentoo/${PN}-${TARBALL_PV}.tar.bz2
-	$(prefix_src_archives ${PN}-${TARBALL_PV}.tar.bz2)"
+	$(prefix_src_archives ${PN}-${TARBALL_PV}.tar.bz2)
+	https://github.com/gentoo/portage/compare/1079f2d13cfe575e243b76b2f5128c0c4e222f51...ca763549507d995e91a49753b13bcca8748fae6c.patch -> portage-2.3.101-revert2-bug-709746.patch"
 
-pkg_setup() {
-	use epydoc && DISTUTILS_ALL_SUBPHASE_IMPLS=( python2.7 )
+pkg_pretend() {
+	local CONFIG_CHECK="~IPC_NS ~PID_NS ~NET_NS ~UTS_NS"
+
+	check_extra_config
 }
 
 python_prepare_all() {
 	distutils-r1_python_prepare_all
 
+	epatch "${DISTDIR}/portage-2.3.101-revert2-bug-709746.patch"
+
+	sed -e "s:^VERSION = \"HEAD\"$:VERSION = \"${PV}\":" -i lib/portage/__init__.py || die
+
 	if use gentoo-dev; then
 		einfo "Disabling --dynamic-deps by default for gentoo-dev..."
 		sed -e 's:\("--dynamic-deps", \)\("y"\):\1"n":' \
-			-i pym/_emerge/create_depgraph_params.py || \
+			-i lib/_emerge/create_depgraph_params.py || \
 			die "failed to patch create_depgraph_params.py"
 
 		einfo "Enabling additional FEATURES for gentoo-dev..."
-		echo 'FEATURES="${FEATURES} ipc-sandbox network-sandbox strict-keepdir"' \
+		echo 'FEATURES="${FEATURES} strict-keepdir"' \
 			>> cnf/make.globals || die
 	fi
 
@@ -110,7 +112,7 @@ python_prepare_all() {
 	if ! use ipc ; then
 		einfo "Disabling ipc..."
 		sed -e "s:_enable_ipc_daemon = True:_enable_ipc_daemon = False:" \
-			-i pym/_emerge/AbstractEbuildProcess.py || \
+			-i lib/_emerge/AbstractEbuildProcess.py || \
 			die "failed to patch AbstractEbuildProcess.py"
 	fi
 
@@ -121,20 +123,15 @@ python_prepare_all() {
 	fi
 
 		sed -e '/^sync-rsync-verify-metamanifest/s|yes|no|' \
+			-e '/^sync-webrsync-verify-signature/s|yes|no|' \
 			-e "s|^\(sync-type = \).*|\\1git|" \
 			-e "s|^\(sync-uri = \).*|\\1https://github.com/matijaskala/ports-2013.git|" \
 			-i cnf/repos.conf || die "sed failed"
 
 	if [[ -n ${EPREFIX} ]] ; then
 		einfo "Setting portage.const.EPREFIX ..."
-		sed -e "s|^\(SANDBOX_BINARY[[:space:]]*=[[:space:]]*\"\)\(/usr/bin/sandbox\"\)|\\1${EPREFIX}\\2|" \
-			-e "s|^\(FAKEROOT_BINARY[[:space:]]*=[[:space:]]*\"\)\(/usr/bin/fakeroot\"\)|\\1${EPREFIX}\\2|" \
-			-e "s|^\(BASH_BINARY[[:space:]]*=[[:space:]]*\"\)\(/bin/bash\"\)|\\1${EPREFIX}\\2|" \
-			-e "s|^\(MOVE_BINARY[[:space:]]*=[[:space:]]*\"\)\(/bin/mv\"\)|\\1${EPREFIX}\\2|" \
-			-e "s|^\(PRELINK_BINARY[[:space:]]*=[[:space:]]*\"\)\(/usr/sbin/prelink\"\)|\\1${EPREFIX}\\2|" \
-			-e "s|^\(EPREFIX[[:space:]]*=[[:space:]]*\"\).*|\\1${EPREFIX}\"|" \
-			-i pym/portage/const.py || \
-			die "Failed to patch portage.const.EPREFIX"
+		hprefixify -e "s|^(EPREFIX[[:space:]]*=[[:space:]]*\").*|\1${EPREFIX}\"|" \
+			-w "/_BINARY/" lib/portage/const.py
 
 		einfo "Prefixing shebangs ..."
 		while read -r -d $'\0' ; do
@@ -143,17 +140,17 @@ python_prepare_all() {
 				sed -i -e "1s:.*:#!${EPREFIX}${shebang:2}:" "$REPLY" || \
 					die "sed failed"
 			fi
-		done < <(find . -type f -print0)
+		done < <(find . -type f ! -name etc-update -print0)
 
-		einfo "Adjusting make.globals ..."
-		sed -e "s|\(/usr/portage\)|${EPREFIX}\\1|" \
-			-e "s|^\(PORTAGE_TMPDIR=\"\)\(/var/tmp\"\)|\\1${EPREFIX}\\2|" \
-			-i cnf/make.globals || die "sed failed"
+		einfo "Adjusting make.globals, repos.conf and etc-update ..."
+		hprefixify cnf/{make.globals,repos.conf} bin/etc-update
 
-		einfo "Adjusting repos.conf ..."
-		sed -e "s|^\(location = \)\(/usr/portage\)|\\1${EPREFIX}\\2|" \
-			-e "s|^\(sync-openpgp-key-path = \)\(.*\)|\\1${EPREFIX}\\2|" \
-			-i cnf/repos.conf || die "sed failed"
+		if use prefix-guest ; then
+			sed -e "s|^\(main-repo = \).*|\\1gentoo_prefix|" \
+				-e "s|^\\[gentoo\\]|[gentoo_prefix]|" \
+				-e "s|^\(sync-uri = \).*|\\1rsync://rsync.prefix.bitzolder.nl/gentoo-portage-prefix|" \
+				-i cnf/repos.conf || die "sed failed"
+		fi
 
 		einfo "Adding FEATURES=force-prefix to make.globals ..."
 		echo -e '\nFEATURES="${FEATURES} force-prefix"' >> cnf/make.globals \
@@ -175,7 +172,7 @@ python_prepare_all() {
 python_compile_all() {
 	local targets=()
 	use doc && targets+=( docbook )
-	use epydoc && targets+=( epydoc )
+	use apidoc && targets+=( apidoc )
 
 	if [[ ${targets[@]} ]]; then
 		esetup.py "${targets[@]}"
@@ -208,8 +205,8 @@ python_install_all() {
 		install_docbook
 		--htmldir="${EPREFIX}/usr/share/doc/${PF}/html"
 	)
-	use epydoc && targets+=(
-		install_epydoc
+	use apidoc && targets+=(
+		install_apidoc
 		--htmldir="${EPREFIX}/usr/share/doc/${PF}/html"
 	)
 
@@ -232,16 +229,20 @@ python_install_all() {
 }
 
 pkg_preinst() {
-	# comment out sanity test until it is fixed to work
-	# with the new PORTAGE_PYM_PATH
-	#if [[ $ROOT == / ]] ; then
-		## Run some minimal tests as a sanity check.
-		#local test_runner=$(find "${ED}" -name runTests)
-		#if [[ -n $test_runner && -x $test_runner ]] ; then
-			#einfo "Running preinst sanity tests..."
-			#"$test_runner" || die "preinst sanity tests failed"
-		#fi
-	#fi
+	python_setup
+	local sitedir=$(python_get_sitedir)
+	[[ -d ${D%/}${sitedir} ]] || die "${D%/}${sitedir}: No such directory"
+	env -u DISTDIR \
+		-u PORTAGE_OVERRIDE_EPREFIX \
+		-u PORTAGE_REPOSITORIES \
+		-u PORTDIR \
+		-u PORTDIR_OVERLAY \
+		PYTHONPATH="${D%/}${sitedir}${PYTHONPATH:+:${PYTHONPATH}}" \
+		"${PYTHON}" -m portage._compat_upgrade.default_locations || die
+
+	env -u BINPKG_COMPRESS \
+		PYTHONPATH="${D%/}${sitedir}${PYTHONPATH:+:${PYTHONPATH}}" \
+		"${PYTHON}" -m portage._compat_upgrade.binpkg_compression || die
 
 	# elog dir must exist to avoid logrotate error for bug #415911.
 	# This code runs in preinst in order to bypass the mapping of
@@ -252,24 +253,13 @@ pkg_preinst() {
 		chmod g+s,ug+rwx "${ED}"var/log/portage{,/elog}
 	fi
 
-	if has_version ">=${CATEGORY}/${PN}-2.3.1" && \
-		has_version "<${CATEGORY}/${PN}-2.3.3"; then
-		SYNC_DEPTH_UPGRADE=true
-	else
-		SYNC_DEPTH_UPGRADE=false
+	if has_version "<${CATEGORY}/${PN}-2.3.77"; then
+		elog "The emerge --autounmask option is now disabled by default, except for"
+		elog "portions of behavior which are controlled by the --autounmask-use and"
+		elog "--autounmask-license options. For backward compatibility, previous"
+		elog "behavior of --autounmask=y and --autounmask=n is entirely preserved."
+		elog "Users can get the old behavior simply by adding --autounmask to the"
+		elog "make.conf EMERGE_DEFAULT_OPTS variable. For the rationale for this"
+		elog "change, see https://bugs.gentoo.org/658648."
 	fi
-}
-
-pkg_postinst() {
-	if ${SYNC_DEPTH_UPGRADE}; then
-		ewarn "Please note that this release no longer respects sync-depth for"
-		ewarn "git repositories.  There have been too many problems and"
-		ewarn "performance issues.  See bugs 552814, 559008"
-	fi
-	einfo ""
-	einfo "This release of portage NO LONGER contains the repoman code base."
-	einfo "Repoman has its own ebuild and release package."
-	einfo "For repoman functionality please emerge app-portage/repoman"
-	einfo "Please report any bugs you may encounter."
-	einfo ""
 }
