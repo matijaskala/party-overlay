@@ -1,11 +1,13 @@
-# Copyright 2019 Gentoo Authors
+# Copyright 2019-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
 
-DESCRIPTION="OpenBSD utilities for finding files"
-HOMEPAGE="https://www.openbsd.org"
-COMMIT_ID="1066214bd4a9c0d9e9dd8b1b13cd1db0c34fe971"
+inherit toolchain-funcs
+
+DESCRIPTION="BSD utilities for finding files"
+HOMEPAGE="https://www.freebsd.org"
+COMMIT_ID="dc033b97d4d2ac34a50307144192321a2715f995"
 SRC_URI="https://github.com/matijaskala/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD"
