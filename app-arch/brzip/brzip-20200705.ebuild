@@ -1,11 +1,11 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit meson vala
 
-COMMIT_ID="3e8ae177890dc4970691d3b8b841b8a62ce0cb4e"
+COMMIT_ID="43e5577c91b710fe376887a510aa87de5ccd3b22"
 DESCRIPTION="A compression utility based on Brotli algorithm"
 HOMEPAGE="https://github.com/matijaskala/brzip"
 SRC_URI="${HOMEPAGE}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
@@ -20,7 +20,8 @@ RDEPEND="
 	dev-libs/glib:2=
 	app-arch/brotli:=
 	dev-libs/xxhash:="
-DEPEND="${RDEPEND}
+DEPEND="${RDEPEND}"
+BDEPEND="
 	virtual/pkgconfig
 	$(vala_depend)"
 
