@@ -7,7 +7,7 @@ inherit toolchain-funcs
 
 DESCRIPTION="FreeBSD commands to read man pages"
 HOMEPAGE="https://www.freebsd.org"
-COMMIT_ID="44772d35fbdddfc4319c938874c621b94dca3260"
+COMMIT_ID="192e1a305f792e94117854d10d1902db7db045e4"
 SRC_URI="https://github.com/matijaskala/${PN}/archive/${COMMIT_ID}.tar.gz -> ${P}.tar.gz"
 
 LICENSE="BSD-2"
